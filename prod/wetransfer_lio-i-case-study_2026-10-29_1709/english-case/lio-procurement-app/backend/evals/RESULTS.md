@@ -348,6 +348,38 @@ Using an agreement that switches the vendor resets shipping, fees and tax to $0 
 the catalog has no shipping, fee or tax data, and the original quote's charges belong to another
 vendor. Until someone enters them, the total understates the real cost.
 
+### Badges: decided in code, now measured (work in progress)
+
+The first Task 2 version had two badges, "equivalent" and "similar". "Similar" covered both a
+near-identical dock and a Windows laptop for a MacBook, and the eval never checked badges. Now
+the model answers a fixed checklist per candidate (product type, platform, size, key specs,
+custom vs standard, material/variant); code sets `equivalent` (no differences), `close` (only
+minor) or `alternative` (any major); and the UI shows the main difference in the badge
+("Alternative · platform: Windows vs macOS"). The labels gained an expected badge per item;
+the eval scores `label` (allowed badge) and `stable` (same badge every run).
+
+| Version (9 cases × 3 runs) | hit | top1 | clean | allowed badge | stable | p50 |
+|---|---|---|---|---|---|---|
+| Equivalent / similar (committed Task 2) | 18/18 | 18/18 | 9/9 | not measured | not measured | 2.4 s |
+| Free-form list of differences | 12/18 | 12/18 | 9/9 | 6/18 | 6/6 | 2.3 s |
+| Fixed checklist | 15/18 | 13/18 | 9/9 | 23/32 | 12/12 | 5.1 s |
+| + one model call per line | 15/18 | 12/18 | 9/9 | 22/28 | 10/10 | 5.7 s |
+| + Windows laptops kept for a MacBook ([`results/match-labels-gpt-4o-mini.json`](results/match-labels-gpt-4o-mini.json)) | **18/18** | 15/18 | **9/9** | 36/45 | **15/15** | 6.5 s |
+
+What this showed:
+- A free-form list of differences is filled lazily (the MacBook got "13″ vs 14″" but never the
+  platform). A checklist makes differences consistent, but the model then dropped items with
+  major differences instead of labelling them alternatives; Windows laptops for a MacBook are
+  now kept explicitly (a product decision).
+- One model call for all lines hit the output-token limit at 5 lines with the checklist, which
+  in the app silently falls back to unverified keywords; the eval missed it because each case
+  is a single line. Each line now gets its own call, in parallel (6 lines verified in 7.7 s).
+- Still wrong in the latest run: "cyan toner" also got yellow, magenta and black toner as
+  "equivalent" (colour not treated as a difference; an earlier run was correct), so badge
+  accuracy varies run to run with gpt-4o-mini. Next step under consideration: a stronger model
+  for this small judge call only, measured on the same eval.
+- Savings are still shown for alternatives ("save $435.06" against a Windows laptop).
+
 ## Model comparison
 
 *Pending. Same pipeline and labels, `OPENAI_MODEL` varied. Default stays `gpt-4o-mini` unless a

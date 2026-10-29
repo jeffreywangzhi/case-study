@@ -21,6 +21,15 @@ from app.services.catalog_matching import (
 from tests.test_smoke import TestingSession, _auth, client
 
 
+def _verdict(candidate: int, same_purpose: bool, differences=(), **checks) -> dict:
+    """A judge verdict with every checklist field at its 'no difference' value unless given."""
+    return {"candidate": candidate, "product_type": "same", "platform": "same_or_not_applicable",
+            "size": "same_or_unspecified", "key_specs": "same_or_unspecified",
+            "customization": "same_or_not_applicable",
+            "materials_or_variant": "same_or_unspecified", "differences": list(differences),
+            "same_purpose": same_purpose, **checks}
+
+
 def _token(email: str = "requester@acme.com") -> str:
     return client.post(
         "/auth/signin", json={"email": email, "password": "demo1234"}
@@ -103,11 +112,14 @@ def test_match_with_ai_keeps_only_what_the_judge_accepts(monkeypatch):
         moss = next(i for i, c in enumerate(candidates[0], start=1)
                     if c.item.description.startswith("Framed preserved moss panel"))
         return _Judgement.model_validate({"lines": [
-            {"line": 0, "matches": [{"candidate": moss, "quality": "similar",
-                                     "reason": "Standard framed panel; quote is made to measure."}]},
+            {"line": 0, "matches": [_verdict(moss, True, customization="custom_vs_standard",
+                                             differences=[
+                {"aspect": "size", "detail": "standard vs 63 x 31.5 in", "impact": "minor"},
+                {"aspect": "customization", "detail": "standard vs made to measure",
+                 "impact": "major"},
+            ])]},
             # Every candidate rejected: "nothing fits" is a valid answer.
-            {"line": 1, "matches": [{"candidate": i, "quality": "not_a_match",
-                                     "reason": "Different product type."}
+            {"line": 1, "matches": [_verdict(i, False, product_type="different")
                                     for i in range(1, len(candidates[1]) + 1)]},
         ]})
 
@@ -121,8 +133,67 @@ def test_match_with_ai_keeps_only_what_the_judge_accepts(monkeypatch):
     assert body["verified"] is True
     assert any("moss" in d.lower() for d in seen["candidates"][0])  # retrieval found it
     [suggestion] = body["lines"][0]["suggestions"]
-    assert suggestion["quality"] == "similar" and "made to measure" in suggestion["reason"]
+    # A major difference makes it an "alternative" (code decides, not the model), and the
+    # major difference is listed first.
+    assert suggestion["quality"] == "alternative"
+    assert suggestion["differences"][0]["impact"] == "major"
+    assert suggestion["reason"].startswith("customization: standard vs made to measure")
     assert body["lines"][1]["suggestions"] == []
+
+
+def test_same_product_type_is_shown_even_if_the_model_says_not_the_same_purpose(monkeypatch):
+    # MacBook case (D60): show Windows laptops as "Alternative · platform: Windows vs macOS".
+    monkeypatch.setattr(catalog_matching.settings, "openai_api_key", "test-key")
+    monkeypatch.setattr(catalog_matching, "embed", lambda db, texts: [[0.0] for _ in texts])
+
+    def fake_judge(lines, candidates):
+        laptop = next(i for i, c in enumerate(candidates[0], start=1)
+                      if c.item.description.startswith("Business laptop"))
+        return _Judgement.model_validate({"lines": [{"line": 0, "matches": [
+            _verdict(laptop, False, platform="different", differences=[
+                {"aspect": "platform", "detail": "Windows vs macOS", "impact": "major"}]),
+        ] + [_verdict(i, False, product_type="different")
+             for i in range(1, len(candidates[0]) + 1) if i != laptop]}]})
+
+    monkeypatch.setattr(catalog_matching, "judge", fake_judge)
+    body = client.post("/articles/match", headers=_auth(_token()), json={"lines": [
+        {"description": "13 inch MacBook Air laptop 16GB 512GB", "unit": "ea."}]}).json()
+    [suggestion] = body["lines"][0]["suggestions"]  # the other candidates stay out
+    assert suggestion["quality"] == "alternative"
+    assert suggestion["reason"] == "platform: Windows vs macOS"
+
+
+def test_same_product_type_without_a_platform_difference_still_needs_same_purpose(monkeypatch):
+    # "cyan toner": yellow toner is the same product type, but the model rightly says it can't
+    # serve the same need; only a platform difference overrides that (D60).
+    monkeypatch.setattr(catalog_matching.settings, "openai_api_key", "test-key")
+    monkeypatch.setattr(catalog_matching, "embed", lambda db, texts: [[0.0] for _ in texts])
+
+    def fake_judge(lines, candidates):
+        return _Judgement.model_validate({"lines": [{"line": 0, "matches": [
+            _verdict(i, c.item.description == "Toner cartridge cyan")
+            for i, c in enumerate(candidates[0], start=1)]}]})
+
+    monkeypatch.setattr(catalog_matching, "judge", fake_judge)
+    body = client.post("/articles/match", headers=_auth(_token()), json={"lines": [
+        {"description": "cyan toner cartridge"}]}).json()
+    assert [s["item"] for s in body["lines"][0]["suggestions"]] == ["Toner cartridge cyan"]
+
+
+def test_badge_is_decided_in_code_from_the_checklist():
+    from app.services.catalog_matching import _JudgedMatch, match_quality
+
+    def verdict(**checks):
+        return _JudgedMatch.model_validate(_verdict(1, True, **checks))
+
+    assert match_quality(verdict()) == "equivalent"
+    assert match_quality(verdict(key_specs="minor_difference")) == "close"
+    # The MacBook case: every hardware spec close, but a different platform.
+    assert match_quality(verdict(size="minor_difference", platform="different")) == "alternative"
+    assert match_quality(verdict(customization="custom_vs_standard")) == "alternative"
+    # A major difference the model wrote down counts even if a checklist field missed it.
+    assert match_quality(verdict(differences=[
+        {"aspect": "scope", "detail": "self-install vs installed", "impact": "major"}])) == "alternative"
 
 
 def test_match_falls_back_to_keywords_when_the_model_fails(monkeypatch):

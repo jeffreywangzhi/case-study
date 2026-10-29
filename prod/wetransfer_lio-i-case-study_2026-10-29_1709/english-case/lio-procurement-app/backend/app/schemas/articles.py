@@ -34,7 +34,9 @@ class ArticlePage(BaseModel):
 # Catalog suggestions (Task 2): which negotiated agreements fit a request line
 # ---------------------------------------------------------------------------
 
-MatchQuality = Literal["equivalent", "similar"]
+# Decided in code from the listed differences: none -> equivalent, only minor -> close,
+# any major -> alternative.
+MatchQuality = Literal["equivalent", "close", "alternative"]
 
 
 class CatalogMatchLine(BaseModel):
@@ -71,12 +73,19 @@ class CatalogAgreement(BaseModel):
     saving_total: Decimal | None
 
 
+class CatalogDifference(BaseModel):
+    aspect: str  # "platform"
+    detail: str  # "Windows vs macOS"
+    impact: Literal["minor", "major"]
+
+
 class CatalogSuggestion(BaseModel):
     """A catalog item that fits the line, with every supplier's agreement (cheapest first)."""
 
     item: str
     quality: MatchQuality
-    reason: str
+    reason: str  # the differences in one line, major first
+    differences: list[CatalogDifference] = Field(default_factory=list)  # major first
     agreements: list[CatalogAgreement]
 
 

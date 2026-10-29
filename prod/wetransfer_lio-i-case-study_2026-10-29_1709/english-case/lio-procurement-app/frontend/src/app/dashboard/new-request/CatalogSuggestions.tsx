@@ -7,9 +7,10 @@ import { Button } from '@/components/base';
 const usd = (value: string | number) =>
   `$${Number(value).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
-const QUALITY_BADGE: Record<api.CatalogSuggestion['quality'], string> = {
-  equivalent: 'bg-green-50 text-green-800',
-  similar: 'bg-amber-50 text-amber-800',
+const QUALITY: Record<api.CatalogSuggestion['quality'], { label: string; className: string }> = {
+  equivalent: { label: 'Equivalent', className: 'bg-green-50 text-green-800' },
+  close: { label: 'Close match', className: 'bg-sky-50 text-sky-800' },
+  alternative: { label: 'Alternative', className: 'bg-amber-50 text-amber-800' },
 };
 
 /** "save $102.11" / "quote is $125.00 cheaper" / "different unit" for one agreement. */
@@ -136,16 +137,27 @@ export function CatalogPanel({
   );
 }
 
+/** Item name, then the badge with its main difference right next to it (not in a line below). */
 function ItemHeading({ suggestion }: { suggestion: api.CatalogSuggestion }) {
+  const quality = QUALITY[suggestion.quality];
+  const [main, ...rest] = suggestion.differences ?? [];
   return (
     <>
-      <p className="text-sm text-gray-900">
-        {suggestion.item}{' '}
-        <span className={`ml-1 inline-flex px-2 py-0.5 text-xs font-medium rounded-full ${QUALITY_BADGE[suggestion.quality]}`}>
-          {suggestion.quality === 'equivalent' ? 'Equivalent' : 'Similar'}
+      <p className="text-sm text-gray-900">{suggestion.item}</p>
+      <p className="text-xs">
+        <span className={`inline-flex px-2 py-0.5 font-medium rounded-full ${quality.className}`}>
+          {quality.label}
+          {main && ` · ${main.aspect}: ${main.detail}`}
         </span>
+        {!main && suggestion.quality !== 'equivalent' && (
+          <span className="ml-2 text-gray-600">{suggestion.reason}</span>
+        )}
       </p>
-      <p className="text-xs text-gray-600">{suggestion.reason}</p>
+      {rest.length > 0 && (
+        <p className="text-xs text-gray-600">
+          Also: {rest.map((d) => `${d.aspect}: ${d.detail}`).join('; ')}
+        </p>
+      )}
     </>
   );
 }

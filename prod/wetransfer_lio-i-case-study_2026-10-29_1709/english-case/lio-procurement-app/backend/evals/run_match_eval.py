@@ -7,6 +7,8 @@ typeahead path), and scores both against the labels:
 - hit: an expected catalog item is among the suggestions
 - top1: the first suggestion is an expected item
 - clean: a must-be-none case gets no suggestion (a wrong suggestion is worse than none)
+- label: each suggestion's badge is one the labels allow (never "equivalent" unless listed)
+- stable: the same case + item gets the same badge in every run
 
 Usage:
     python backend/evals/run_match_eval.py [--runs 3] [--out FILE] [--api URL]
@@ -23,6 +25,14 @@ from pathlib import Path
 from run_eval import EVAL_DIR, _post_json, _request, sign_in
 
 LABELS = EVAL_DIR / "matching_labels.json"
+
+
+DEFAULT_QUALITY = ["close", "alternative"]
+
+
+def label_ok(case: dict, suggestion: dict) -> bool:
+    allowed = case.get("expected_quality", {}).get(suggestion["item"], DEFAULT_QUALITY)
+    return suggestion["quality"] in allowed
 
 
 def score(case: dict, suggestions: list[dict]) -> dict[str, bool | None]:
@@ -63,6 +73,7 @@ def main() -> None:
                 "id": case["id"], "run": run,
                 "match": {"seconds": round(match_s, 1), "verified": body.get("verified"),
                           "scores": score(case, matched),
+                          "labels": [label_ok(case, s) for s in matched],
                           "suggestions": [(s["item"], s["quality"], s["reason"]) for s in matched]},
                 "suggest": {"seconds": round(suggest_s, 1), "scores": score(case, typed),
                             "suggestions": [s["item"] for s in typed]},
@@ -70,6 +81,21 @@ def main() -> None:
             m = results[-1]["match"]
             print(f"{case['id']:24} run {run}  match {match_s:4.1f}s {m['scores']} "
                   f"{[s[0][:38] + ' (' + s[1] + ')' for s in m['suggestions']]}")
+
+    labels = [ok for r in results for ok in r["match"]["labels"]]
+    badges: dict[tuple, set] = {}
+    for r in results:
+        for item, quality, _ in r["match"]["suggestions"]:
+            badges.setdefault((r["id"], item), set()).add(quality)
+    print(f"\nmatch labels: {sum(labels)}/{len(labels)} suggestions with an allowed badge; "
+          f"stable {sum(len(v) == 1 for v in badges.values())}/{len(badges)} case+item pairs")
+    for (case_id, item), seen in sorted(badges.items()):
+        if len(seen) > 1:
+            print(f"  unstable: {case_id} / {item[:40]}: {sorted(seen)}")
+    for r in results:
+        for (item, quality, reason), ok in zip(r["match"]["suggestions"], r["match"]["labels"]):
+            if not ok and r["run"] == 1:
+                print(f"  wrong badge: {r['id']} / {item[:40]}: {quality} ({reason[:60]})")
 
     for path in ("match", "suggest"):
         print(f"\n{path}:")

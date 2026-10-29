@@ -184,10 +184,19 @@ export interface CatalogAgreement {
   saving_total: string | null;
 }
 
+export interface CatalogDifference {
+  aspect: string;
+  detail: string;
+  impact: 'minor' | 'major';
+}
+
 export interface CatalogSuggestion {
   item: string;
-  quality: 'equivalent' | 'similar';
+  /** Decided from the differences: none = equivalent, only minor = close, any major = alternative. */
+  quality: 'equivalent' | 'close' | 'alternative';
   reason: string;
+  /** Major first. */
+  differences: CatalogDifference[];
   /** Every supplier's agreement for the item, cheapest first. */
   agreements: CatalogAgreement[];
 }
