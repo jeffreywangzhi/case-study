@@ -40,18 +40,18 @@ Numbers in this file are always computed against the labels hash shown in each s
 
 File: [`results/baseline-legacy.json`](results/baseline-legacy.json) · model `gpt-4o-mini`,
 temperature 0.3 · code `4126767` (as delivered) · run 2026-10-29 · originally scored against labels
-`d40bc2954450`, re-scored below against labels `2d6710a00232` (QT-4120 extended)
+`d40bc2954450`, re-scored below against labels `582e12d1a29c` (QT-4120 and verdeform extended)
 
 | Quote | ok | vendor | vat_id | grand_total | lines | commodity | department | line_detail | charges | tax | reconciles | flagged |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
 | QT-4120-Cust-14918 (Greenmantle) | 3/3 | 0/3 | 3/3 | 3/3 | 0/3 | 3/3 | 0/3 | 0/3 | 0/3 | 0/3 | 0/3 | 0/3 |
-| QT-OF2312380-Cust-57692 (verdeform) | 0/3 | 0/3 | 0/3 | 0/3 | 0/3 | 0/3 | - | - | - | - | - | - |
+| QT-OF2312380-Cust-57692 (verdeform) | 0/3 | 0/3 | 0/3 | 0/3 | 0/3 | 0/3 | 0/3 | 0/3 | 0/3 | 0/3 | 0/3 | 0/3 |
 | QuoteA0492_23 (Hollis) | 3/3 | 0/3 | 3/3 | 1/3 | 0/3 | 3/3 | - | - | - | - | - | - |
 | Quote_1 MacBook Air (Apple) | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | - | - | - | - | - | - |
 | Hartwell grinding machine | 0/3 | 0/3 | 0/3 | 0/3 | 0/3 | 0/3 | - | - | - | - | - | - |
 | **All runs** | **60%** | **20%** | **60%** | **47%** | **20%** | **60%** | **0%** | **0%** | **0%** | **0%** | **0%** | **0%** |
 
-Latency: p50 4.7 s, max 16.3 s. Extended-field percentages cover QT-4120 only so far.
+Latency: p50 4.7 s, max 16.3 s. Extended-field percentages cover QT-4120 and verdeform.
 
 What failed and why:
 - **verdeform, Hartwell: upload errors out (0/3).** The model correctly returns `null` for a tax ID
@@ -117,14 +117,68 @@ What the iterations showed (each fix is a test in `tests/test_extraction.py`):
 6. Commodity prompt changed from "null if unsure" to "always pick the closest group": QT-4120
    back to 3/3 (Office Equipment); overall commodity 40% → 47%.
 
-Open (next quotes to review / Task 3):
-- **verdeform: vendor comes back as "Lio Technologies, Inc." with no warning**, and the tax ID as
-  `C4185275` (the California corporation number). Was a crash before; now silently wrong.
-- **Commodity is still weak (47%):** with "always pick the closest", verdeform (3/3) and Hollis
-  (2/3) now fall back to the catch-all "9 Miscellaneous Services" instead of 15 Office Equipment,
-  and Hartwell still returns no group (it should be 45 Production Machinery; no invalid ids were
-  logged, so the model returns null despite the instruction). Picking 1 of 2,000 near-duplicate
-  groups in one prompt is the root cause. Task 3 redesigns classification (shortlist, then pick).
+At the time of this run, open items were the verdeform vendor (silently "Lio Technologies, Inc.")
+and commodity (47%). See the verdeform round below for the current state.
+
+---
+
+## Verdeform round (QT-OF2312380)
+
+Changes: verdeform labels extended (legal-entity vendor name, fractional quantities, shipping,
+tax, the $79 "Moss Duo" upsell as a forbidden line); buyer identities in the prompt and a
+`vendor_is_buyer` guard (D29/D30); tax ID chosen by printed label from `registration_ids` (D32);
+an evidence-first schema field (D33, see below). Labels `582e12d1a29c`.
+
+### Verdeform: 10 runs
+
+File: [`results/verdeform-stability-10x.json`](results/verdeform-stability-10x.json) · 2026-10-29
+
+| | Before (latest QT-4120 run) | After |
+|---|---|---|
+| vendor (legal entity) | 0/3: "Lio Technologies, Inc." (the buyer), **silently** | 2/10 "Bloomcraft Interiors, Inc."; 8/10 "verdeform" (right company, brand name); 0/10 the buyer |
+| vat_id | 0/3 | 1/10; otherwise empty and listed as missing |
+| department, lines (fractional qty), charges, tax, reconciles | not scored | 10/10 each |
+| flagged (no silent errors) | not scored | 10/10 |
+| commodity | 0/3 | 7/10 |
+| retries | 0 | 9/10 (first pass names the buyer as vendor; the guard catches it) |
+| latency | p50 5.6 s | p50 14.3 s, max 20.2 s |
+
+### Regression: all five quotes, 3 runs
+
+File: [`results/after-verdeform-pdf-gpt-4o-mini.json`](results/after-verdeform-pdf-gpt-4o-mini.json)
+· base `8645bfc` + working tree
+
+| Quote | ok | vendor | vat_id | grand_total | lines | commodity | department | line_detail | charges | tax | reconciles | flagged |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| QT-4120-Cust-14918 (Greenmantle) | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 |
+| QT-OF2312380-Cust-57692 (verdeform) | 3/3 | 0/3 | 0/3 | 3/3 | 3/3 | 0/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 |
+| QuoteA0492_23 (Hollis) | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 0/3 | - | - | - | - | - | - |
+| Quote_1 MacBook Air (Apple) | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 0/3 | - | - | - | - | - | - |
+| Hartwell grinding machine | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 0/3 | - | - | - | - | - | - |
+| **All runs** | **100%** | **80%** | **80%** | **100%** | **100%** | **20%** | **100%** | **100%** | **100%** | **100%** | **100%** | **100%** |
+
+Latency p50 7.9 s, max 20.9 s; 3 retries in 15 runs (all verdeform). QT-4120 unchanged at 3/3.
+Commodity dropped again (MacBook 29 Hardware → 30 IT Services; Hollis and Hartwell mostly no
+group): it varies with any prompt change, which is the Task 3 problem.
+
+### Diagnosis (probes, no code change)
+
+1. *Can the model read the footer?* Yes: asked only "who issued this, and what's the EIN?" on
+   the same 150 DPI page image, it answered "Bloomcraft Interiors, Inc., EIN 27-1073640" (also
+   with zoomed, contrast-enhanced header/footer crops at ~3× the tokens).
+2. *Is the 2,000-group commodity list crowding it out?* No: with a 4-group list the first pass
+   still named the buyer as vendor, 3/3.
+3. *Does reading first help (evidence field before `vendor`)?* Not reliably: 3/3 in the first
+   probe, then 0/8 in the service and 1/10 in the eval. The evidence field copies the text layer
+   (plus the image-only sender line) and stops before the footer, and even when it contains
+   "Bloomcraft Interiors, Inc." the model still sets vendor = the buyer.
+4. **Conclusion:** in the large extraction call, gpt-4o-mini doesn't attend to image-only footer
+   text. A focused question on the same image works. Proposed next step: a separate, parallel
+   issuer call (DECISIONS D35, open).
+
+Open:
+- **verdeform tax ID and legal name** (D35).
+- **Commodity (20–47%, unstable):** Task 3 redesigns classification (shortlist, then pick).
 
 ## Model comparison
 

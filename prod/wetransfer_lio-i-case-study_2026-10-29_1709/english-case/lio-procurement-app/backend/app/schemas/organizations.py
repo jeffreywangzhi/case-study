@@ -11,6 +11,15 @@ MemberRole = Literal["admin", "buyer", "requester"]
 ConfigurableRequiredField = Literal["vat_id", "department"]
 
 
+class BuyerIdentity(BaseModel):
+    """A legal name (and its addresses) that vendor quotes may be addressed to."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    name: str = Field(min_length=1)
+    addresses: list[str] = Field(default_factory=list)
+
+
 class OrganizationSettings(BaseModel):
     """Per-organization configuration. Stored as JSONB, validated here.
 
@@ -21,6 +30,9 @@ class OrganizationSettings(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     required_fields: list[ConfigurableRequiredField] = Field(default_factory=list)
+    # Names/addresses this organization buys under, besides its own name. Extraction
+    # tells the model these are the buyer, and flags a "vendor" that matches one.
+    buyer_identities: list[BuyerIdentity] = Field(default_factory=list)
 
 
 class OrganizationCreate(BaseModel):

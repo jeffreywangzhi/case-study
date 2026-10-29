@@ -23,12 +23,23 @@ class ExtractionRequest(BaseModel):
 LineType = Literal["item", "shipping", "fee", "discount", "alternative", "optional", "heading"]
 
 
+class QuoteRegistrationId(BaseModel):
+    label: str = Field(description="The label as printed, e.g. 'EIN', 'Tax ID', "
+                       "'California Corp. No.', 'Seller's Permit', 'LLC No.'.")
+    value: str = Field(description="The number exactly as printed.")
+
+
 class QuoteVendor(BaseModel):
-    name: str | None = Field(description="Company that issued the quote (letterhead, logo, "
-                             "sender line, footer with bank/tax details, 'Prepared by').")
+    name: str | None = Field(description="Legal name of the company that issued the quote "
+                             "(letterhead, logo, sender line, footer with bank/tax details, "
+                             "'Prepared by'). Prefer the legal entity (e.g. 'X, Inc.') over a "
+                             "brand name when both are shown.")
     address: str | None
-    tax_id: str | None = Field(description="The vendor's own EIN/TIN/VAT ID exactly as printed. "
-                               "null if the document doesn't show one. Never the recipient's.")
+    registration_ids: list[QuoteRegistrationId] = Field(description=(
+        "Every tax or registration number printed for the vendor, each with its printed label "
+        "(tax IDs, corporation/LLC numbers, permits). Not bank details, not the recipient's "
+        "customer number. Empty if none."
+    ))
 
 
 class QuoteRecipient(BaseModel):
@@ -73,6 +84,14 @@ class QuoteTotalRow(BaseModel):
 
 
 class QuoteExtraction(BaseModel):
+    # Generated first on purpose: Structured Outputs fills fields in schema order, so the model
+    # reads the letterhead/footer before it commits to who the vendor is (DECISIONS D33).
+    issuer_evidence: str = Field(description=(
+        "FIRST, transcribe exactly every line of the letterhead, the sender line above the "
+        "address window, and the page footer(s), including small or light-gray print visible "
+        "only in the page images. This is where the issuing company's legal name and "
+        "tax/registration numbers are."
+    ))
     title: str = Field(description="2-5 word summary of what is being purchased.")
     vendor: QuoteVendor
     recipient: QuoteRecipient

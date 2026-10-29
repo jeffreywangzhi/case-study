@@ -27,13 +27,30 @@
     },
     {
       "file": "QT-OF2312380-Cust-57692.pdf",
-      "vendor_aliases": ["verdeform", "Bloomcraft Interiors"],
+      "vendor_aliases": ["Bloomcraft Interiors"],
+      "vendor_note": "Legal entity behind the 'verdeform' brand; vendor name = legal entity (DECISIONS D31).",
       "vat_id": "27-1073640",
       "grand_total": 1413.10,
       "required_line_totals": [716.56, 120.49, 350.00],
-      "forbidden_line_totals": [],
+      "forbidden_line_totals": [79.00],
       "commodity_group_ids": [15],
-      "traps": "vendor header and footer (incl. EIN) exist only in the page image, fractional quantities"
+      "traps": "vendor header and footer (incl. EIN) exist only in the page image, in light gray; the readable text starts with the recipient's address; footer prints California Corp. No. next to the EIN; fractional quantities; 'Moss Duo' $79 upsell in the body text",
+      "extended": {
+        "department": null,
+        "lines": [
+          {"total": 716.56, "quantity": 13.78, "unit_price": 52.00,
+           "note": "verdeform CUSTOM module, forest & ball moss, 13.78 sq ft."},
+          {"total": 120.49, "quantity": 15.75, "unit_price": 7.65,
+           "note": "Edge greening, 15.75 lin ft."},
+          {"total": 350.00, "quantity": 1, "unit_price": 350.00,
+           "note": "Acrylic logo with standoffs."}
+        ],
+        "items_subtotal": 1187.05,
+        "shipping": 113.85,
+        "fees": 0,
+        "tax": 112.20,
+        "tax_note": "8.625% on items (102.38) + 8.625% on shipping (9.82). Items 1187.05 + shipping 113.85 + tax 112.20 = grand total 1413.10."
+      }
     },
     {
       "file": "QuoteA0492_23.Pdf",

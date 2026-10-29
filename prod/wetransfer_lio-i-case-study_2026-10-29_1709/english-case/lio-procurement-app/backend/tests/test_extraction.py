@@ -1,8 +1,10 @@
 """Extraction pipeline tests: deterministic checks + the /extraction/pdf endpoint.
 
-The model call is stubbed, so these run offline. Fixtures mirror Acme's quote
+The model call is stubbed, so these run offline. Fixtures mirror Acme's quotes:
 QT-4120 (Greenmantle Moss Studio), where the original pipeline swapped vendor
-and customer, read a position number as a quantity, and counted an alternative.
+and customer, read a position number as a quantity, and counted an alternative;
+and QT-OF2312380 (verdeform), where the model swapped vendor and recipient
+entirely and picked a corporation number as the tax ID.
 """
 import io
 
@@ -10,8 +12,27 @@ from pypdf import PdfWriter
 
 from app.schemas.extraction import QuoteExtraction
 from app.services import extraction as extraction_service
-from app.services.quote_checks import build_extraction, normalize_tax_id, same_company
+from app.services.quote_checks import (
+    BuyerContext,
+    address_key,
+    build_extraction,
+    normalize_tax_id,
+    same_company,
+)
 from tests.test_smoke import _auth, client
+
+# Acme's buyer identities as seeded (app.seed.ACME_BUYER_IDENTITIES).
+ACME = BuyerContext(
+    names=("Acme Corp", "Lio Technologies, Inc."),
+    addresses=("1160 Folsom Street, Suite 300, San Francisco, CA 94103",
+               "2250 Chestnut Street, Suite 210, San Francisco, CA 94123"),
+)
+
+
+def _vendor(name, address=None, *registration_ids) -> dict:
+    return {"name": name, "address": address,
+            "registration_ids": [{"label": label, "value": value}
+                                 for label, value in registration_ids]}
 
 
 def _line(position, line_type, description, quantity=None, unit=None, list_unit_price=None,
@@ -26,10 +47,13 @@ def _line(position, line_type, description, quantity=None, unit=None, list_unit_
 def qt4120(**overrides) -> QuoteExtraction:
     """A correct transcription of QT-4120; override pieces to simulate model mistakes."""
     quote = {
+        "issuer_evidence": ("Greenmantle Moss Studio, LLC | 1450 Industrial Blvd | West "
+                            "Sacramento, CA 95691 ... EIN: 85-3252405"),
         "title": "Moss art panel with logo",
-        "vendor": {"name": "Greenmantle Moss Studio, LLC",
-                   "address": "1450 Industrial Blvd, West Sacramento, CA 95691",
-                   "tax_id": "85-3252405"},
+        "vendor": _vendor("Greenmantle Moss Studio, LLC",
+                          "1450 Industrial Blvd, West Sacramento, CA 95691",
+                          ("LLC No.", "202013769990"), ("EIN", "85-3252405"),
+                          ("Seller's Permit", "102-7365501")),
         "recipient": {"name": "Lio Technologies, Inc.",
                       "address": "1160 Folsom Street, Suite 300, San Francisco, CA 94103"},
         "department": None,
@@ -67,7 +91,7 @@ def _codes(warnings) -> set[str]:
 # ---------------------------------------------------------------------------
 
 def test_correct_transcription_is_verified():
-    data, warnings = build_extraction(qt4120(), organization_names=["Acme Corp"])
+    data, warnings = build_extraction(qt4120(), buyer=ACME)
 
     assert warnings == []
     assert data.vendor_name == "Greenmantle Moss Studio, LLC"
@@ -195,15 +219,61 @@ def test_alternative_counted_as_item_breaks_the_subtotal():
 
 
 def test_vendor_matching_the_recipient_is_flagged():
-    quote = qt4120(vendor={"name": "Lio Technologies, Inc.", "address": None,
-                           "tax_id": "85-3252405"})
-    _, warnings = build_extraction(quote)
+    quote = qt4120(vendor=_vendor("Lio Technologies, Inc.", None, ("EIN", "85-3252405")))
+    _, warnings = build_extraction(quote)  # no buyer context configured
     assert "vendor_is_recipient" in _codes(warnings)
 
-    # ...and so is the buying organization's own name, even if the recipient differs.
-    quote = qt4120(vendor={"name": "ACME Corp", "address": None, "tax_id": None})
-    _, warnings = build_extraction(quote, organization_names=["Acme Corp"])
-    assert "vendor_is_recipient" in _codes(warnings)
+
+def test_full_vendor_recipient_swap_is_caught_by_buyer_identity():
+    # verdeform: the model returned vendor = Lio, recipient = verdeform. Vendor and recipient
+    # differ, so only knowing who the buyer is can catch it.
+    swapped = qt4120(
+        vendor=_vendor("Lio Technologies, Inc.",
+                       "1160 Folsom Street, Suite 300, San Francisco, CA 94103"),
+        recipient={"name": "verdeform", "address": "2200 E Colorado Blvd, Pasadena, CA 91107"},
+    )
+    _, warnings = build_extraction(swapped)
+    assert "vendor_is_buyer" not in _codes(warnings)  # without buyer identities: silent
+
+    _, warnings = build_extraction(swapped, buyer=ACME)
+    assert [w.code for w in warnings] == ["vendor_is_buyer"]
+    assert "'Lio Technologies, Inc.' is the buyer" in warnings[0].message
+
+
+def test_vendor_at_a_buyer_address_is_caught_even_under_another_name():
+    quote = qt4120(vendor=_vendor("Lio Tech", "1160 Folsom St., Ste 300, San Francisco"))
+    _, warnings = build_extraction(quote, buyer=BuyerContext(
+        names=("Acme Corp",), addresses=ACME.addresses))
+    assert "vendor_is_buyer" in _codes(warnings)
+    assert address_key("2200 E Colorado Blvd, Pasadena") == "2200 colorado"
+
+
+def test_tax_id_is_picked_by_its_printed_label():
+    # verdeform footer: "California Corp. No. C4185275 | EIN: 27-1073640"
+    quote = qt4120(vendor=_vendor("Bloomcraft Interiors, Inc.", None,
+                                  ("California Corp. No.", "C4185275"), ("EIN", "27-1073640")))
+    data, warnings = build_extraction(quote, buyer=ACME)
+    assert data.vat_id == "27-1073640" and warnings == []
+
+    # Hollis prints "EIN: 94 1985704"; Apple prints "Tax ID: 94-2404110".
+    for label, value, expected in [("EIN", "94 1985704", "94-1985704"),
+                                   ("Tax ID", "94-2404110", "94-2404110")]:
+        data, _ = build_extraction(qt4120(vendor=_vendor("V", None, (label, value))))
+        assert data.vat_id == expected
+
+
+def test_registration_numbers_without_a_tax_id_label_are_not_used():
+    quote = qt4120(vendor=_vendor("Bloomcraft Interiors, Inc.", None,
+                                  ("California Corp. No.", "C4185275")))
+    data, warnings = build_extraction(quote)
+    assert data.vat_id == ""
+    assert [w.code for w in warnings] == ["tax_id_unclear"]
+    assert "California Corp. No.: C4185275" in warnings[0].message
+
+
+def test_tax_id_labelled_ein_but_not_nine_digits_is_flagged():
+    data, warnings = build_extraction(qt4120(vendor=_vendor("V", None, ("EIN", "C4185275"))))
+    assert "tax_id_unclear" in _codes(warnings)
 
 
 def test_department_never_holds_a_company_name():
@@ -221,8 +291,7 @@ def test_tax_id_normalization_and_missing_tax_id():
     assert normalize_tax_id("EIN: 941985704") == "94-1985704"
     assert normalize_tax_id(None) == ""
     # A quote without a tax ID is valid, not a crash (Hartwell).
-    data, warnings = build_extraction(qt4120(vendor={"name": "Hartwell Industrial Tools, Inc.",
-                                                     "address": None, "tax_id": None}))
+    data, warnings = build_extraction(qt4120(vendor=_vendor("Hartwell Industrial Tools, Inc.")))
     assert data.vat_id == "" and warnings == []
 
 
@@ -276,8 +345,12 @@ def test_extract_pdf_retries_once_with_the_failed_checks(monkeypatch):
     assert len(calls) == 2
     # The retry tells the model exactly which check failed.
     assert "but the line total is $715.26" in calls[1][-1]["content"]
-    # The first call carried the rendered page as an image.
+    # The first call carried the rendered page as an image, and told the model who the
+    # buyer is (Acme's seeded buyer identities).
     assert any(part["type"] == "image_url" for part in calls[0][1]["content"])
+    prompt_text = calls[0][1]["content"][0]["text"]
+    assert "- name: Lio Technologies, Inc." in prompt_text
+    assert "- address: 2250 Chestnut Street" in prompt_text
 
     data = body["data"]
     assert data["vendorName"] == "Greenmantle Moss Studio, LLC"
@@ -290,7 +363,8 @@ def test_extract_pdf_retries_once_with_the_failed_checks(monkeypatch):
 
 def test_extract_pdf_reports_needs_review_when_the_retry_fails_too(monkeypatch):
     monkeypatch.setattr(extraction_service.settings, "openai_api_key", "test-key")
-    swapped = qt4120(vendor={"name": "Lio Technologies, Inc.", "address": None, "tax_id": None})
+    swapped = qt4120(vendor=_vendor("Lio Technologies, Inc."),
+                     recipient={"name": "verdeform", "address": None})
     monkeypatch.setattr(extraction_service, "_call_model", lambda messages: swapped)
 
     body = client.post(
@@ -299,8 +373,10 @@ def test_extract_pdf_reports_needs_review_when_the_retry_fails_too(monkeypatch):
         headers=_auth(_requester_token()),
     ).json()
     assert body["success"] is True
+    # Warn only, never auto-swap (DECISIONS D30): the vendor stays as extracted.
     assert body["status"] == "needs_review"
-    assert [w["code"] for w in body["warnings"]] == ["vendor_is_recipient"]
+    assert [w["code"] for w in body["warnings"]] == ["vendor_is_buyer"]
+    assert body["data"]["vendorName"] == "Lio Technologies, Inc."
 
 
 def test_extract_pdf_checks_file_content_not_mime_type():
@@ -350,3 +426,39 @@ def test_request_stores_cost_breakdown_and_logs_changes():
     assert set(changed) == {"shipping_amount", "tax_amount", "total_cost"}
 
     client.delete(f"/requests/{created['id']}", headers=_auth(token))
+
+
+# ---------------------------------------------------------------------------
+# Buyer identities in organization settings (D29)
+# ---------------------------------------------------------------------------
+
+def _admin_token() -> str:
+    return client.post(
+        "/auth/signin", json={"email": "admin@acme.com", "password": "demo1234"}
+    ).json()["access_token"]
+
+
+def test_acme_is_seeded_with_its_buyer_identities():
+    settings = client.get("/organizations/me/settings", headers=_auth(_admin_token())).json()
+    assert [i["name"] for i in settings["buyer_identities"]] == ["Lio Technologies, Inc."]
+    assert len(settings["buyer_identities"][0]["addresses"]) == 2
+
+
+def test_settings_patch_only_changes_what_is_sent():
+    token = _admin_token()
+    before = client.get("/organizations/me/settings", headers=_auth(token)).json()
+
+    # Toggling required fields (what the settings tab sends) must not wipe buyer identities.
+    r = client.patch("/organizations/me/settings", json={"required_fields": ["department"]},
+                     headers=_auth(token))
+    assert r.status_code == 200
+    assert r.json()["buyer_identities"] == before["buyer_identities"]
+    assert r.json()["required_fields"] == ["department"]
+
+    # Identities are validated at the edge.
+    r = client.patch("/organizations/me/settings", json={"buyer_identities": [{"name": ""}]},
+                     headers=_auth(token))
+    assert r.status_code == 422
+
+    client.patch("/organizations/me/settings", json=before, headers=_auth(token))
+    assert client.get("/organizations/me/settings", headers=_auth(token)).json() == before

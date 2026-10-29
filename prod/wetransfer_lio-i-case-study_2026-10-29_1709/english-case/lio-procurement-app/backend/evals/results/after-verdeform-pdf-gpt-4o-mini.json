@@ -1,0 +1,1070 @@
+{
+  "meta": {
+    "tag": "after-verdeform-pdf-gpt-4o-mini",
+    "pipeline": "pdf",
+    "model": "gpt-4o-mini",
+    "runs_per_quote": 3,
+    "started_at": "2026-10-29T20:09:28+00:00",
+    "git_commit": "8645bfc",
+    "git_dirty": true,
+    "labels_sha256": "582e12d1a29c",
+    "summary": {
+      "overall_pct": {
+        "ok": 100,
+        "vendor": 80,
+        "vat_id": 80,
+        "grand_total": 100,
+        "lines": 100,
+        "commodity": 20,
+        "department": 100,
+        "line_detail": 100,
+        "charges": 100,
+        "tax": 100,
+        "reconciles": 100,
+        "flagged": 100
+      },
+      "per_quote": {
+        "QT-4120-Cust-14918.pdf": {
+          "runs": 3,
+          "ok": "3/3",
+          "vendor": "3/3",
+          "vat_id": "3/3",
+          "grand_total": "3/3",
+          "lines": "3/3",
+          "commodity": "3/3",
+          "department": "3/3",
+          "line_detail": "3/3",
+          "charges": "3/3",
+          "tax": "3/3",
+          "reconciles": "3/3",
+          "flagged": "3/3"
+        },
+        "QT-OF2312380-Cust-57692.pdf": {
+          "runs": 3,
+          "ok": "3/3",
+          "vendor": "0/3",
+          "vat_id": "0/3",
+          "grand_total": "3/3",
+          "lines": "3/3",
+          "commodity": "0/3",
+          "department": "3/3",
+          "line_detail": "3/3",
+          "charges": "3/3",
+          "tax": "3/3",
+          "reconciles": "3/3",
+          "flagged": "3/3"
+        },
+        "QuoteA0492_23.Pdf": {
+          "runs": 3,
+          "ok": "3/3",
+          "vendor": "3/3",
+          "vat_id": "3/3",
+          "grand_total": "3/3",
+          "lines": "3/3",
+          "commodity": "0/3",
+          "department": null,
+          "line_detail": null,
+          "charges": null,
+          "tax": null,
+          "reconciles": null,
+          "flagged": null
+        },
+        "Quote_1__Lio_Technologies_Inc__1x_MBA___2214703918.pdf": {
+          "runs": 3,
+          "ok": "3/3",
+          "vendor": "3/3",
+          "vat_id": "3/3",
+          "grand_total": "3/3",
+          "lines": "3/3",
+          "commodity": "0/3",
+          "department": null,
+          "line_detail": null,
+          "charges": null,
+          "tax": null,
+          "reconciles": null,
+          "flagged": null
+        },
+        "Quote_Hartwell_Cleveland_ACME_Grinding_Machine.pdf": {
+          "runs": 3,
+          "ok": "3/3",
+          "vendor": "3/3",
+          "vat_id": "3/3",
+          "grand_total": "3/3",
+          "lines": "3/3",
+          "commodity": "0/3",
+          "department": null,
+          "line_detail": null,
+          "charges": null,
+          "tax": null,
+          "reconciles": null,
+          "flagged": null
+        }
+      },
+      "latency_s": {
+        "p50": 7.9,
+        "max": 20.9
+      }
+    }
+  },
+  "results": [
+    {
+      "file": "QT-4120-Cust-14918.pdf",
+      "run": 1,
+      "seconds": 7.4,
+      "scores": {
+        "ok": true,
+        "vendor": true,
+        "vat_id": true,
+        "grand_total": true,
+        "lines": true,
+        "commodity": true,
+        "department": true,
+        "line_detail": true,
+        "charges": true,
+        "tax": true,
+        "reconciles": true,
+        "flagged": true
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Moss Art Panels and Logo Integration",
+          "vendorName": "Greenmantle Moss Studio, LLC",
+          "vatId": "85-3252405",
+          "department": "",
+          "orderLines": [
+            {
+              "positionDescription": "Moss Art Panel, Mixed Moss 63 x 31.5 in (list $894.08, -20%)",
+              "unitPrice": 715.26,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 715.26,
+              "lineType": "item"
+            },
+            {
+              "positionDescription": "Logo integration \"asklio\" horizontal",
+              "unitPrice": 622.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 622.0,
+              "lineType": "item"
+            }
+          ],
+          "excludedLines": [
+            {
+              "positionDescription": "Logo integration \"asklio\" vertical",
+              "unitPrice": 430.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 430.0,
+              "lineType": "alternative"
+            }
+          ],
+          "shippingAmount": 215.0,
+          "feesAmount": 0.0,
+          "taxAmount": 133.88,
+          "totalCost": 1686.14,
+          "commodityGroupId": 15,
+          "commodityGroupName": "Office Equipment"
+        },
+        "error": null,
+        "missingFields": null,
+        "warnings": [],
+        "status": "verified"
+      }
+    },
+    {
+      "file": "QT-4120-Cust-14918.pdf",
+      "run": 2,
+      "seconds": 7.5,
+      "scores": {
+        "ok": true,
+        "vendor": true,
+        "vat_id": true,
+        "grand_total": true,
+        "lines": true,
+        "commodity": true,
+        "department": true,
+        "line_detail": true,
+        "charges": true,
+        "tax": true,
+        "reconciles": true,
+        "flagged": true
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Moss Art Panels and Logo Integration",
+          "vendorName": "Greenmantle Moss Studio, LLC",
+          "vatId": "85-3252405",
+          "department": "",
+          "orderLines": [
+            {
+              "positionDescription": "Moss Art Panel, Mixed Moss 63 x 31.5 in (list $894.08, -20%)",
+              "unitPrice": 715.26,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 715.26,
+              "lineType": "item"
+            },
+            {
+              "positionDescription": "Logo integration \"asklio\" horizontal",
+              "unitPrice": 622.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 622.0,
+              "lineType": "item"
+            }
+          ],
+          "excludedLines": [
+            {
+              "positionDescription": "Logo integration \"asklio\" vertical",
+              "unitPrice": 430.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 430.0,
+              "lineType": "alternative"
+            }
+          ],
+          "shippingAmount": 215.0,
+          "feesAmount": 0.0,
+          "taxAmount": 133.88,
+          "totalCost": 1686.14,
+          "commodityGroupId": 15,
+          "commodityGroupName": "Office Equipment"
+        },
+        "error": null,
+        "missingFields": null,
+        "warnings": [],
+        "status": "verified"
+      }
+    },
+    {
+      "file": "QT-4120-Cust-14918.pdf",
+      "run": 3,
+      "seconds": 7.9,
+      "scores": {
+        "ok": true,
+        "vendor": true,
+        "vat_id": true,
+        "grand_total": true,
+        "lines": true,
+        "commodity": true,
+        "department": true,
+        "line_detail": true,
+        "charges": true,
+        "tax": true,
+        "reconciles": true,
+        "flagged": true
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Moss Art Panels and Logo Integration",
+          "vendorName": "Greenmantle Moss Studio, LLC",
+          "vatId": "85-3252405",
+          "department": "",
+          "orderLines": [
+            {
+              "positionDescription": "Moss Art Panel, Mixed Moss 63 x 31.5 in (list $894.08, -20%)",
+              "unitPrice": 715.26,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 715.26,
+              "lineType": "item"
+            },
+            {
+              "positionDescription": "Logo integration \"asklio\" horizontal",
+              "unitPrice": 622.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 622.0,
+              "lineType": "item"
+            }
+          ],
+          "excludedLines": [
+            {
+              "positionDescription": "Logo integration \"asklio\" vertical",
+              "unitPrice": 430.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 430.0,
+              "lineType": "alternative"
+            }
+          ],
+          "shippingAmount": 215.0,
+          "feesAmount": 0.0,
+          "taxAmount": 133.88,
+          "totalCost": 1686.14,
+          "commodityGroupId": 15,
+          "commodityGroupName": "Office Equipment"
+        },
+        "error": null,
+        "missingFields": null,
+        "warnings": [],
+        "status": "verified"
+      }
+    },
+    {
+      "file": "QT-OF2312380-Cust-57692.pdf",
+      "run": 1,
+      "seconds": 15.2,
+      "scores": {
+        "ok": true,
+        "vendor": false,
+        "vat_id": false,
+        "grand_total": true,
+        "lines": true,
+        "commodity": false,
+        "department": true,
+        "line_detail": true,
+        "charges": true,
+        "tax": true,
+        "reconciles": true,
+        "flagged": true
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Custom Moss Products",
+          "vendorName": "verdeform",
+          "vatId": "",
+          "department": "",
+          "orderLines": [
+            {
+              "positionDescription": "verdeform CUSTOM - sq ft Module - forest & ball moss variant (w x h) 63 x 31.5 in",
+              "unitPrice": 52.0,
+              "amount": 13.78,
+              "unit": "sq ft",
+              "totalPrice": 716.56,
+              "lineType": "item"
+            },
+            {
+              "positionDescription": "verdeform CUSTOM - edge greening forest moss per lin ft (perim.) 63 x 31.5 in",
+              "unitPrice": 7.65,
+              "amount": 15.75,
+              "unit": "lin ft",
+              "totalPrice": 120.49,
+              "lineType": "item"
+            },
+            {
+              "positionDescription": "Logo acrylic white 3/16 in \"ask Lio\" length 31.5 in with standoffs",
+              "unitPrice": 350.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 350.0,
+              "lineType": "item"
+            }
+          ],
+          "excludedLines": [],
+          "shippingAmount": 113.85,
+          "feesAmount": 0.0,
+          "taxAmount": 112.2,
+          "totalCost": 1413.1,
+          "commodityGroupId": 9,
+          "commodityGroupName": "Miscellaneous Services"
+        },
+        "error": null,
+        "missingFields": [
+          "Tax ID"
+        ],
+        "warnings": [
+          {
+            "code": "tax_id_unclear",
+            "field": "vatId",
+            "message": "The vendor prints Customer No.: 57692, but none is labelled as a tax ID (EIN/TIN/VAT). Tax ID left empty."
+          }
+        ],
+        "status": "needs_review"
+      }
+    },
+    {
+      "file": "QT-OF2312380-Cust-57692.pdf",
+      "run": 2,
+      "seconds": 13.0,
+      "scores": {
+        "ok": true,
+        "vendor": false,
+        "vat_id": false,
+        "grand_total": true,
+        "lines": true,
+        "commodity": false,
+        "department": true,
+        "line_detail": true,
+        "charges": true,
+        "tax": true,
+        "reconciles": true,
+        "flagged": true
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Custom Moss Products",
+          "vendorName": "verdeform",
+          "vatId": "",
+          "department": "",
+          "orderLines": [
+            {
+              "positionDescription": "verdeform CUSTOM - sq ft Module - forest & ball moss variant (w x h) 63 x 31.5 in",
+              "unitPrice": 52.0,
+              "amount": 13.78,
+              "unit": "sq ft",
+              "totalPrice": 716.56,
+              "lineType": "item"
+            },
+            {
+              "positionDescription": "verdeform CUSTOM - edge greening forest moss per lin ft (perim.) 63 x 31.5 in",
+              "unitPrice": 7.65,
+              "amount": 15.75,
+              "unit": "lin ft",
+              "totalPrice": 120.49,
+              "lineType": "item"
+            },
+            {
+              "positionDescription": "Logo acrylic white 3/16 in \"ask Lio\" length 31.5 in with standoffs",
+              "unitPrice": 350.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 350.0,
+              "lineType": "item"
+            }
+          ],
+          "excludedLines": [],
+          "shippingAmount": 113.85,
+          "feesAmount": 0.0,
+          "taxAmount": 112.2,
+          "totalCost": 1413.1,
+          "commodityGroupId": 9,
+          "commodityGroupName": "Miscellaneous Services"
+        },
+        "error": null,
+        "missingFields": [
+          "Tax ID"
+        ],
+        "warnings": [],
+        "status": "verified"
+      }
+    },
+    {
+      "file": "QT-OF2312380-Cust-57692.pdf",
+      "run": 3,
+      "seconds": 20.9,
+      "scores": {
+        "ok": true,
+        "vendor": false,
+        "vat_id": false,
+        "grand_total": true,
+        "lines": true,
+        "commodity": false,
+        "department": true,
+        "line_detail": true,
+        "charges": true,
+        "tax": true,
+        "reconciles": true,
+        "flagged": true
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Custom Moss Products",
+          "vendorName": "verdeform",
+          "vatId": "",
+          "department": "",
+          "orderLines": [
+            {
+              "positionDescription": "verdeform CUSTOM - sq ft Module - forest & ball moss variant (w x h) 63 x 31.5 in",
+              "unitPrice": 52.0,
+              "amount": 13.78,
+              "unit": "sq ft",
+              "totalPrice": 716.56,
+              "lineType": "item"
+            },
+            {
+              "positionDescription": "verdeform CUSTOM - edge greening forest moss per lin ft (perim.) 63 x 31.5 in",
+              "unitPrice": 7.65,
+              "amount": 15.75,
+              "unit": "lin ft",
+              "totalPrice": 120.49,
+              "lineType": "item"
+            },
+            {
+              "positionDescription": "Logo acrylic white 3/16 in \"ask Lio\" length 31.5 in with standoffs",
+              "unitPrice": 350.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 350.0,
+              "lineType": "item"
+            }
+          ],
+          "excludedLines": [],
+          "shippingAmount": 113.85,
+          "feesAmount": 0.0,
+          "taxAmount": 112.2,
+          "totalCost": 1413.1,
+          "commodityGroupId": 9,
+          "commodityGroupName": "Miscellaneous Services"
+        },
+        "error": null,
+        "missingFields": [
+          "Tax ID"
+        ],
+        "warnings": [],
+        "status": "verified"
+      }
+    },
+    {
+      "file": "QuoteA0492_23.Pdf",
+      "run": 1,
+      "seconds": 8.0,
+      "scores": {
+        "ok": true,
+        "vendor": true,
+        "vat_id": true,
+        "grand_total": true,
+        "lines": true,
+        "commodity": false,
+        "department": null,
+        "line_detail": null,
+        "charges": null,
+        "tax": null,
+        "reconciles": null,
+        "flagged": null
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Moss Art Panel",
+          "vendorName": "Hollis Greenscapes",
+          "vatId": "94-1985704",
+          "department": "",
+          "orderLines": [
+            {
+              "positionDescription": "Moss panel \"70:30\" with \"askLio\" lettering",
+              "unitPrice": 1560.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 1560.0,
+              "lineType": "item"
+            },
+            {
+              "positionDescription": "Transport, packing and shiping. Curbside delivery, without installation. Exact delivery costs will be confirmed upon order.",
+              "unitPrice": 320.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 320.0,
+              "lineType": "item"
+            }
+          ],
+          "excludedLines": [
+            {
+              "positionDescription": "As previous item, but ball moss only.",
+              "unitPrice": 2090.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 2090.0,
+              "lineType": "alternative"
+            },
+            {
+              "positionDescription": "As item 1.1, but forest moss throughout; instead of the blue element of the logo, ball moss shaped into the \"fin shape\" of the logo. Lettering as described in item 1.1.",
+              "unitPrice": 1830.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 1830.0,
+              "lineType": "alternative"
+            }
+          ],
+          "shippingAmount": 0.0,
+          "feesAmount": 0.0,
+          "taxAmount": 162.15,
+          "totalCost": 2042.15,
+          "commodityGroupId": null,
+          "commodityGroupName": null
+        },
+        "error": null,
+        "missingFields": [
+          "Commodity Group"
+        ],
+        "warnings": [],
+        "status": "verified"
+      }
+    },
+    {
+      "file": "QuoteA0492_23.Pdf",
+      "run": 2,
+      "seconds": 7.2,
+      "scores": {
+        "ok": true,
+        "vendor": true,
+        "vat_id": true,
+        "grand_total": true,
+        "lines": true,
+        "commodity": false,
+        "department": null,
+        "line_detail": null,
+        "charges": null,
+        "tax": null,
+        "reconciles": null,
+        "flagged": null
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Moss Art Panel",
+          "vendorName": "Hollis Greenscapes",
+          "vatId": "94-1985704",
+          "department": "",
+          "orderLines": [
+            {
+              "positionDescription": "Moss panel \"70:30\" with \"askLio\" lettering",
+              "unitPrice": 1560.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 1560.0,
+              "lineType": "item"
+            },
+            {
+              "positionDescription": "Transport, packing and shiping. Curbside delivery, without installation. Exact delivery costs will be confirmed upon order.",
+              "unitPrice": 320.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 320.0,
+              "lineType": "item"
+            }
+          ],
+          "excludedLines": [
+            {
+              "positionDescription": "As previous item, but ball moss only.",
+              "unitPrice": 2090.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 2090.0,
+              "lineType": "alternative"
+            },
+            {
+              "positionDescription": "As item 1.1, but forest moss throughout; instead of the blue element of the logo, ball moss shaped into the \"fin shape\" of the logo. Lettering as described in item 1.1.",
+              "unitPrice": 1830.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 1830.0,
+              "lineType": "alternative"
+            }
+          ],
+          "shippingAmount": 0.0,
+          "feesAmount": 0.0,
+          "taxAmount": 162.15,
+          "totalCost": 2042.15,
+          "commodityGroupId": null,
+          "commodityGroupName": null
+        },
+        "error": null,
+        "missingFields": [
+          "Commodity Group"
+        ],
+        "warnings": [],
+        "status": "verified"
+      }
+    },
+    {
+      "file": "QuoteA0492_23.Pdf",
+      "run": 3,
+      "seconds": 8.4,
+      "scores": {
+        "ok": true,
+        "vendor": true,
+        "vat_id": true,
+        "grand_total": true,
+        "lines": true,
+        "commodity": false,
+        "department": null,
+        "line_detail": null,
+        "charges": null,
+        "tax": null,
+        "reconciles": null,
+        "flagged": null
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Moss Art Panel",
+          "vendorName": "Hollis Greenscapes",
+          "vatId": "94-1985704",
+          "department": "",
+          "orderLines": [
+            {
+              "positionDescription": "Moss panel \"70:30\" with \"askLio\" lettering",
+              "unitPrice": 1560.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 1560.0,
+              "lineType": "item"
+            },
+            {
+              "positionDescription": "Transport, packing and shiping. Curbside delivery, without installation. Exact delivery costs will be confirmed upon order.",
+              "unitPrice": 320.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 320.0,
+              "lineType": "item"
+            }
+          ],
+          "excludedLines": [
+            {
+              "positionDescription": "As previous item, but ball moss only.",
+              "unitPrice": 2090.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 2090.0,
+              "lineType": "alternative"
+            },
+            {
+              "positionDescription": "As item 1.1, but forest moss throughout; instead of the blue element of the logo, ball moss shaped into the \"fin shape\" of the logo. Lettering as described in item 1.1.",
+              "unitPrice": 1830.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 1830.0,
+              "lineType": "alternative"
+            }
+          ],
+          "shippingAmount": 0.0,
+          "feesAmount": 0.0,
+          "taxAmount": 162.15,
+          "totalCost": 2042.15,
+          "commodityGroupId": null,
+          "commodityGroupName": null
+        },
+        "error": null,
+        "missingFields": [
+          "Commodity Group"
+        ],
+        "warnings": [],
+        "status": "verified"
+      }
+    },
+    {
+      "file": "Quote_1__Lio_Technologies_Inc__1x_MBA___2214703918.pdf",
+      "run": 1,
+      "seconds": 7.9,
+      "scores": {
+        "ok": true,
+        "vendor": true,
+        "vat_id": true,
+        "grand_total": true,
+        "lines": true,
+        "commodity": false,
+        "department": null,
+        "line_detail": null,
+        "charges": null,
+        "tax": null,
+        "reconciles": null,
+        "flagged": null
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Apple M2 Chip MacBook Air",
+          "vendorName": "Apple Inc.",
+          "vatId": "94-2404110",
+          "department": "",
+          "orderLines": [
+            {
+              "positionDescription": "13\" MacBook Air: Apple M2 Chip - Space Gray",
+              "unitPrice": 1409.06,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 1409.06,
+              "lineType": "item"
+            }
+          ],
+          "excludedLines": [],
+          "shippingAmount": 0.0,
+          "feesAmount": 4.0,
+          "taxAmount": 121.53,
+          "totalCost": 1534.59,
+          "commodityGroupId": 30,
+          "commodityGroupName": "IT Services"
+        },
+        "error": null,
+        "missingFields": null,
+        "warnings": [],
+        "status": "verified"
+      }
+    },
+    {
+      "file": "Quote_1__Lio_Technologies_Inc__1x_MBA___2214703918.pdf",
+      "run": 2,
+      "seconds": 7.5,
+      "scores": {
+        "ok": true,
+        "vendor": true,
+        "vat_id": true,
+        "grand_total": true,
+        "lines": true,
+        "commodity": false,
+        "department": null,
+        "line_detail": null,
+        "charges": null,
+        "tax": null,
+        "reconciles": null,
+        "flagged": null
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Apple M2 Chip MacBook Air",
+          "vendorName": "Apple Inc.",
+          "vatId": "94-2404110",
+          "department": "",
+          "orderLines": [
+            {
+              "positionDescription": "13\" MacBook Air: Apple M2 Chip - Space Gray",
+              "unitPrice": 1409.06,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 1409.06,
+              "lineType": "item"
+            }
+          ],
+          "excludedLines": [],
+          "shippingAmount": 0.0,
+          "feesAmount": 4.0,
+          "taxAmount": 121.53,
+          "totalCost": 1534.59,
+          "commodityGroupId": 30,
+          "commodityGroupName": "IT Services"
+        },
+        "error": null,
+        "missingFields": null,
+        "warnings": [],
+        "status": "verified"
+      }
+    },
+    {
+      "file": "Quote_1__Lio_Technologies_Inc__1x_MBA___2214703918.pdf",
+      "run": 3,
+      "seconds": 8.2,
+      "scores": {
+        "ok": true,
+        "vendor": true,
+        "vat_id": true,
+        "grand_total": true,
+        "lines": true,
+        "commodity": false,
+        "department": null,
+        "line_detail": null,
+        "charges": null,
+        "tax": null,
+        "reconciles": null,
+        "flagged": null
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Apple M2 Chip MacBook Air",
+          "vendorName": "Apple Inc.",
+          "vatId": "94-2404110",
+          "department": "",
+          "orderLines": [
+            {
+              "positionDescription": "13\" MacBook Air: Apple M2 Chip - Space Gray",
+              "unitPrice": 1409.06,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 1409.06,
+              "lineType": "item"
+            }
+          ],
+          "excludedLines": [],
+          "shippingAmount": 0.0,
+          "feesAmount": 4.0,
+          "taxAmount": 121.53,
+          "totalCost": 1534.59,
+          "commodityGroupId": 30,
+          "commodityGroupName": "IT Services"
+        },
+        "error": null,
+        "missingFields": null,
+        "warnings": [],
+        "status": "verified"
+      }
+    },
+    {
+      "file": "Quote_Hartwell_Cleveland_ACME_Grinding_Machine.pdf",
+      "run": 1,
+      "seconds": 4.4,
+      "scores": {
+        "ok": true,
+        "vendor": true,
+        "vat_id": true,
+        "grand_total": true,
+        "lines": true,
+        "commodity": false,
+        "department": null,
+        "line_detail": null,
+        "charges": null,
+        "tax": null,
+        "reconciles": null,
+        "flagged": null
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Surface grinding machine including delivery and installation",
+          "vendorName": "Hartwell Industrial Tools, Inc.",
+          "vatId": "",
+          "department": "Attn: Purchasing / Engineering",
+          "orderLines": [
+            {
+              "positionDescription": "Grinding machine HW-GS 450",
+              "unitPrice": 15000.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 15000.0,
+              "lineType": "item"
+            },
+            {
+              "positionDescription": "Delivery and installation",
+              "unitPrice": 2000.0,
+              "amount": 1.0,
+              "unit": "lump sum",
+              "totalPrice": 2000.0,
+              "lineType": "item"
+            }
+          ],
+          "excludedLines": [],
+          "shippingAmount": 0.0,
+          "feesAmount": 0.0,
+          "taxAmount": 1402.5,
+          "totalCost": 18402.5,
+          "commodityGroupId": null,
+          "commodityGroupName": null
+        },
+        "error": null,
+        "missingFields": [
+          "Tax ID",
+          "Commodity Group"
+        ],
+        "warnings": [],
+        "status": "verified"
+      }
+    },
+    {
+      "file": "Quote_Hartwell_Cleveland_ACME_Grinding_Machine.pdf",
+      "run": 2,
+      "seconds": 4.6,
+      "scores": {
+        "ok": true,
+        "vendor": true,
+        "vat_id": true,
+        "grand_total": true,
+        "lines": true,
+        "commodity": false,
+        "department": null,
+        "line_detail": null,
+        "charges": null,
+        "tax": null,
+        "reconciles": null,
+        "flagged": null
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Surface grinding machine including delivery and installation",
+          "vendorName": "Hartwell Industrial Tools, Inc.",
+          "vatId": "",
+          "department": "Attn: Purchasing / Engineering",
+          "orderLines": [
+            {
+              "positionDescription": "Grinding machine HW-GS 450",
+              "unitPrice": 15000.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 15000.0,
+              "lineType": "item"
+            },
+            {
+              "positionDescription": "Delivery and installation",
+              "unitPrice": 2000.0,
+              "amount": 1.0,
+              "unit": "lump sum",
+              "totalPrice": 2000.0,
+              "lineType": "item"
+            }
+          ],
+          "excludedLines": [],
+          "shippingAmount": 0.0,
+          "feesAmount": 0.0,
+          "taxAmount": 1402.5,
+          "totalCost": 18402.5,
+          "commodityGroupId": null,
+          "commodityGroupName": null
+        },
+        "error": null,
+        "missingFields": [
+          "Tax ID",
+          "Commodity Group"
+        ],
+        "warnings": [],
+        "status": "verified"
+      }
+    },
+    {
+      "file": "Quote_Hartwell_Cleveland_ACME_Grinding_Machine.pdf",
+      "run": 3,
+      "seconds": 4.0,
+      "scores": {
+        "ok": true,
+        "vendor": true,
+        "vat_id": true,
+        "grand_total": true,
+        "lines": true,
+        "commodity": false,
+        "department": null,
+        "line_detail": null,
+        "charges": null,
+        "tax": null,
+        "reconciles": null,
+        "flagged": null
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Surface grinding machine including delivery and installation",
+          "vendorName": "Hartwell Industrial Tools, Inc.",
+          "vatId": "",
+          "department": "Attn: Purchasing / Engineering",
+          "orderLines": [
+            {
+              "positionDescription": "Grinding machine HW-GS 450",
+              "unitPrice": 15000.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 15000.0,
+              "lineType": "item"
+            },
+            {
+              "positionDescription": "Delivery and installation",
+              "unitPrice": 2000.0,
+              "amount": 1.0,
+              "unit": "lump sum",
+              "totalPrice": 2000.0,
+              "lineType": "item"
+            }
+          ],
+          "excludedLines": [],
+          "shippingAmount": 0.0,
+          "feesAmount": 0.0,
+          "taxAmount": 1402.5,
+          "totalCost": 18402.5,
+          "commodityGroupId": 15,
+          "commodityGroupName": "Office Equipment"
+        },
+        "error": null,
+        "missingFields": [
+          "Tax ID"
+        ],
+        "warnings": [],
+        "status": "verified"
+      }
+    }
+  ]
+}

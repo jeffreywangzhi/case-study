@@ -7,6 +7,7 @@ subtotals (total = order lines + shipping + fees + tax). Every failed check
 becomes a specific warning instead of a silent "success".
 """
 import re
+from dataclasses import dataclass
 from decimal import ROUND_HALF_UP, Decimal
 
 from app.schemas.extraction import (
@@ -15,6 +16,7 @@ from app.schemas.extraction import (
     OrderLineData,
     QuoteExtraction,
     QuoteLine,
+    QuoteRegistrationId,
 )
 
 CENT = Decimal("0.01")
@@ -32,7 +34,9 @@ RETRYABLE_CODES = {
     "subtotal_mismatch",
     "total_mismatch",
     "vendor_is_recipient",
+    "vendor_is_buyer",
     "vendor_missing",
+    "tax_id_unclear",
 }
 
 TAX_LABEL = re.compile(r"\b(tax|vat|gst|hst)\b", re.IGNORECASE)
@@ -40,6 +44,12 @@ TAX_LABEL = re.compile(r"\b(tax|vat|gst|hst)\b", re.IGNORECASE)
 # the preceding item", headings like "Alternative: vertical logo").
 ALTERNATIVE_CUE = re.compile(r"\balternative\b|\(alt\.?\)|^alt\.?$", re.IGNORECASE)
 OPTIONAL_CUE = re.compile(r"\boptional\b", re.IGNORECASE)
+# Printed labels that identify a tax ID (vs. corporation numbers, permits, LLC numbers).
+US_TAX_ID_LABEL = re.compile(
+    r"\b(f?ein|tin|tax\s*(id|no\.?|number)|federal\s+tax|employer\s+identification)\b",
+    re.IGNORECASE,
+)
+TAX_ID_LABEL = re.compile(US_TAX_ID_LABEL.pattern + r"|\b(vat|ust)\b", re.IGNORECASE)
 
 _COMPANY_SUFFIXES = re.compile(
     r"\b(inc|llc|ltd|corp|corporation|co|company|gmbh|ag|lp|plc|group|holdings)\b"
@@ -84,6 +94,61 @@ def normalize_tax_id(tax_id: str | None) -> str:
     if len(digits) == 9:
         return f"{digits[:2]}-{digits[2:]}"
     return raw
+
+
+def address_key(address: str | None) -> str | None:
+    """Street number + street name: '1160 Folsom St, Suite 300' -> '1160 folsom'."""
+    match = re.search(r"\b(\d+)\s+(?:[nsew]\.?\s+)?([a-z]+)", (address or "").lower())
+    return f"{match.group(1)} {match.group(2)}" if match else None
+
+
+@dataclass(frozen=True)
+class BuyerContext:
+    """Who is buying: the organization's names and addresses (DECISIONS D29)."""
+
+    names: tuple[str, ...] = ()
+    addresses: tuple[str, ...] = ()
+
+    def matches(self, name: str | None, address: str | None) -> str | None:
+        """The buyer name/address the given party matches, if any."""
+        for buyer_name in self.names:
+            if same_company(name, buyer_name):
+                return buyer_name
+        key = address_key(address)
+        if key:
+            for buyer_address in self.addresses:
+                if address_key(buyer_address) == key:
+                    return buyer_address
+        return None
+
+
+def pick_tax_id(
+    registration_ids: list[QuoteRegistrationId], warnings: list[ExtractionWarning]
+) -> str:
+    """Choose the vendor's tax ID by its printed label, never by guesswork (DECISIONS D32).
+
+    Footers print several numbers side by side (EIN, state corporation number, seller's
+    permit); only one labelled as a tax ID qualifies.
+    """
+    labelled = [rid for rid in registration_ids if TAX_ID_LABEL.search(rid.label)]
+    if labelled:
+        chosen = labelled[0]
+        tax_id = normalize_tax_id(chosen.value)
+        if US_TAX_ID_LABEL.search(chosen.label) and len(re.sub(r"\D", "", tax_id)) != 9:
+            warnings.append(ExtractionWarning(
+                code="tax_id_unclear", field="vatId",
+                message=(f"'{chosen.label}: {chosen.value}' is labelled as a US tax ID but isn't "
+                         "9 digits. Check the vendor's EIN."),
+            ))
+        return tax_id
+    if registration_ids:
+        printed = "; ".join(f"{rid.label}: {rid.value}" for rid in registration_ids)
+        warnings.append(ExtractionWarning(
+            code="tax_id_unclear", field="vatId",
+            message=(f"The vendor prints {printed}, but none is labelled as a tax ID "
+                     "(EIN/TIN/VAT). Tax ID left empty."),
+        ))
+    return ""
 
 
 def apply_printed_cues(lines: list[QuoteLine]) -> list[QuoteLine]:
@@ -189,7 +254,7 @@ def _order_line(line: QuoteLine, field: str, warnings: list[ExtractionWarning]) 
 def build_extraction(
     quote: QuoteExtraction,
     *,
-    organization_names: list[str] | tuple[str, ...] = (),
+    buyer: BuyerContext | None = None,
     requester_department: str | None = None,
 ) -> tuple[ExtractedVendorData, list[ExtractionWarning]]:
     """Map the transcription to the request shape and run every consistency check."""
@@ -262,33 +327,42 @@ def build_extraction(
         ))
     total_cost = grand_total if grand_total is not None else computed_total
 
-    # --- vendor vs recipient (DECISIONS D13) ---------------------------------
+    # --- who is who: the vendor is never the buyer (DECISIONS D13, D29) -------
     vendor_name = (quote.vendor.name or "").strip()
+    buyer = buyer or BuyerContext()
     if not vendor_name:
         warnings.append(ExtractionWarning(
             code="vendor_missing", field="vendorName",
             message="No vendor name found on the document.",
         ))
-    else:
-        buyer_names = [quote.recipient.name, *organization_names]
-        if any(same_company(vendor_name, buyer) for buyer in buyer_names):
-            warnings.append(ExtractionWarning(
-                code="vendor_is_recipient", field="vendorName",
-                message=(f"'{vendor_name}' looks like the buying company, not the vendor. "
-                         "Check the letterhead or footer for the vendor's name."),
-            ))
+    elif matched := buyer.matches(vendor_name, quote.vendor.address):
+        warnings.append(ExtractionWarning(
+            code="vendor_is_buyer", field="vendorName",
+            message=(f"'{vendor_name}' is the buyer (matches this organization's "
+                     f"'{matched}'), not the vendor. The vendor is the company issuing the "
+                     "quote: check the letterhead, logo, sender line or footer."),
+        ))
+    elif same_company(vendor_name, quote.recipient.name):
+        warnings.append(ExtractionWarning(
+            code="vendor_is_recipient", field="vendorName",
+            message=(f"'{vendor_name}' is also the quote's recipient. Check the letterhead or "
+                     "footer for the vendor's name."),
+        ))
+
+    # --- tax ID chosen by its printed label (D32) ------------------------------
+    vat_id = pick_tax_id(quote.vendor.registration_ids, warnings)
 
     # --- department comes from the requester unless the document names one (D12)
     department = (quote.department or "").strip()
     if department and any(same_company(department, n) for n in
-                          [vendor_name, quote.recipient.name, *organization_names]):
+                          [vendor_name, quote.recipient.name, *buyer.names]):
         department = ""  # a company name is never a department
     department = department or (requester_department or "")
 
     data = ExtractedVendorData(
         title=quote.title.strip(),
         vendor_name=vendor_name,
-        vat_id=normalize_tax_id(quote.vendor.tax_id),
+        vat_id=vat_id,
         department=department,
         order_lines=order_lines,
         excluded_lines=excluded_lines,

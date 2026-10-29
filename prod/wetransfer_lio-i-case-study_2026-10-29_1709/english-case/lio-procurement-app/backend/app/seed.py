@@ -136,6 +136,31 @@ def seed_articles(db: Session, organization_id: uuid.UUID) -> int:
     return len(new)
 
 
+# Names Acme's vendor quotes are addressed to besides "Acme Corp" (all five sample quotes
+# are addressed to Lio Technologies, Inc.). An assumption to confirm with the customer;
+# admins can edit it under Organization > Settings. See DECISIONS.md D30.
+ACME_BUYER_IDENTITIES = [
+    {
+        "name": "Lio Technologies, Inc.",
+        "addresses": [
+            "1160 Folsom Street, Suite 300, San Francisco, CA 94103",
+            "2250 Chestnut Street, Suite 210, San Francisco, CA 94123",
+        ],
+    }
+]
+
+
+def seed_buyer_identities(db: Session, organization_id: uuid.UUID) -> int:
+    """Give the dev org its buyer identities unless the setting already exists."""
+    org = db.get(Organization, organization_id)
+    settings = dict(org.settings or {})
+    if "buyer_identities" in settings:
+        return 0
+    settings["buyer_identities"] = ACME_BUYER_IDENTITIES
+    org.settings = settings  # reassign so the JSON column is marked dirty
+    return 1
+
+
 def seed_organizations_and_accounts(db: Session) -> tuple[int, int]:
     """Create the tenants and their accounts (keyed by slug / email)."""
     orgs_created = 0
@@ -179,6 +204,7 @@ def seed(db: Session) -> dict[str, int]:
         "suppliers": seed_suppliers(db, dev_org_id) if dev_org_id else 0,
         # Articles reference suppliers by name, so this must run after suppliers.
         "articles": seed_articles(db, dev_org_id) if dev_org_id else 0,
+        "buyer_identities": seed_buyer_identities(db, dev_org_id) if dev_org_id else 0,
         "organizations": orgs_created,
         "users": users_created,
     }

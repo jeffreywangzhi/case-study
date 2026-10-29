@@ -8,12 +8,25 @@ from app.db.session import get_db
 from app.models import Organization, OrganizationMember, Profile
 from app.routers.pdf import MAX_PDF_BYTES
 from app.schemas.extraction import ExtractionRequest, ExtractionResponse
+from app.schemas.organizations import OrganizationSettings
 from app.services.extraction import extract_vendor_data, extract_vendor_data_from_pdf
 from app.services.pdf import is_pdf
+from app.services.quote_checks import BuyerContext
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/extraction", tags=["extraction"])
+
+
+def _buyer_context(organization: Organization | None) -> BuyerContext:
+    """The organization's own name plus the buyer identities configured in its settings."""
+    if organization is None:
+        return BuyerContext()
+    identities = OrganizationSettings(**(organization.settings or {})).buyer_identities
+    return BuyerContext(
+        names=(organization.name, *(identity.name for identity in identities)),
+        addresses=tuple(address for identity in identities for address in identity.addresses),
+    )
 
 
 @router.post("", response_model=ExtractionResponse, response_model_by_alias=True,
@@ -56,7 +69,7 @@ async def extract_pdf(
         return extract_vendor_data_from_pdf(
             pdf_bytes,
             db,
-            organization_names=[organization.name] if organization else [],
+            buyer=_buyer_context(organization),
             requester_department=profile.department if profile else None,
         )
     except Exception:  # noqa: BLE001 — unreadable/corrupt PDF (model errors are in the envelope)

@@ -94,10 +94,14 @@ def update_settings(
     membership: OrganizationMember = Depends(require_org_admin),
     db: Session = Depends(get_db),
 ) -> OrganizationSettings:
+    """Update only the settings sent; others keep their stored value (PATCH semantics)."""
     org = db.get(Organization, membership.organization_id)
-    org.settings = payload.model_dump()
+    merged = OrganizationSettings(
+        **{**(org.settings or {}), **payload.model_dump(exclude_unset=True)}
+    )
+    org.settings = merged.model_dump()
     db.commit()
-    return payload
+    return merged
 
 
 @router.get("/me/members", response_model=MembersResponse)
