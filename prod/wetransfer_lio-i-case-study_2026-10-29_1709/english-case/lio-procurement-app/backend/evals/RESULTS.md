@@ -380,6 +380,31 @@ What this showed:
   for this small judge call only, measured on the same eval.
 - Savings are still shown for alternatives ("save $435.06" against a Windows laptop).
 
+---
+
+## Auto-approval below $2,000 (bonus)
+
+Rule: a request whose total cost (gross: lines + shipping + fees + tax) is strictly below the
+organization's limit is approved automatically, unless its charges were reset by a vendor switch
+and not re-entered, or the same requester's requests to the same vendor in the last 7 days add up
+to the limit (possible split). Edits re-check it. Organizations without a limit keep manual
+approval. Covered by 12 tests in `tests/test_approval_policy.py`.
+
+End to end through the API with the five quotes' totals (Acme, $2,000 limit):
+
+| Quote | Total | Result |
+|---|---|---|
+| verdeform | $1,413.10 | auto-approved |
+| MacBook Air | $1,534.59 | auto-approved |
+| QT-4120 Greenmantle | $1,686.14 | pending: possible split (the same requester had another $1,686.14 Greenmantle request that day; combined $3,372.28) |
+| Hollis | $2,042.15 gross ($1,880.00 net) | pending (gross basis; would be auto-approved on net) |
+| Hartwell | $18,402.50 | pending |
+
+Known limitations: the gross basis is an assumption to confirm with the customer (Hollis flips);
+the split check also flags legitimate repeat purchases from the same vendor within 7 days;
+requests carry no currency, so the limit assumes USD; buyers aren't notified when a request lands
+in their queue for a safeguard reason.
+
 ## Model comparison
 
 *Pending. Same pipeline and labels, `OPENAI_MODEL` varied. Default stays `gpt-4o-mini` unless a

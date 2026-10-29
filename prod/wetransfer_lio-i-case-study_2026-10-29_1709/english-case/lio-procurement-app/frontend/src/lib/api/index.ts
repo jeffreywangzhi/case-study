@@ -47,6 +47,8 @@ export type ConfigurableRequiredField = 'vat_id' | 'department';
 
 export interface OrganizationSettings {
   required_fields: ConfigurableRequiredField[];
+  /** Requests with a total cost below this (USD, gross) are approved automatically; null = off. */
+  auto_approval_threshold?: number | null;
 }
 
 export interface MembersResponse {
@@ -76,6 +78,8 @@ export interface CreateRequestInput {
   taxAmount: number;
   department: string;
   orderLines: OrderLineInput[];
+  /** True while shipping/fees/tax were reset by a vendor switch and not re-entered. */
+  chargesIncomplete?: boolean;
 }
 
 export interface UpdateRequestInput {
@@ -90,6 +94,8 @@ export interface UpdateRequestInput {
   taxAmount: number;
   department: string;
   orderLines: OrderLineInput[];
+  /** True while shipping/fees/tax were reset by a vendor switch and not re-entered. */
+  chargesIncomplete?: boolean;
 }
 
 export type ExtractedLineType =
@@ -253,7 +259,8 @@ export interface RequestActivity {
   actor_id: string | null;
   action:
     | 'created' | 'updated' | 'status_changed' | 'approved' | 'rejected' | 'document_attached'
-    | 'catalog_applied';
+    | 'catalog_applied'
+    | 'auto_approved' | 'approval_required' | 'approval_reset';
   summary: string;
   detail: Record<string, unknown> | null;
   created_at: string;
@@ -343,7 +350,8 @@ export const organizations = {
     return apiFetch('/organizations/me/settings');
   },
 
-  updateSettings(settings: OrganizationSettings): Promise<OrganizationSettings> {
+  /** PATCH: only the settings sent change. */
+  updateSettings(settings: Partial<OrganizationSettings>): Promise<OrganizationSettings> {
     return apiFetch('/organizations/me/settings', { method: 'PATCH', body: settings });
   },
 };

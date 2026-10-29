@@ -161,6 +161,22 @@ def seed_buyer_identities(db: Session, organization_id: uuid.UUID) -> int:
     return 1
 
 
+# "Anything below $2,000 shouldn't need approval at all" (bonus task). Gross total; an
+# assumption to confirm with the customer (DECISIONS D15).
+ACME_AUTO_APPROVAL_THRESHOLD = 2000
+
+
+def seed_auto_approval_threshold(db: Session, organization_id: uuid.UUID) -> int:
+    """Give the dev org its auto-approval limit unless the setting already exists."""
+    org = db.get(Organization, organization_id)
+    settings = dict(org.settings or {})
+    if "auto_approval_threshold" in settings:
+        return 0
+    settings["auto_approval_threshold"] = ACME_AUTO_APPROVAL_THRESHOLD
+    org.settings = settings  # reassign so the JSON column is marked dirty
+    return 1
+
+
 def seed_organizations_and_accounts(db: Session) -> tuple[int, int]:
     """Create the tenants and their accounts (keyed by slug / email)."""
     orgs_created = 0
@@ -205,6 +221,9 @@ def seed(db: Session) -> dict[str, int]:
         # Articles reference suppliers by name, so this must run after suppliers.
         "articles": seed_articles(db, dev_org_id) if dev_org_id else 0,
         "buyer_identities": seed_buyer_identities(db, dev_org_id) if dev_org_id else 0,
+        "auto_approval_threshold": (
+            seed_auto_approval_threshold(db, dev_org_id) if dev_org_id else 0
+        ),
         "organizations": orgs_created,
         "users": users_created,
     }

@@ -59,6 +59,8 @@ export type ProcurementRequest = {
   department: string | null;
   status: 'open' | 'in_progress' | 'closed';
   approval_status: 'pending' | 'approved' | 'rejected';
+  /** 'auto' when the organization's auto-approval limit approved it; null while pending. */
+  approval_method?: 'manual' | 'auto' | null;
   approved_by: string | null;
   approved_at: string | null;
   total_cost: number | null;

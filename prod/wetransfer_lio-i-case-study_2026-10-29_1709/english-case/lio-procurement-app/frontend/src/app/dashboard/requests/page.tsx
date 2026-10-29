@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import * as api from '@/lib/api';
+import { approvalLabel } from '@/lib/utils';
 import { Alert } from '@/components/base';
 import type { ProcurementRequestWithDetails } from '@/types/database';
 import { useCommodityGroups } from '@/lib/hooks/useCommodityGroups';
@@ -172,7 +173,7 @@ export default function RequestsPage() {
                           APPROVAL_BADGE[request.approval_status]
                         }`}
                       >
-                        {titleCase(request.approval_status)}
+                        {approvalLabel(request)}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-ink">

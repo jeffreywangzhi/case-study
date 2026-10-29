@@ -442,8 +442,10 @@ def test_activity_log_and_document():
     r = client.put(f"/requests/{rid}", json=updated, headers=_auth(admin))
     assert r.status_code == 200, r.text
 
-    # approve, then a status change
-    client.patch(f"/requests/{rid}/approval", json={"decision": "approved"}, headers=_auth(admin))
+    # $500 is under Acme's $2,000 auto-approval limit, so it is already approved; then a
+    # status change
+    assert client.patch(f"/requests/{rid}/approval", json={"decision": "approved"},
+                        headers=_auth(admin)).status_code == 409
     client.patch(f"/requests/{rid}/status", json={"status": "closed"}, headers=_auth(admin))
 
     # attach a PDF
@@ -463,7 +465,7 @@ def test_activity_log_and_document():
     assert r.status_code == 200
     actions = [a["action"] for a in r.json()]
     assert set(actions) == {
-        "created", "updated", "approved", "status_changed", "document_attached"
+        "created", "updated", "auto_approved", "status_changed", "document_attached"
     }
     updated_entry = next(a for a in r.json() if a["action"] == "updated")
     assert set(updated_entry["detail"]["changed_fields"]) == {
@@ -730,7 +732,8 @@ def test_org_settings_required_fields():
     # Default settings: nothing extra required.
     r = client.get("/organizations/me/settings", headers=_auth(token))
     assert r.status_code == 200
-    assert r.json() == {"required_fields": [], "buyer_identities": []}
+    assert r.json() == {"required_fields": [], "buyer_identities": [],
+                        "auto_approval_threshold": None}
 
     base_payload = {
         "requestorName": "S", "titleShortDescription": "T", "vendorName": "V",

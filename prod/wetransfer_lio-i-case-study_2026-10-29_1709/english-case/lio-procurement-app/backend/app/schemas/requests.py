@@ -34,6 +34,9 @@ class RequestCreate(BaseModel):
     tax_amount: float | None = Field(default=None, alias="taxAmount")
     department: str | None = None
     order_lines: list[OrderLineIn] = Field(alias="orderLines", min_length=1)
+    # The form resets shipping/fees/tax when a catalog agreement switches the vendor; until
+    # someone enters them the total is understated, so it can't be auto-approved.
+    charges_incomplete: bool = Field(default=False, alias="chargesIncomplete")
 
 
 class RequestUpdate(BaseModel):
@@ -48,6 +51,7 @@ class RequestUpdate(BaseModel):
     tax_amount: float | None = Field(default=None, alias="taxAmount")
     department: str | None = None
     order_lines: list[OrderLineIn] = Field(alias="orderLines")
+    charges_incomplete: bool = Field(default=False, alias="chargesIncomplete")
 
 
 class StatusUpdate(BaseModel):
@@ -113,6 +117,7 @@ class RequestOut(BaseModel):
     department: str | None
     status: RequestStatus
     approval_status: ApprovalStatus
+    approval_method: Literal["manual", "auto"] | None = None
     approved_by: uuid.UUID | None
     approved_at: datetime | None
     total_cost: float | None

@@ -29,6 +29,10 @@ class ProcurementRequest(Base, TimestampMixin):
             "approval_status IN ('pending', 'approved', 'rejected')",
             name="ck_procurement_request_approval_status",
         ),
+        CheckConstraint(
+            "approval_method IS NULL OR approval_method IN ('manual', 'auto')",
+            name="ck_procurement_request_approval_method",
+        ),
     )
 
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
@@ -49,10 +53,12 @@ class ProcurementRequest(Base, TimestampMixin):
     # Status tracking
     status: Mapped[str] = mapped_column(String, nullable=False, default="open", index=True)
 
-    # Approval: every request needs sign-off by a buyer or admin.
+    # Approval: sign-off by a buyer or admin, unless the organization's auto-approval
+    # limit approves it ("manual" / "auto"; NULL while pending).
     approval_status: Mapped[str] = mapped_column(
         String, nullable=False, default="pending", index=True
     )
+    approval_method: Mapped[str | None] = mapped_column(String, nullable=True)
     approved_by: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("users.id", ondelete="SET NULL"), nullable=True
     )

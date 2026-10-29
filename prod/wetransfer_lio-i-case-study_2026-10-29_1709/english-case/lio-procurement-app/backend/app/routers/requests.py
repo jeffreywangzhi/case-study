@@ -1,4 +1,5 @@
 import uuid
+from dataclasses import dataclass
 from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, Response, UploadFile, status
@@ -17,6 +18,8 @@ from app.models import (
     RequestActivity,
     RequestDocument,
 )
+from app.services import approval_policy
+from app.services.quote_checks import same_company
 from app.schemas.requests import (
     ApprovalDecision,
     OrderLineIn,
@@ -214,6 +217,74 @@ def _changed_fields(request: ProcurementRequest, payload: RequestUpdate) -> list
     return changed
 
 
+@dataclass(frozen=True)
+class _BeforeUpdate:
+    """What the auto-approval re-check compares against when a request is edited."""
+
+    approval_status: str
+    approval_method: str | None
+    total_cost: float
+    vendor_name: str
+
+
+def _apply_approval_policy(
+    db: Session,
+    request: ProcurementRequest,
+    actor_id: uuid.UUID,
+    charges_incomplete: bool,
+    before: _BeforeUpdate | None = None,
+) -> None:
+    """Auto-approve below the organization's limit; re-check approved requests on edit.
+
+    - pending: auto-approve when the policy allows; otherwise log why when a safeguard
+      (understated total, possible split) stopped a request that is under the limit.
+    - auto-approved, edited: re-check; back to pending if it no longer qualifies.
+    - manually approved, edited so the total goes up or the vendor changes: re-check the
+      same way (closes "approve, then edit freely").
+    - rejected: stays rejected (a person decided).
+    """
+    if request.approval_status == "rejected":
+        return
+    org = db.get(Organization, request.organization_id)
+    threshold = (org.settings or {}).get("auto_approval_threshold") if org else None
+
+    if request.approval_status == "approved":
+        if before is None:
+            return
+        material = float(request.total_cost or 0) > before.total_cost or not same_company(
+            request.vendor_name, before.vendor_name)
+        if request.approval_method != "auto" and not material:
+            return  # e.g. a typo fix on a request a buyer already approved
+
+    check = approval_policy.evaluate(
+        threshold,
+        float(request.total_cost or 0),
+        charges_incomplete=charges_incomplete,
+        recent_same_vendor=approval_policy.recent_requests_to_vendor(db, request),
+        vendor_name=request.vendor_name,
+    )
+    if check.auto_approve:
+        if request.approval_status == "approved" and request.approval_method == "auto":
+            return  # still qualifies; nothing to record
+        request.approval_status = "approved"
+        request.approval_method = "auto"
+        request.approved_by = None  # no person approved it
+        request.approved_at = datetime.now(timezone.utc)
+        _log_activity(db, request.id, actor_id, "auto_approved", check.reason,
+                      {"threshold": threshold, "total_cost": float(request.total_cost or 0)})
+    elif request.approval_status == "approved":
+        request.approval_status = "pending"
+        request.approval_method = None
+        request.approved_by = None
+        request.approved_at = None
+        _log_activity(db, request.id, actor_id, "approval_reset",
+                      f"Back to pending: {check.reason}",
+                      {"was": before.approval_method if before else None})
+    elif threshold is not None and float(request.total_cost or 0) < threshold:
+        # Under the limit but stopped by a safeguard: tell the buyer why it's in their queue.
+        _log_activity(db, request.id, actor_id, "approval_required", check.reason)
+
+
 @router.get("", response_model=list[RequestOut])
 def list_requests(
     membership: OrganizationMember = Depends(get_current_membership),
@@ -271,6 +342,7 @@ def create_request(
     db.flush()
     _log_activity(db, request.id, membership.user_id, "created", "Request created")
     _log_catalog_use(db, request, membership.user_id)
+    _apply_approval_policy(db, request, membership.user_id, payload.charges_incomplete)
     db.commit()
 
     request = _get_org_request(db, request.id, membership.organization_id)
@@ -289,6 +361,8 @@ def update_request(
     _enforce_required_fields(db, membership.organization_id, payload)
 
     changed = _changed_fields(request, payload)
+    before = _BeforeUpdate(request.approval_status, request.approval_method,
+                           float(request.total_cost or 0), request.vendor_name)
 
     request.requestor_name = payload.requestor_name
     request.title = payload.title
@@ -316,6 +390,7 @@ def update_request(
             f"Updated {', '.join(labels)}",
             {"changed_fields": changed},
         )
+    _apply_approval_policy(db, request, membership.user_id, payload.charges_incomplete, before)
     db.commit()
 
     request = _get_org_request(db, request_id, membership.organization_id)
@@ -364,6 +439,7 @@ def decide_approval(
         )
 
     request.approval_status = payload.decision
+    request.approval_method = "manual"
     request.approved_by = membership.user_id
     request.approved_at = datetime.now(timezone.utc)
     _log_activity(

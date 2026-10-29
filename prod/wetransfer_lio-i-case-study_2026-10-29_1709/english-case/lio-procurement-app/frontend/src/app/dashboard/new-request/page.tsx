@@ -65,6 +65,7 @@ export default function NewRequestPage() {
   const [typingLine, setTypingLine] = useState<number | null>(null);
   // Set when an agreement switched the vendor and the quote's shipping/fees/tax were reset.
   const [chargesNotice, setChargesNotice] = useState('');
+  const [autoApprovalThreshold, setAutoApprovalThreshold] = useState<number | null>(null);
 
   // Lines on a catalog agreement must all come from one supplier: a request has one vendor.
   const catalogSuppliers = Array.from(
@@ -94,6 +95,11 @@ export default function NewRequestPage() {
       .catch(() => {
         // Non-fatal: the user can type both fields.
       });
+    // The organization's auto-approval limit, to say up front whether a buyer must approve.
+    api.organizations
+      .getSettings()
+      .then((settings) => setAutoApprovalThreshold(settings.auto_approval_threshold ?? null))
+      .catch(() => setAutoApprovalThreshold(null));
   }, []);
 
   // Handle file upload and extraction
@@ -320,6 +326,8 @@ export default function NewRequestPage() {
         shippingAmount,
         feesAmount,
         taxAmount,
+        // Charges reset by a vendor switch and not re-entered: the server won't auto-approve.
+        chargesIncomplete: Boolean(chargesNotice),
         department,
         // Only what the API stores; suggestions and supplier names are UI state.
         orderLines: orderLines.map((l) => ({
@@ -752,6 +760,25 @@ export default function NewRequestPage() {
               ${totalCost.toFixed(2)}
             </span>
           </div>
+          {autoApprovalThreshold !== null && totalCost > 0 && (
+            <p className="text-sm text-right">
+              {chargesNotice ? (
+                <span className="text-amber-800">
+                  A buyer will approve it: shipping, fees and tax haven&apos;t been entered.
+                </span>
+              ) : totalCost < autoApprovalThreshold ? (
+                <span className="text-green-700">
+                  ✓ Below your ${autoApprovalThreshold.toLocaleString('en-US')} limit: approved
+                  automatically when you submit.
+                </span>
+              ) : (
+                <span className="text-gray-600">
+                  At or above your ${autoApprovalThreshold.toLocaleString('en-US')} limit: a buyer
+                  will approve it.
+                </span>
+              )}
+            </p>
+          )}
         </div>
 
         {/* Submit */}

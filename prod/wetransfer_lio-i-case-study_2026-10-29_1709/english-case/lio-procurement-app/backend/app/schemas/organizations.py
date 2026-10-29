@@ -33,6 +33,9 @@ class OrganizationSettings(BaseModel):
     # Names/addresses this organization buys under, besides its own name. Extraction
     # tells the model these are the buyer, and flags a "vendor" that matches one.
     buyer_identities: list[BuyerIdentity] = Field(default_factory=list)
+    # Requests whose total cost is *below* this (USD, gross: lines + shipping + fees + tax)
+    # are approved automatically. None: every request needs a buyer (the default).
+    auto_approval_threshold: float | None = Field(default=None, gt=0)
 
 
 class OrganizationCreate(BaseModel):
