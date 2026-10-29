@@ -277,13 +277,21 @@ def test_tax_id_labelled_ein_but_not_nine_digits_is_flagged():
 
 
 def test_department_never_holds_a_company_name():
-    data, _ = build_extraction(qt4120(department="Greenmantle Moss Studio, LLC"),
-                               requester_department="Facilities")
-    assert data.department == "Facilities"
+    data, _ = build_extraction(qt4120(department="Greenmantle Moss Studio, LLC"))
+    assert data.department == ""
 
-    data, _ = build_extraction(qt4120(department="Purchasing / Engineering"),
-                               requester_department="Facilities")
-    assert data.department == "Purchasing / Engineering"
+
+def test_department_prefers_the_requester_then_the_attention_line():
+    # Hartwell: "Quote recipient: ACME Corp, Attn: Purchasing / Engineering" (D39).
+    quote = qt4120(department="Attn: Purchasing / Engineering")
+    data, _ = build_extraction(quote, requester_department="Facilities")
+    assert data.department == "Facilities"  # who is spending wins over the vendor's addressing
+
+    data, _ = build_extraction(quote, requester_department=None)  # profile empty (seed today)
+    assert data.department == "Purchasing / Engineering"  # "Attn:" stripped
+
+    data, _ = build_extraction(qt4120(department="Attention: IT"))
+    assert data.department == "IT"
 
 
 def test_tax_id_normalization_and_missing_tax_id():

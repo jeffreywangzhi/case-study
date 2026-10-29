@@ -185,7 +185,7 @@ def score(label: dict, envelope: dict) -> dict[str, bool | None]:
     scores["department"] = (
         not department
         if extended["department"] is None
-        else extended["department"].lower() in department.lower()
+        else extended["department"].lower() == department.lower()
     )
     scores["line_detail"] = _line_detail_ok(extended["lines"], lines)
     scores["charges"] = _close(shipping, extended["shipping"]) and _close(fees, extended["fees"])

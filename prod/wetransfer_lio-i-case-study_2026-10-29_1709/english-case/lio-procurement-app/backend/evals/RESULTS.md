@@ -180,6 +180,42 @@ Open:
 - **verdeform tax ID and legal name** (D35).
 - **Commodity (20–47%, unstable):** Task 3 redesigns classification (shortlist, then pick).
 
+---
+
+## MacBook Air quote (Quote_1): labels extended
+
+Labels `9afdc4ca0758`: vendor must be "Apple Inc" (inferred legal name, DECISIONS D37; was any
+name containing "Apple"), plus department, the one line, shipping $0, fees $4.00, tax $121.53.
+No code change; saved runs re-scored offline.
+
+| Saved run | vendor | commodity | department | line_detail | charges | tax | reconciles | flagged |
+|---|---|---|---|---|---|---|---|---|
+| Baseline | 0/3 ("Apple Business Team") | 3/3 | 0/3 | 3/3 | 0/3 | 0/3 | 0/3 | 0/3 |
+| After QT-4120 fixes | 0/3 ("Apple") | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 0/3 |
+| After verdeform round | **3/3** ("Apple Inc.") | 0/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 0/3 |
+
+`flagged` is 0/3 in every run because one field is wrong without a warning: the vendor name
+before D37, the commodity group (30 IT Services instead of 29 Hardware) after. Commodity errors
+are silent today (Task 3).
+
+---
+
+## Hartwell grinding machine: labels extended + department fix
+
+Labels `8e25d0bef460`: department "Purchasing / Engineering" (exact match now), both lines
+incl. "Delivery and installation" as an order line (D38), shipping $0, fees $0, tax $1,402.50.
+Code change: department = requester's profile first, then the "Attn:" line with the prefix
+stripped (D39).
+
+| Run | commodity | department | line_detail | charges | tax | reconciles | flagged |
+|---|---|---|---|---|---|---|---|
+| After verdeform round, re-scored | 0/3 | 0/3 ("Attn: Purchasing / Engineering") | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 |
+| Live, after D39 ([`results/hartwell-pdf-gpt-4o-mini.json`](results/hartwell-pdf-gpt-4o-mini.json)) | 0/3 (15 Office Equipment) | **3/3** | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 |
+
+All base fields 3/3; latency 5.0 s; no retries. Caveat: `flagged` passes only because an
+unrelated missing-field note ("Tax ID", correctly absent) is present while the commodity group is
+silently wrong (DECISIONS D5b, known limitation).
+
 ## Model comparison
 
 *Pending. Same pipeline and labels, `OPENAI_MODEL` varied. Default stays `gpt-4o-mini` unless a

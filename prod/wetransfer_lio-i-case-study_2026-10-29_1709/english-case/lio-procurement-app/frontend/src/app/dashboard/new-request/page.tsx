@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import * as api from '@/lib/api';
 import { useCommodityGroups } from '@/lib/hooks/useCommodityGroups';
@@ -50,6 +50,20 @@ export default function NewRequestPage() {
   const [warning, setWarning] = useState('');
   const [reviewItems, setReviewItems] = useState<api.ExtractionWarning[]>([]);
   const [extracting, setExtracting] = useState(false);
+
+  // The requestor is the signed-in user, never something on the vendor's quote: pre-fill
+  // name and department from their profile, without overwriting anything already typed.
+  useEffect(() => {
+    api.auth
+      .me()
+      .then(({ profile }) => {
+        setRequestorName((current) => current || profile.full_name || '');
+        setDepartment((current) => current || profile.department || '');
+      })
+      .catch(() => {
+        // Non-fatal: the user can type both fields.
+      });
+  }, []);
 
   // Handle file upload and extraction
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -64,13 +64,26 @@
     },
     {
       "file": "Quote_1__Lio_Technologies_Inc__1x_MBA___2214703918.pdf",
-      "vendor_aliases": ["Apple"],
+      "vendor_aliases": ["Apple Inc"],
+      "vendor_note": "No legal entity is printed ('Apple Business Team', 'Apple Store Business Team'); the vendor is the inferred legal name per DECISIONS D37.",
       "vat_id": "94-2404110",
       "grand_total": 1534.59,
       "required_line_totals": [1409.06],
       "forbidden_line_totals": [],
       "commodity_group_ids": [29],
-      "traps": "configuration bullets are not lines, eWaste fee, 'Prepared for' (customer) vs 'Prepared by' (vendor), broken xref table"
+      "traps": "configuration bullets (incl. two 'None') are not lines, CA eWaste fee, 'Prepared for' (customer) vs 'Prepared by' (vendor), broken xref table, tall non-letter page, shipping zip printed as 94130",
+      "extended": {
+        "department": null,
+        "lines": [
+          {"total": 1409.06, "quantity": 1, "unit_price": 1409.06,
+           "note": "13\" MacBook Air, Apple M2, 16GB / 512GB, Space Gray (Z15S)."}
+        ],
+        "items_subtotal": 1409.06,
+        "shipping": 0,
+        "fees": 4.00,
+        "tax": 121.53,
+        "tax_note": "CA eWaste Recycling Fee $4.00 goes to fees (D9). Items 1409.06 + fees 4.00 + tax 121.53 = total 1534.59."
+      }
     },
     {
       "file": "Quote_Hartwell_Cleveland_ACME_Grinding_Machine.pdf",
@@ -80,7 +93,22 @@
       "required_line_totals": [15000.00, 2000.00],
       "forbidden_line_totals": [],
       "commodity_group_ids": [45],
-      "traps": "no tax ID on the document (must stay empty, not invented), 'lump sum' unit, recipient ACME Corp vs vendor Hartwell"
+      "traps": "no tax ID on the document (must stay empty, not invented), 'lump sum' unit, recipient ACME Corp vs vendor Hartwell, 'Attn:' department line, delivery bundled with installation, estimated sales tax",
+      "extended": {
+        "department": "Purchasing / Engineering",
+        "department_note": "From 'Attn: Purchasing / Engineering', prefix stripped; the requester's profile department is empty in the seed, so the Attn line is the fallback (DECISIONS D39).",
+        "lines": [
+          {"total": 15000.00, "quantity": 1, "unit_price": 15000.00,
+           "note": "Grinding machine HW-GS 450."},
+          {"total": 2000.00, "quantity": 1, "unit_price": 2000.00,
+           "note": "Delivery and installation, 1 lump sum: bundled services stay an order line (D38)."}
+        ],
+        "items_subtotal": 17000.00,
+        "shipping": 0,
+        "fees": 0,
+        "tax": 1402.50,
+        "tax_note": "plus sales tax (est. 8.25%). Items 17000.00 + tax 1402.50 = Total (gross) 18402.50."
+      }
     }
   ]
 }

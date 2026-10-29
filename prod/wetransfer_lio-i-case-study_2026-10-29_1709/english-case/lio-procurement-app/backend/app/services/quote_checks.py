@@ -44,6 +44,8 @@ TAX_LABEL = re.compile(r"\b(tax|vat|gst|hst)\b", re.IGNORECASE)
 # the preceding item", headings like "Alternative: vertical logo").
 ALTERNATIVE_CUE = re.compile(r"\balternative\b|\(alt\.?\)|^alt\.?$", re.IGNORECASE)
 OPTIONAL_CUE = re.compile(r"\boptional\b", re.IGNORECASE)
+# "Attn: Purchasing / Engineering" -> "Purchasing / Engineering"
+ATTENTION_PREFIX = re.compile(r"^(attn|attention)\s*[:.]?\s*", re.IGNORECASE)
 # Printed labels that identify a tax ID (vs. corporation numbers, permits, LLC numbers).
 US_TAX_ID_LABEL = re.compile(
     r"\b(f?ein|tin|tax\s*(id|no\.?|number)|federal\s+tax|employer\s+identification)\b",
@@ -352,12 +354,13 @@ def build_extraction(
     # --- tax ID chosen by its printed label (D32) ------------------------------
     vat_id = pick_tax_id(quote.vendor.registration_ids, warnings)
 
-    # --- department comes from the requester unless the document names one (D12)
-    department = (quote.department or "").strip()
-    if department and any(same_company(department, n) for n in
-                          [vendor_name, quote.recipient.name, *buyer.names]):
-        department = ""  # a company name is never a department
-    department = department or (requester_department or "")
+    # --- department: the requester's own first, the document's "Attn:" line as fallback (D39)
+    department = (requester_department or "").strip()
+    if not department:
+        department = ATTENTION_PREFIX.sub("", (quote.department or "").strip()).strip()
+        if department and any(same_company(department, n) for n in
+                              [vendor_name, quote.recipient.name, *buyer.names]):
+            department = ""  # a company name is never a department
 
     data = ExtractedVendorData(
         title=quote.title.strip(),
