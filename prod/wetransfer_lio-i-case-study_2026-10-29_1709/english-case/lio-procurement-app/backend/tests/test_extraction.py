@@ -16,6 +16,7 @@ from app.services.quote_checks import (
     BuyerContext,
     address_key,
     build_extraction,
+    is_pure_shipping,
     normalize_tax_id,
     same_company,
 )
@@ -56,7 +57,6 @@ def qt4120(**overrides) -> QuoteExtraction:
                           ("Seller's Permit", "102-7365501")),
         "recipient": {"name": "Lio Technologies, Inc.",
                       "address": "1160 Folsom Street, Suite 300, San Francisco, CA 94103"},
-        "department": None,
         "currency": "USD",
         "lines": [
             _line("1", "heading", "Moss Art Panel, Mixed Moss 63 x 31.5 in"),
@@ -124,6 +124,52 @@ def test_shipping_row_inside_the_items_table_goes_to_the_breakdown():
     assert warnings == []
     assert [l.total_price for l in data.order_lines] == [1560.00]
     assert data.shipping_amount == 320.00 and data.total_cost == 2042.15
+
+
+def test_numbered_transport_row_typed_as_item_goes_to_shipping():
+    # Hollis as the live model returns it: "1.2" with an item number, typed "item" (D42).
+    lines = [
+        _line("1.1", "item", 'Moss panel "70:30" with "askLio" lettering', 1, None, 1560.00,
+              None, 1560.00),
+        _line("1.2", "item", "Transport, packing and shiping. Curbside delivery, without "
+              "installation.", 1, None, 320.00, None, 320.00),
+    ]
+    totals = [
+        {"kind": "items_subtotal", "label": "Net total", "amount": 1880.00},
+        {"kind": "tax", "label": "Sales tax 8.625 %", "amount": 162.15},
+        {"kind": "grand_total", "label": "Grand total", "amount": 2042.15},
+    ]
+    data, warnings = build_extraction(qt4120(lines=lines, totals=totals))
+    assert warnings == []
+    assert [l.total_price for l in data.order_lines] == [1560.00]
+    assert data.shipping_amount == 320.00 and data.total_cost == 2042.15
+
+
+def test_delivery_bundled_with_installation_stays_a_line():
+    # Hartwell: "Delivery and installation", 1 lump sum (D38).
+    lines = [
+        _line("1", "item", "Grinding machine HW-GS 450", 1, "ea.", 15000.00, None, 15000.00),
+        _line("2", "item", "Delivery and installation", 1, "lump sum", 2000.00, None, 2000.00),
+    ]
+    data, _ = build_extraction(qt4120(lines=lines, totals=[]))
+    assert [l.total_price for l in data.order_lines] == [15000.00, 2000.00]
+    assert data.shipping_amount == 0
+
+
+def test_a_quote_for_logistics_keeps_its_rows_as_items():
+    lines = [_line("1", "item", "Courier service same-day city", 4, "hour", 59.13, None, 236.52)]
+    data, _ = build_extraction(qt4120(lines=lines, totals=[]))
+    assert [l.total_price for l in data.order_lines] == [236.52]
+    assert data.shipping_amount == 0
+
+
+def test_pure_shipping_cues():
+    assert is_pure_shipping("Transport, packing and shipping")
+    assert is_pure_shipping("Curbside delivery, without installation")
+    assert is_pure_shipping("Freight, excl. assembly")
+    assert not is_pure_shipping("Delivery and installation")
+    assert not is_pure_shipping("Transport, rigging, mechanical setup")
+    assert not is_pure_shipping("Mounting of letters on the moss panel")  # no shipping cue
 
 
 def test_totals_row_repeating_a_table_charge_is_not_double_counted():
@@ -276,22 +322,14 @@ def test_tax_id_labelled_ein_but_not_nine_digits_is_flagged():
     assert "tax_id_unclear" in _codes(warnings)
 
 
-def test_department_never_holds_a_company_name():
-    data, _ = build_extraction(qt4120(department="Greenmantle Moss Studio, LLC"))
+def test_department_comes_only_from_the_requester_profile():
+    # Read off the document it was wrong in every way we saw (company names, "Attn:", a contact
+    # person, the text "null"), so the model isn't asked for it any more (D43).
+    assert "department" not in QuoteExtraction.model_fields
+    data, _ = build_extraction(qt4120(), requester_department="Facilities")
+    assert data.department == "Facilities"
+    data, _ = build_extraction(qt4120(), requester_department=None)
     assert data.department == ""
-
-
-def test_department_prefers_the_requester_then_the_attention_line():
-    # Hartwell: "Quote recipient: ACME Corp, Attn: Purchasing / Engineering" (D39).
-    quote = qt4120(department="Attn: Purchasing / Engineering")
-    data, _ = build_extraction(quote, requester_department="Facilities")
-    assert data.department == "Facilities"  # who is spending wins over the vendor's addressing
-
-    data, _ = build_extraction(quote, requester_department=None)  # profile empty (seed today)
-    assert data.department == "Purchasing / Engineering"  # "Attn:" stripped
-
-    data, _ = build_extraction(qt4120(department="Attention: IT"))
-    assert data.department == "IT"
 
 
 def test_tax_id_normalization_and_missing_tax_id():

@@ -216,6 +216,85 @@ All base fields 3/3; latency 5.0 s; no retries. Caveat: `flagged` passes only be
 unrelated missing-field note ("Tax ID", correctly absent) is present while the commodity group is
 silently wrong (DECISIONS D5b, known limitation).
 
+---
+
+## Hollis quote (QuoteA0492_23): labels extended + shipping-row fix
+
+Labels `1929ec075603`: lines = the $1,560 panel only (the $320 transport row is now a forbidden
+line), shipping $320, fees $0, tax $162.15, department empty. Code change: pure shipping rows
+typed as items move to the cost breakdown (DECISIONS D42).
+
+| Run | lines | commodity | department | line_detail | charges | tax | reconciles | flagged |
+|---|---|---|---|---|---|---|---|---|
+| After verdeform round, re-scored | 0/3 (transport as a line) | 0/3 (no group) | 3/3 | 3/3 | 0/3 | 3/3 | 3/3 | 3/3 |
+| Live, after D42 (3 runs, not kept) | **3/3** | 3/3 (15) | 2/3 | 3/3 | **3/3** | 3/3 | 3/3 | 2/3 |
+| Live, D42 + person-title guard ([`results/hollis-pdf-gpt-4o-mini.json`](results/hollis-pdf-gpt-4o-mini.json), 5 runs) | 5/5 | 0/5 (9 ×4, none ×1) | 4/5 | 5/5 | 5/5 | 5/5 | 5/5 | 1/5 |
+
+After D42 the department was the contact person "Mr. Vladimir Keil" in 1/3 runs; with a guard
+against personal titles it was the text "null" in 1/5. Department extraction was then dropped
+(D43); see the next section. Hartwell re-run after D42: unchanged, "Delivery and installation"
+still an order line 3/3.
+
+---
+
+## Department dropped from extraction (D43): all five quotes
+
+Labels `f29590c94bec` (Hartwell department now expected empty). Schema and prompt no longer ask for a
+department; it comes from the requester's profile only.
+
+### Regression: all five quotes, 3 runs
+
+File: [`results/after-hollis-pdf-gpt-4o-mini.json`](results/after-hollis-pdf-gpt-4o-mini.json)
+
+| Quote | ok | vendor | vat_id | grand_total | lines | commodity | department | line_detail | charges | tax | reconciles | flagged |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| QT-4120-Cust-14918 (Greenmantle) | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 |
+| QT-OF2312380-Cust-57692 (verdeform) | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 2/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 2/3 |
+| QuoteA0492_23 (Hollis) | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 |
+| Quote_1 MacBook Air (Apple) | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 |
+| Hartwell grinding machine | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 0/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 |
+| **All runs** | **100%** | **100%** | **100%** | **100%** | **100%** | **73%** | **100%** | **100%** | **100%** | **100%** | **100%** | **93%** |
+
+Latency p50 7.1 s, max 10.3 s; no retries in 15 runs. First run where every extraction field
+passes on every quote. Commodity: Hartwell 15 Office Equipment instead of 45 (3/3, silent;
+`flagged` passes only via the unrelated "Tax ID" missing note, D5b), verdeform 9 once.
+
+### Verdeform: 10 runs
+
+File: [`results/verdeform-stability-10x-after-d43.json`](results/verdeform-stability-10x-after-d43.json)
+
+| | Before D43 (verdeform round) | After D43 |
+|---|---|---|
+| vendor "Bloomcraft Interiors, Inc." | 2/10 | **8/10** (2/10 "verdeform") |
+| vat_id 27-1073640 | 1/10 | **8/10** |
+| commodity | 7/10 | 6/10 |
+| retries | 9/10 | **3/10** |
+| latency | p50 14.3 s, max 20.2 s | p50 7.5 s, max 16.4 s |
+
+Dropping one ambiguous field from the schema left the model attention for the image-only
+footer, consistent with the diagnosis in the verdeform round.
+
+---
+
+## Where extraction stands (after D43)
+
+Every extraction field passes on all five quotes (3 runs each) except the commodity group
+(73%); verdeform's legal name and tax ID are 8/10 over 10 runs (the other runs return the brand
+"verdeform" and flag the tax ID as missing). No retries; ~7 s per upload.
+
+Known limitations:
+- **Commodity group** is unstable across prompt changes, and a wrong group is pre-selected
+  without a warning (Hartwell: 15 Office Equipment instead of 45). Addressed in Task 3.
+- **"Verified"** is shown even when the commodity group is missing or a guess.
+- **Inferred legal names:** when a quote prints no legal entity, the vendor is the model's
+  inferred legal name ("Apple Inc."); for an unknown vendor this could be invented.
+- **Small benchmark:** five documents; title, units and estimated amounts aren't scored; the
+  `flagged` metric credits any warning, even an unrelated one.
+- **Not tested:** scanned PDFs without a text layer, quotes longer than four pages, non-USD
+  currencies, instructions embedded in a document.
+- **Not modeled:** fee names (stored as a single fees amount), estimated tax/shipping, quote
+  validity dates.
+
 ## Model comparison
 
 *Pending. Same pipeline and labels, `OPENAI_MODEL` varied. Default stays `gpt-4o-mini` unless a

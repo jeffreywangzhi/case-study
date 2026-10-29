@@ -58,9 +58,21 @@
       "vat_id": "94-1985704",
       "grand_total": 2042.15,
       "required_line_totals": [1560.00],
-      "forbidden_line_totals": [2090.00, 1830.00],
+      "forbidden_line_totals": [2090.00, 1830.00, 320.00],
       "commodity_group_ids": [15],
-      "traps": "text layer has spaces collapsed, alternatives 1.1a/1.1b priced as unit price only, EIN printed as '94 1985704', uppercase .Pdf extension"
+      "traps": "text layer has spaces collapsed, alternatives 1.1a/1.1b priced as unit price only, EIN printed as '94 1985704' next to a Permit No., uppercase .Pdf extension, numbered transport row (1.2, own item number) is pure shipping, tax-code column '24' glued to line totals, 'Carried forward' rows, sole proprietorship (no legal entity printed)",
+      "extended": {
+        "department": null,
+        "lines": [
+          {"total": 1560.00, "quantity": 1, "unit_price": 1560.00,
+           "note": "1.1 Moss panel 70:30 with askLio lettering. 1.1a/1.1b are alternatives."}
+        ],
+        "items_subtotal": 1560.00,
+        "shipping": 320.00,
+        "fees": 0,
+        "tax": 162.15,
+        "tax_note": "1.2 'Transport, packing and shiping. Curbside delivery, without installation' is pure shipping (D38/D42). Net total 1880.00 = items 1560.00 + shipping 320.00; + tax 162.15 = grand total 2042.15."
+      }
     },
     {
       "file": "Quote_1__Lio_Technologies_Inc__1x_MBA___2214703918.pdf",
@@ -95,8 +107,8 @@
       "commodity_group_ids": [45],
       "traps": "no tax ID on the document (must stay empty, not invented), 'lump sum' unit, recipient ACME Corp vs vendor Hartwell, 'Attn:' department line, delivery bundled with installation, estimated sales tax",
       "extended": {
-        "department": "Purchasing / Engineering",
-        "department_note": "From 'Attn: Purchasing / Engineering', prefix stripped; the requester's profile department is empty in the seed, so the Attn line is the fallback (DECISIONS D39).",
+        "department": null,
+        "department_note": "Department comes only from the requester's profile (DECISIONS D43), which is empty for the seeded requester; the 'Attn: Purchasing / Engineering' line is the vendor's addressing and is not used.",
         "lines": [
           {"total": 15000.00, "quantity": 1, "unit_price": 15000.00,
            "note": "Grinding machine HW-GS 450."},

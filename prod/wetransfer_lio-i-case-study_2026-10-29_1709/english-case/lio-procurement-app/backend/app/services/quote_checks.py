@@ -44,8 +44,18 @@ TAX_LABEL = re.compile(r"\b(tax|vat|gst|hst)\b", re.IGNORECASE)
 # the preceding item", headings like "Alternative: vertical logo").
 ALTERNATIVE_CUE = re.compile(r"\balternative\b|\(alt\.?\)|^alt\.?$", re.IGNORECASE)
 OPTIONAL_CUE = re.compile(r"\boptional\b", re.IGNORECASE)
-# "Attn: Purchasing / Engineering" -> "Purchasing / Engineering"
-ATTENTION_PREFIX = re.compile(r"^(attn|attention)\s*[:.]?\s*", re.IGNORECASE)
+# Pure shipping rows (Hollis "1.2 Transport, packing and shiping ... without installation") go to
+# the cost breakdown; delivery bundled with services (Hartwell "Delivery and installation") stays
+# a line (DECISIONS D38, D42). Negated services ("without installation") don't count.
+SHIPPING_CUE = re.compile(r"\b(shipp?ing|freight|transport|packing|delivery|courier)\b",
+                          re.IGNORECASE)
+SERVICE_CUE = re.compile(
+    r"\b(install\w*|set-?up|commission\w*|training|rigging|assembly|mounting)\b", re.IGNORECASE
+)
+NEGATED_SERVICE = re.compile(
+    r"\b(without|excl\.?|excluding|not including|no)\s+(?:\w+\s+){0,2}?" + SERVICE_CUE.pattern[2:],
+    re.IGNORECASE,
+)
 # Printed labels that identify a tax ID (vs. corporation numbers, permits, LLC numbers).
 US_TAX_ID_LABEL = re.compile(
     r"\b(f?ein|tin|tax\s*(id|no\.?|number)|federal\s+tax|employer\s+identification)\b",
@@ -154,11 +164,12 @@ def pick_tax_id(
 
 
 def apply_printed_cues(lines: list[QuoteLine]) -> list[QuoteLine]:
-    """Reclassify items the document itself marks as alternative/optional (DECISIONS D10/D11).
+    """Reclassify rows by what the document itself says (DECISIONS D10/D11/D42).
 
-    A row is excluded if its position or description carries a marker, or if it sits
-    under an "Alternative..."/"Optional..." heading (until the next heading). The
-    subtotal check remains the safety net if a cue ever misfires.
+    A row is excluded if its position or description carries an alternative/optional
+    marker, or if it sits under an "Alternative..."/"Optional..." heading (until the
+    next heading). A pure shipping row typed as an item moves to the cost breakdown.
+    The subtotal check remains the safety net if a cue ever misfires.
     """
     section: str | None = None
     result = []
@@ -184,7 +195,21 @@ def apply_printed_cues(lines: list[QuoteLine]) -> list[QuoteLine]:
             elif section:
                 kind = section
         result.append(line if kind == line.line_type else line.model_copy(update={"line_type": kind}))
+
+    # Shipping rows typed as items move to the breakdown, but only when real items remain: a
+    # quote *for* logistics (courier, freight) keeps its rows as what is being bought.
+    shipping_rows = {i for i, line in enumerate(result)
+                     if line.line_type == "item" and is_pure_shipping(line.description)}
+    if any(line.line_type == "item" and i not in shipping_rows for i, line in enumerate(result)):
+        result = [line.model_copy(update={"line_type": "shipping"}) if i in shipping_rows else line
+                  for i, line in enumerate(result)]
     return result
+
+
+def is_pure_shipping(description: str) -> bool:
+    """A shipping/transport row with no bundled services (DECISIONS D38, D42)."""
+    without_negations = NEGATED_SERVICE.sub(" ", description)
+    return bool(SHIPPING_CUE.search(description)) and not SERVICE_CUE.search(without_negations)
 
 
 def _totals_kind(kind: str, label: str) -> str:
@@ -354,13 +379,8 @@ def build_extraction(
     # --- tax ID chosen by its printed label (D32) ------------------------------
     vat_id = pick_tax_id(quote.vendor.registration_ids, warnings)
 
-    # --- department: the requester's own first, the document's "Attn:" line as fallback (D39)
+    # --- department: the requester's own, never read off the vendor's document (D43)
     department = (requester_department or "").strip()
-    if not department:
-        department = ATTENTION_PREFIX.sub("", (quote.department or "").strip()).strip()
-        if department and any(same_company(department, n) for n in
-                              [vendor_name, quote.recipient.name, *buyer.names]):
-            department = ""  # a company name is never a department
 
     data = ExtractedVendorData(
         title=quote.title.strip(),

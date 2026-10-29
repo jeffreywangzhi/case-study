@@ -96,7 +96,6 @@ export default function NewRequestPage() {
       setTitle(extracted.title || '');
       setVendorName(extracted.vendorName || '');
       setVatId(extracted.vatId || '');
-      setDepartment(extracted.department || '');
       setOrderLines(extracted.orderLines || []);
       setExcludedLines(extracted.excludedLines || []);
       setShippingAmount(extracted.shippingAmount || 0);

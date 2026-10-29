@@ -95,9 +95,6 @@ class QuoteExtraction(BaseModel):
     title: str = Field(description="2-5 word summary of what is being purchased.")
     vendor: QuoteVendor
     recipient: QuoteRecipient
-    department: str | None = Field(description="Only a department of the recipient that the "
-                                   "document explicitly names (e.g. 'Attn: Purchasing'). "
-                                   "Never a company name. null otherwise.")
     currency: str | None
     lines: list[QuoteLine] = Field(description="Every row of the items table, in document order.")
     totals: list[QuoteTotalRow] = Field(description="Every row of the totals section below the "

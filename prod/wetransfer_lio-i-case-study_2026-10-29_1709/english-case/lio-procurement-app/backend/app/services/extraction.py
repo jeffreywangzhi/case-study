@@ -34,8 +34,6 @@ Rules:
 - vendor.registration_ids: every tax or registration number printed for the vendor (often in the
   footer), each with its label exactly as printed. Never invent one; never include the
   recipient's numbers or bank details.
-- department: only a department of the recipient that is explicitly named (e.g. "Attn:
-  Purchasing"). Never a company name. null otherwise.
 - lines: one entry per row of the items table, in order. Read the columns: the item/position
   column holds the position number, the quantity column holds the quantity. Never use a
   position number as a quantity.
@@ -46,8 +44,9 @@ Rules:
   * Rows marked Optional, not included in the quoted total, are "optional".
   * Configuration bullets and specification text belong to their line's description; they are
     not separate lines.
-  * A shipping/freight row inside the items table is a "shipping" line; another charge row
-    inside the table is a "fee" line.
+  * A shipping/freight/transport row inside the items table is a "shipping" line, even when it
+    is numbered and has an item number; another charge row inside the table is a "fee" line.
+    Delivery bundled with installation, setup or other services is an "item".
 - totals: transcribe every row of the totals section below the table, top to bottom, each with
   its kind (items_subtotal, shipping, fee, tax, grand_total, other). Each sales tax row is its
   own "tax" row.
