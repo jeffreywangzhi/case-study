@@ -1,0 +1,55 @@
+{
+  "_doc": "Ground truth for the Acme vendor quotes, read off the rendered PDFs. Money in USD. required_line_totals: goods/service lines that must be extracted. forbidden_line_totals: alternatives/optional items that must NOT be extracted as order lines. Shipping, fees and tax lines are neither required nor forbidden as order lines. commodity_group_ids: acceptable classifications (soft metric).",
+  "quotes": [
+    {
+      "file": "QT-4120-Cust-14918.pdf",
+      "vendor_aliases": ["Greenmantle Moss Studio"],
+      "vat_id": "85-3252405",
+      "grand_total": 1686.14,
+      "required_line_totals": [715.26, 622.00],
+      "forbidden_line_totals": [430.00],
+      "commodity_group_ids": [15],
+      "traps": "line text duplicated across rows, -20% discount, 'Alternative: vertical logo', shipping and two tax lines"
+    },
+    {
+      "file": "QT-OF2312380-Cust-57692.pdf",
+      "vendor_aliases": ["verdeform", "Bloomcraft Interiors"],
+      "vat_id": "27-1073640",
+      "grand_total": 1413.10,
+      "required_line_totals": [716.56, 120.49, 350.00],
+      "forbidden_line_totals": [],
+      "commodity_group_ids": [15],
+      "traps": "vendor header and footer (incl. EIN) exist only in the page image, fractional quantities"
+    },
+    {
+      "file": "QuoteA0492_23.Pdf",
+      "vendor_aliases": ["Hollis Greenscapes"],
+      "vat_id": "94-1985704",
+      "grand_total": 2042.15,
+      "required_line_totals": [1560.00],
+      "forbidden_line_totals": [2090.00, 1830.00],
+      "commodity_group_ids": [15],
+      "traps": "text layer has spaces collapsed, alternatives 1.1a/1.1b priced as unit price only, EIN printed as '94 1985704', uppercase .Pdf extension"
+    },
+    {
+      "file": "Quote_1__Lio_Technologies_Inc__1x_MBA___2214703918.pdf",
+      "vendor_aliases": ["Apple"],
+      "vat_id": "94-2404110",
+      "grand_total": 1534.59,
+      "required_line_totals": [1409.06],
+      "forbidden_line_totals": [],
+      "commodity_group_ids": [29],
+      "traps": "configuration bullets are not lines, eWaste fee, 'Prepared for' (customer) vs 'Prepared by' (vendor), broken xref table"
+    },
+    {
+      "file": "Quote_Hartwell_Cleveland_ACME_Grinding_Machine.pdf",
+      "vendor_aliases": ["Hartwell Industrial Tools"],
+      "vat_id": null,
+      "grand_total": 18402.50,
+      "required_line_totals": [15000.00, 2000.00],
+      "forbidden_line_totals": [],
+      "commodity_group_ids": [45],
+      "traps": "no tax ID on the document (must stay empty, not invented), 'lump sum' unit, recipient ACME Corp vs vendor Hartwell"
+    }
+  ]
+}
