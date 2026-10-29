@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useMutation } from '@tanstack/react-query';
 import * as api from '@/lib/api';
 import { useCommodityGroups } from '@/lib/hooks/useCommodityGroups';
 import { Button, Input, Alert, Loader } from '@/components/base';
@@ -13,7 +12,13 @@ interface OrderLine {
   amount: number;
   unit: string;
   totalPrice: number;
+  lineType?: api.ExtractedLineType;
 }
+
+const roundCents = (value: number) => Math.round(value * 100) / 100;
+
+const isPdfFile = (file: File) =>
+  file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
 
 export default function NewRequestPage() {
   const router = useRouter();
@@ -27,32 +32,31 @@ export default function NewRequestPage() {
   const [department, setDepartment] = useState('');
   const [commodityGroupId, setCommodityGroupId] = useState<number | null>(null);
   const [orderLines, setOrderLines] = useState<OrderLine[]>([]);
-  const [totalCost, setTotalCost] = useState<number>(0);
+  // Cost breakdown on top of the order lines (which are only what is being bought).
+  const [shippingAmount, setShippingAmount] = useState<number>(0);
+  const [feesAmount, setFeesAmount] = useState<number>(0);
+  const [taxAmount, setTaxAmount] = useState<number>(0);
+  // Alternatives / optional items from the quote: not part of the request unless added.
+  const [excludedLines, setExcludedLines] = useState<OrderLine[]>([]);
+
+  // Always derived, never typed in: total = order lines + shipping + fees + tax.
+  const itemsTotal = roundCents(orderLines.reduce((sum, line) => sum + line.totalPrice, 0));
+  const totalCost = roundCents(itemsTotal + shippingAmount + feesAmount + taxAmount);
 
   // UI state
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [warning, setWarning] = useState('');
+  const [reviewItems, setReviewItems] = useState<api.ExtractionWarning[]>([]);
   const [extracting, setExtracting] = useState(false);
-
-  // PDF parsing mutation
-  const parsePDFMutation = useMutation({
-    mutationFn: async (file: File) => {
-      const result = await api.pdf.parse(file);
-      if (!result.text) {
-        throw new Error('Failed to parse PDF');
-      }
-      return result.text;
-    },
-  });
 
   // Handle file upload and extraction
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const uploadedFile = e.target.files?.[0];
     if (!uploadedFile) return;
 
-    if (uploadedFile.type !== 'application/pdf') {
+    if (!isPdfFile(uploadedFile)) {
       setError('Please upload a PDF file');
       return;
     }
@@ -61,30 +65,30 @@ export default function NewRequestPage() {
     setError('');
     setSuccess('');
     setWarning('');
+    setReviewItems([]);
     setExtracting(true);
 
     try {
-      // Step 1: Parse PDF
-      const pdfText = await parsePDFMutation.mutateAsync(uploadedFile);
+      // One call: the server reads the PDF's text and page images, then checks the numbers.
+      const extractionResult = await api.extraction.extractPdf(uploadedFile);
 
-      // Step 2: Extract structured data AND classify commodity group in one AI call
-      const extractionResult = await api.extraction.extract(pdfText);
-      
       if (!extractionResult.success || !extractionResult.data) {
         throw new Error(extractionResult.error || 'Failed to extract data');
       }
 
       const extracted = extractionResult.data;
 
-      // Step 3: Auto-fill form (including commodity group from extraction)
+      // Auto-fill form (including commodity group from extraction)
       setTitle(extracted.title || '');
       setVendorName(extracted.vendorName || '');
       setVatId(extracted.vatId || '');
       setDepartment(extracted.department || '');
       setOrderLines(extracted.orderLines || []);
-      setTotalCost(extracted.totalCost || 0);
-      
-      // Set commodity group (now included in extraction)
+      setExcludedLines(extracted.excludedLines || []);
+      setShippingAmount(extracted.shippingAmount || 0);
+      setFeesAmount(extracted.feesAmount || 0);
+      setTaxAmount(extracted.taxAmount || 0);
+
       if (extracted.commodityGroupId) {
         setCommodityGroupId(extracted.commodityGroupId);
       }
@@ -96,7 +100,14 @@ export default function NewRequestPage() {
         );
       }
 
-      setSuccess('✓ PDF extracted successfully! Review and submit.');
+      // Specific reasons to double-check, instead of a blanket "success".
+      const warnings = extractionResult.warnings || [];
+      setReviewItems(warnings);
+      setSuccess(
+        extractionResult.status === 'verified'
+          ? '✓ PDF extracted and verified: the lines, tax and totals match the quote. Review and submit.'
+          : '✓ PDF extracted. Some values need your review (see below) before you submit.'
+      );
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
       console.error('Extraction error:', err);
@@ -128,22 +139,21 @@ export default function NewRequestPage() {
     
     // Auto-calculate total price
     if (field === 'unitPrice' || field === 'amount') {
-      updated[index].totalPrice = updated[index].unitPrice * updated[index].amount;
+      updated[index].totalPrice = roundCents(updated[index].unitPrice * updated[index].amount);
     }
-    
+
     setOrderLines(updated);
-    
-    // Update total cost
-    const newTotal = updated.reduce((sum, line) => sum + line.totalPrice, 0);
-    setTotalCost(newTotal);
   };
 
   // Remove order line
   const removeOrderLine = (index: number) => {
-    const updated = orderLines.filter((_, i) => i !== index);
-    setOrderLines(updated);
-    const newTotal = updated.reduce((sum, line) => sum + line.totalPrice, 0);
-    setTotalCost(newTotal);
+    setOrderLines(orderLines.filter((_, i) => i !== index));
+  };
+
+  // Move an alternative / optional item from the quote into the request
+  const includeExcludedLine = (index: number) => {
+    setOrderLines([...orderLines, { ...excludedLines[index], lineType: 'item' }]);
+    setExcludedLines(excludedLines.filter((_, i) => i !== index));
   };
 
   // Submit form
@@ -174,6 +184,9 @@ export default function NewRequestPage() {
         vatId,
         commodityGroupId: commodityGroupId,
         totalCost,
+        shippingAmount,
+        feesAmount,
+        taxAmount,
         department,
         orderLines,
       });
@@ -211,6 +224,16 @@ export default function NewRequestPage() {
 
       {error && <Alert variant="error" className="mb-6">{error}</Alert>}
       {warning && <Alert variant="warning" className="mb-6">{warning}</Alert>}
+      {reviewItems.length > 0 && (
+        <Alert variant="warning" className="mb-6">
+          <p className="font-medium mb-1">Please review before submitting:</p>
+          <ul className="list-disc pl-5 space-y-1">
+            {reviewItems.map((item, i) => (
+              <li key={i}>{item.message}</li>
+            ))}
+          </ul>
+        </Alert>
+      )}
       {success && <Alert variant="success" className="mb-6">{success}</Alert>}
 
       <form onSubmit={handleSubmit} className="space-y-8">
@@ -224,7 +247,7 @@ export default function NewRequestPage() {
           <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-accent-deep/50 transition-colors">
             <input
               type="file"
-              accept="application/pdf"
+              accept="application/pdf,.pdf"
               onChange={handleFileChange}
               className="hidden"
               id="pdf-upload"
@@ -436,9 +459,81 @@ export default function NewRequestPage() {
           )}
         </div>
 
-        {/* Total Cost */}
-        <div className="bg-accent-soft/20 border-2 border-accent/40 rounded-lg p-6">
-          <div className="flex items-center justify-between">
+        {/* Alternatives / optional items the quote lists but doesn't include in its total */}
+        {excludedLines.length > 0 && (
+          <div className="lio-card p-6">
+            <h2 className="text-xl font-semibold tracking-tight text-ink mb-1">
+              Not included: alternatives &amp; optional items
+            </h2>
+            <p className="text-sm text-gray-600 mb-4">
+              The quote lists these as either-or variants or add-ons; they are not part of its
+              total. Add one only if you want it instead of, or on top of, the quoted items.
+            </p>
+            <div className="space-y-2">
+              {excludedLines.map((line, index) => (
+                <div
+                  key={index}
+                  className="flex items-center justify-between gap-4 border border-dashed border-gray-300 rounded-lg p-3"
+                >
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">
+                      {line.positionDescription}
+                      <span className="ml-2 inline-flex px-2 py-0.5 text-xs font-medium rounded-full bg-amber-50 text-amber-800">
+                        {line.lineType === 'optional' ? 'Optional' : 'Alternative'}
+                      </span>
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {line.amount} {line.unit} × ${line.unitPrice.toFixed(2)} = $
+                      {line.totalPrice.toFixed(2)}
+                    </p>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => includeExcludedLine(index)}
+                  >
+                    Add to request
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Cost breakdown: total = order lines + shipping + fees + tax */}
+        <div className="bg-accent-soft/20 border-2 border-accent/40 rounded-lg p-6 space-y-4">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-gray-700">Items (order lines)</span>
+            <span className="font-medium text-gray-900">${itemsTotal.toFixed(2)}</span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Input
+              label="Shipping ($)"
+              type="number"
+              step="0.01"
+              min="0"
+              value={shippingAmount}
+              onChange={(e) => setShippingAmount(parseFloat(e.target.value) || 0)}
+            />
+            <Input
+              label="Fees ($)"
+              type="number"
+              step="0.01"
+              min="0"
+              value={feesAmount}
+              onChange={(e) => setFeesAmount(parseFloat(e.target.value) || 0)}
+            />
+            <Input
+              label="Sales Tax ($)"
+              type="number"
+              step="0.01"
+              min="0"
+              value={taxAmount}
+              onChange={(e) => setTaxAmount(parseFloat(e.target.value) || 0)}
+            />
+          </div>
+          <div className="flex items-center justify-between border-t border-accent/30 pt-4">
             <span className="text-lg font-medium text-gray-900">Total Cost</span>
             <span className="text-3xl font-bold text-accent-deep">
               ${totalCost.toFixed(2)}

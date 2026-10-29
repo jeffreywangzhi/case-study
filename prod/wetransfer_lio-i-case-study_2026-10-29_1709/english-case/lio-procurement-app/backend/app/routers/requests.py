@@ -37,6 +37,9 @@ _FIELD_LABELS = {
     "vat_id": "tax ID",
     "commodity_group_id": "commodity group",
     "total_cost": "total cost",
+    "shipping_amount": "shipping",
+    "fees_amount": "fees",
+    "tax_amount": "tax",
     "department": "department",
     "order_lines": "order lines",
 }
@@ -139,6 +142,9 @@ def _changed_fields(request: ProcurementRequest, payload: RequestUpdate) -> list
         changed.append("commodity_group_id")
     if float(request.total_cost or 0) != float(payload.total_cost or 0):
         changed.append("total_cost")
+    for field in ("shipping_amount", "fees_amount", "tax_amount"):
+        if float(getattr(request, field) or 0) != float(getattr(payload, field) or 0):
+            changed.append(field)
     if (request.department or "") != (payload.department or ""):
         changed.append("department")
     old_lines = _order_lines_signature(
@@ -194,6 +200,9 @@ def create_request(
         vat_id=payload.vat_id,
         commodity_group_id=payload.commodity_group_id,
         total_cost=payload.total_cost,
+        shipping_amount=payload.shipping_amount,
+        fees_amount=payload.fees_amount,
+        tax_amount=payload.tax_amount,
         department=payload.department,
         organization_id=membership.organization_id,
         created_by=membership.user_id,
@@ -238,6 +247,9 @@ def update_request(
     request.vat_id = payload.vat_id
     request.commodity_group_id = payload.commodity_group_id
     request.total_cost = payload.total_cost
+    request.shipping_amount = payload.shipping_amount
+    request.fees_amount = payload.fees_amount
+    request.tax_amount = payload.tax_amount
     request.department = payload.department
 
     # Replace order lines (same semantics as the original delete-and-insert).

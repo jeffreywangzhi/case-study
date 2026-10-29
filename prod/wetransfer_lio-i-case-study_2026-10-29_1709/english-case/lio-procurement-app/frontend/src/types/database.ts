@@ -61,6 +61,10 @@ export type ProcurementRequest = {
   approved_by: string | null;
   approved_at: string | null;
   total_cost: number | null;
+  /** total_cost = sum of order line totals + shipping_amount + fees_amount + tax_amount */
+  shipping_amount: number | null;
+  fees_amount: number | null;
+  tax_amount: number | null;
   created_at: string;
   updated_at: string;
 };

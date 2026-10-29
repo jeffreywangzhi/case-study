@@ -1,0 +1,711 @@
+{
+  "meta": {
+    "tag": "qt4120-stability-10x",
+    "pipeline": "pdf",
+    "model": "gpt-4o-mini",
+    "runs_per_quote": 10,
+    "started_at": "2026-10-29T19:44:25+00:00",
+    "git_commit": "a8c6f46",
+    "git_dirty": true,
+    "labels_sha256": "2d6710a00232",
+    "summary": {
+      "overall_pct": {
+        "ok": 100,
+        "vendor": 100,
+        "vat_id": 100,
+        "grand_total": 100,
+        "lines": 100,
+        "commodity": 100,
+        "department": 100,
+        "line_detail": 100,
+        "charges": 100,
+        "tax": 100,
+        "reconciles": 100,
+        "flagged": 100
+      },
+      "per_quote": {
+        "QT-4120-Cust-14918.pdf": {
+          "runs": 10,
+          "ok": "10/10",
+          "vendor": "10/10",
+          "vat_id": "10/10",
+          "grand_total": "10/10",
+          "lines": "10/10",
+          "commodity": "10/10",
+          "department": "10/10",
+          "line_detail": "10/10",
+          "charges": "10/10",
+          "tax": "10/10",
+          "reconciles": "10/10",
+          "flagged": "10/10"
+        }
+      },
+      "latency_s": {
+        "p50": 5.1,
+        "max": 5.8
+      }
+    }
+  },
+  "results": [
+    {
+      "file": "QT-4120-Cust-14918.pdf",
+      "run": 1,
+      "seconds": 5.8,
+      "scores": {
+        "ok": true,
+        "vendor": true,
+        "vat_id": true,
+        "grand_total": true,
+        "lines": true,
+        "commodity": true,
+        "department": true,
+        "line_detail": true,
+        "charges": true,
+        "tax": true,
+        "reconciles": true,
+        "flagged": true
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Moss Art Panels and Logo Integration",
+          "vendorName": "Greenmantle Moss Studio, LLC",
+          "vatId": "85-3252405",
+          "department": "",
+          "orderLines": [
+            {
+              "positionDescription": "Moss Art Panel, Mixed Moss 63 x 31.5 in (list $894.08, -20%)",
+              "unitPrice": 715.26,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 715.26,
+              "lineType": "item"
+            },
+            {
+              "positionDescription": "Logo integration \"asklio\" horizontal",
+              "unitPrice": 622.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 622.0,
+              "lineType": "item"
+            }
+          ],
+          "excludedLines": [
+            {
+              "positionDescription": "Logo integration \"asklio\" vertical",
+              "unitPrice": 430.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 430.0,
+              "lineType": "alternative"
+            }
+          ],
+          "shippingAmount": 215.0,
+          "feesAmount": 0.0,
+          "taxAmount": 133.88,
+          "totalCost": 1686.14,
+          "commodityGroupId": 15,
+          "commodityGroupName": "Office Equipment"
+        },
+        "error": null,
+        "missingFields": null,
+        "warnings": [],
+        "status": "verified"
+      }
+    },
+    {
+      "file": "QT-4120-Cust-14918.pdf",
+      "run": 2,
+      "seconds": 5.8,
+      "scores": {
+        "ok": true,
+        "vendor": true,
+        "vat_id": true,
+        "grand_total": true,
+        "lines": true,
+        "commodity": true,
+        "department": true,
+        "line_detail": true,
+        "charges": true,
+        "tax": true,
+        "reconciles": true,
+        "flagged": true
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Moss Art Panels and Logo Integration",
+          "vendorName": "Greenmantle Moss Studio, LLC",
+          "vatId": "85-3252405",
+          "department": "",
+          "orderLines": [
+            {
+              "positionDescription": "Moss Art Panel, Mixed Moss 63 x 31.5 in (list $894.08, -20%)",
+              "unitPrice": 715.26,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 715.26,
+              "lineType": "item"
+            },
+            {
+              "positionDescription": "Logo integration \"asklio\" horizontal",
+              "unitPrice": 622.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 622.0,
+              "lineType": "item"
+            }
+          ],
+          "excludedLines": [
+            {
+              "positionDescription": "Logo integration \"asklio\" vertical",
+              "unitPrice": 430.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 430.0,
+              "lineType": "alternative"
+            }
+          ],
+          "shippingAmount": 215.0,
+          "feesAmount": 0.0,
+          "taxAmount": 133.88,
+          "totalCost": 1686.14,
+          "commodityGroupId": 15,
+          "commodityGroupName": "Office Equipment"
+        },
+        "error": null,
+        "missingFields": null,
+        "warnings": [],
+        "status": "verified"
+      }
+    },
+    {
+      "file": "QT-4120-Cust-14918.pdf",
+      "run": 3,
+      "seconds": 4.9,
+      "scores": {
+        "ok": true,
+        "vendor": true,
+        "vat_id": true,
+        "grand_total": true,
+        "lines": true,
+        "commodity": true,
+        "department": true,
+        "line_detail": true,
+        "charges": true,
+        "tax": true,
+        "reconciles": true,
+        "flagged": true
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Moss Art Panels and Logo Integration",
+          "vendorName": "Greenmantle Moss Studio, LLC",
+          "vatId": "85-3252405",
+          "department": "",
+          "orderLines": [
+            {
+              "positionDescription": "Moss Art Panel, Mixed Moss 63 x 31.5 in (list $894.08, -20%)",
+              "unitPrice": 715.26,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 715.26,
+              "lineType": "item"
+            },
+            {
+              "positionDescription": "Logo integration \"asklio\" horizontal",
+              "unitPrice": 622.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 622.0,
+              "lineType": "item"
+            }
+          ],
+          "excludedLines": [
+            {
+              "positionDescription": "Logo integration \"asklio\" vertical",
+              "unitPrice": 430.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 430.0,
+              "lineType": "alternative"
+            }
+          ],
+          "shippingAmount": 215.0,
+          "feesAmount": 0.0,
+          "taxAmount": 133.88,
+          "totalCost": 1686.14,
+          "commodityGroupId": 15,
+          "commodityGroupName": "Office Equipment"
+        },
+        "error": null,
+        "missingFields": null,
+        "warnings": [],
+        "status": "verified"
+      }
+    },
+    {
+      "file": "QT-4120-Cust-14918.pdf",
+      "run": 4,
+      "seconds": 4.5,
+      "scores": {
+        "ok": true,
+        "vendor": true,
+        "vat_id": true,
+        "grand_total": true,
+        "lines": true,
+        "commodity": true,
+        "department": true,
+        "line_detail": true,
+        "charges": true,
+        "tax": true,
+        "reconciles": true,
+        "flagged": true
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Moss Art Panels and Logo Integration",
+          "vendorName": "Greenmantle Moss Studio, LLC",
+          "vatId": "85-3252405",
+          "department": "",
+          "orderLines": [
+            {
+              "positionDescription": "Moss Art Panel, Mixed Moss 63 x 31.5 in (list $894.08, -20%)",
+              "unitPrice": 715.26,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 715.26,
+              "lineType": "item"
+            },
+            {
+              "positionDescription": "Logo integration \"asklio\" horizontal",
+              "unitPrice": 622.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 622.0,
+              "lineType": "item"
+            }
+          ],
+          "excludedLines": [
+            {
+              "positionDescription": "Logo integration \"asklio\" vertical",
+              "unitPrice": 430.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 430.0,
+              "lineType": "alternative"
+            }
+          ],
+          "shippingAmount": 215.0,
+          "feesAmount": 0.0,
+          "taxAmount": 133.88,
+          "totalCost": 1686.14,
+          "commodityGroupId": 15,
+          "commodityGroupName": "Office Equipment"
+        },
+        "error": null,
+        "missingFields": null,
+        "warnings": [],
+        "status": "verified"
+      }
+    },
+    {
+      "file": "QT-4120-Cust-14918.pdf",
+      "run": 5,
+      "seconds": 4.8,
+      "scores": {
+        "ok": true,
+        "vendor": true,
+        "vat_id": true,
+        "grand_total": true,
+        "lines": true,
+        "commodity": true,
+        "department": true,
+        "line_detail": true,
+        "charges": true,
+        "tax": true,
+        "reconciles": true,
+        "flagged": true
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Moss Art Panels and Logo Integration",
+          "vendorName": "Greenmantle Moss Studio, LLC",
+          "vatId": "85-3252405",
+          "department": "",
+          "orderLines": [
+            {
+              "positionDescription": "Moss Art Panel, Mixed Moss 63 x 31.5 in (list $894.08, -20%)",
+              "unitPrice": 715.26,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 715.26,
+              "lineType": "item"
+            },
+            {
+              "positionDescription": "Logo integration \"asklio\" horizontal",
+              "unitPrice": 622.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 622.0,
+              "lineType": "item"
+            }
+          ],
+          "excludedLines": [
+            {
+              "positionDescription": "Logo integration \"asklio\" vertical",
+              "unitPrice": 430.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 430.0,
+              "lineType": "alternative"
+            }
+          ],
+          "shippingAmount": 215.0,
+          "feesAmount": 0.0,
+          "taxAmount": 133.88,
+          "totalCost": 1686.14,
+          "commodityGroupId": 15,
+          "commodityGroupName": "Office Equipment"
+        },
+        "error": null,
+        "missingFields": null,
+        "warnings": [],
+        "status": "verified"
+      }
+    },
+    {
+      "file": "QT-4120-Cust-14918.pdf",
+      "run": 6,
+      "seconds": 5.6,
+      "scores": {
+        "ok": true,
+        "vendor": true,
+        "vat_id": true,
+        "grand_total": true,
+        "lines": true,
+        "commodity": true,
+        "department": true,
+        "line_detail": true,
+        "charges": true,
+        "tax": true,
+        "reconciles": true,
+        "flagged": true
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Moss Art Panels and Logo Integration",
+          "vendorName": "Greenmantle Moss Studio, LLC",
+          "vatId": "85-3252405",
+          "department": "",
+          "orderLines": [
+            {
+              "positionDescription": "Moss Art Panel, Mixed Moss 63 x 31.5 in (list $894.08, -20%)",
+              "unitPrice": 715.26,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 715.26,
+              "lineType": "item"
+            },
+            {
+              "positionDescription": "Logo integration \"asklio\" horizontal",
+              "unitPrice": 622.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 622.0,
+              "lineType": "item"
+            }
+          ],
+          "excludedLines": [
+            {
+              "positionDescription": "Logo integration \"asklio\" vertical",
+              "unitPrice": 430.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 430.0,
+              "lineType": "alternative"
+            }
+          ],
+          "shippingAmount": 215.0,
+          "feesAmount": 0.0,
+          "taxAmount": 133.88,
+          "totalCost": 1686.14,
+          "commodityGroupId": 15,
+          "commodityGroupName": "Office Equipment"
+        },
+        "error": null,
+        "missingFields": null,
+        "warnings": [],
+        "status": "verified"
+      }
+    },
+    {
+      "file": "QT-4120-Cust-14918.pdf",
+      "run": 7,
+      "seconds": 5.3,
+      "scores": {
+        "ok": true,
+        "vendor": true,
+        "vat_id": true,
+        "grand_total": true,
+        "lines": true,
+        "commodity": true,
+        "department": true,
+        "line_detail": true,
+        "charges": true,
+        "tax": true,
+        "reconciles": true,
+        "flagged": true
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Moss Art Panels and Logo Integration",
+          "vendorName": "Greenmantle Moss Studio, LLC",
+          "vatId": "85-3252405",
+          "department": "",
+          "orderLines": [
+            {
+              "positionDescription": "Moss Art Panel, Mixed Moss 63 x 31.5 in (list $894.08, -20%)",
+              "unitPrice": 715.26,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 715.26,
+              "lineType": "item"
+            },
+            {
+              "positionDescription": "Logo integration \"asklio\" horizontal",
+              "unitPrice": 622.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 622.0,
+              "lineType": "item"
+            }
+          ],
+          "excludedLines": [
+            {
+              "positionDescription": "Logo integration \"asklio\" vertical",
+              "unitPrice": 430.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 430.0,
+              "lineType": "alternative"
+            }
+          ],
+          "shippingAmount": 215.0,
+          "feesAmount": 0.0,
+          "taxAmount": 133.88,
+          "totalCost": 1686.14,
+          "commodityGroupId": 15,
+          "commodityGroupName": "Office Equipment"
+        },
+        "error": null,
+        "missingFields": null,
+        "warnings": [],
+        "status": "verified"
+      }
+    },
+    {
+      "file": "QT-4120-Cust-14918.pdf",
+      "run": 8,
+      "seconds": 5.0,
+      "scores": {
+        "ok": true,
+        "vendor": true,
+        "vat_id": true,
+        "grand_total": true,
+        "lines": true,
+        "commodity": true,
+        "department": true,
+        "line_detail": true,
+        "charges": true,
+        "tax": true,
+        "reconciles": true,
+        "flagged": true
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Moss Art Panels and Logo Integration",
+          "vendorName": "Greenmantle Moss Studio, LLC",
+          "vatId": "85-3252405",
+          "department": "",
+          "orderLines": [
+            {
+              "positionDescription": "Moss Art Panel, Mixed Moss 63 x 31.5 in (list $894.08, -20%)",
+              "unitPrice": 715.26,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 715.26,
+              "lineType": "item"
+            },
+            {
+              "positionDescription": "Logo integration \"asklio\" horizontal",
+              "unitPrice": 622.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 622.0,
+              "lineType": "item"
+            }
+          ],
+          "excludedLines": [
+            {
+              "positionDescription": "Logo integration \"asklio\" vertical",
+              "unitPrice": 430.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 430.0,
+              "lineType": "alternative"
+            }
+          ],
+          "shippingAmount": 215.0,
+          "feesAmount": 0.0,
+          "taxAmount": 133.88,
+          "totalCost": 1686.14,
+          "commodityGroupId": 15,
+          "commodityGroupName": "Office Equipment"
+        },
+        "error": null,
+        "missingFields": null,
+        "warnings": [],
+        "status": "verified"
+      }
+    },
+    {
+      "file": "QT-4120-Cust-14918.pdf",
+      "run": 9,
+      "seconds": 5.1,
+      "scores": {
+        "ok": true,
+        "vendor": true,
+        "vat_id": true,
+        "grand_total": true,
+        "lines": true,
+        "commodity": true,
+        "department": true,
+        "line_detail": true,
+        "charges": true,
+        "tax": true,
+        "reconciles": true,
+        "flagged": true
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Moss Art Panels and Logo Integration",
+          "vendorName": "Greenmantle Moss Studio, LLC",
+          "vatId": "85-3252405",
+          "department": "",
+          "orderLines": [
+            {
+              "positionDescription": "Moss Art Panel, Mixed Moss 63 x 31.5 in (list $894.08, -20%)",
+              "unitPrice": 715.26,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 715.26,
+              "lineType": "item"
+            },
+            {
+              "positionDescription": "Logo integration \"asklio\" horizontal",
+              "unitPrice": 622.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 622.0,
+              "lineType": "item"
+            }
+          ],
+          "excludedLines": [
+            {
+              "positionDescription": "Logo integration \"asklio\" vertical",
+              "unitPrice": 430.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 430.0,
+              "lineType": "alternative"
+            }
+          ],
+          "shippingAmount": 215.0,
+          "feesAmount": 0.0,
+          "taxAmount": 133.88,
+          "totalCost": 1686.14,
+          "commodityGroupId": 15,
+          "commodityGroupName": "Office Equipment"
+        },
+        "error": null,
+        "missingFields": null,
+        "warnings": [],
+        "status": "verified"
+      }
+    },
+    {
+      "file": "QT-4120-Cust-14918.pdf",
+      "run": 10,
+      "seconds": 4.6,
+      "scores": {
+        "ok": true,
+        "vendor": true,
+        "vat_id": true,
+        "grand_total": true,
+        "lines": true,
+        "commodity": true,
+        "department": true,
+        "line_detail": true,
+        "charges": true,
+        "tax": true,
+        "reconciles": true,
+        "flagged": true
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Moss Art Panels and Logo Integration",
+          "vendorName": "Greenmantle Moss Studio, LLC",
+          "vatId": "85-3252405",
+          "department": "",
+          "orderLines": [
+            {
+              "positionDescription": "Moss Art Panel, Mixed Moss 63 x 31.5 in (list $894.08, -20%)",
+              "unitPrice": 715.26,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 715.26,
+              "lineType": "item"
+            },
+            {
+              "positionDescription": "Logo integration \"asklio\" horizontal",
+              "unitPrice": 622.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 622.0,
+              "lineType": "item"
+            }
+          ],
+          "excludedLines": [
+            {
+              "positionDescription": "Logo integration \"asklio\" vertical",
+              "unitPrice": 430.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 430.0,
+              "lineType": "alternative"
+            }
+          ],
+          "shippingAmount": 215.0,
+          "feesAmount": 0.0,
+          "taxAmount": 133.88,
+          "totalCost": 1686.14,
+          "commodityGroupId": 15,
+          "commodityGroupName": "Office Equipment"
+        },
+        "error": null,
+        "missingFields": null,
+        "warnings": [],
+        "status": "verified"
+      }
+    }
+  ]
+}

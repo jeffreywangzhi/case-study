@@ -1,5 +1,5 @@
 {
-  "_doc": "Ground truth for the Acme vendor quotes, read off the rendered PDFs. Money in USD. required_line_totals: goods/service lines that must be extracted. forbidden_line_totals: alternatives/optional items that must NOT be extracted as order lines. Shipping, fees and tax lines are neither required nor forbidden as order lines. commodity_group_ids: acceptable classifications (soft metric).",
+  "_doc": "Ground truth for the Acme vendor quotes, read off the rendered PDFs. Money in USD. required_line_totals: goods/service lines that must be extracted. forbidden_line_totals: alternatives/optional items that must NOT be extracted as order lines. Shipping, fees and tax lines are neither required nor forbidden as order lines. commodity_group_ids: acceptable classifications (soft metric). extended (optional, added per quote as it is reviewed): department (null = must stay empty), lines (every order line with quantity and net unit price per DECISIONS D7; items only, matched by total), items_subtotal (the quote's goods subtotal, for reference), shipping / fees / tax (expected shippingAmount, feesAmount, taxAmount: the cost breakdown per D8/D9). Extended fields are scored only for quotes that have them.",
   "quotes": [
     {
       "file": "QT-4120-Cust-14918.pdf",
@@ -9,7 +9,21 @@
       "required_line_totals": [715.26, 622.00],
       "forbidden_line_totals": [430.00],
       "commodity_group_ids": [15],
-      "traps": "line text duplicated across rows, -20% discount, 'Alternative: vertical logo', shipping and two tax lines"
+      "traps": "line text duplicated across rows, -20% discount, 'Alternative: vertical logo', shipping and two tax lines",
+      "extended": {
+        "department": null,
+        "lines": [
+          {"total": 715.26, "quantity": 1, "unit_price": 715.26,
+           "note": "Moss Art Panel: list 894.08 at -20%; net unit price per D7. Row 1 is a heading, not a line (D11)."},
+          {"total": 622.00, "quantity": 1, "unit_price": 622.00,
+           "note": "Logo integration, horizontal."}
+        ],
+        "items_subtotal": 1337.26,
+        "shipping": 215.00,
+        "fees": 0,
+        "tax": 133.88,
+        "tax_note": "8.625% on items (115.34) + 8.625% on shipping (18.54). Items 1337.26 + shipping 215.00 + tax 133.88 = grand total 1686.14."
+      }
     },
     {
       "file": "QT-OF2312380-Cust-57692.pdf",

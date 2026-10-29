@@ -27,6 +27,9 @@ class RequestCreate(BaseModel):
     vat_id: str | None = Field(default=None, alias="vatId")
     commodity_group_id: int = Field(alias="commodityGroupId")
     total_cost: float = Field(alias="totalCost")
+    shipping_amount: float | None = Field(default=None, alias="shippingAmount")
+    fees_amount: float | None = Field(default=None, alias="feesAmount")
+    tax_amount: float | None = Field(default=None, alias="taxAmount")
     department: str | None = None
     order_lines: list[OrderLineIn] = Field(alias="orderLines", min_length=1)
 
@@ -38,6 +41,9 @@ class RequestUpdate(BaseModel):
     vat_id: str | None = Field(default=None, alias="vatId")
     commodity_group_id: int = Field(alias="commodityGroupId")
     total_cost: float = Field(alias="totalCost")
+    shipping_amount: float | None = Field(default=None, alias="shippingAmount")
+    fees_amount: float | None = Field(default=None, alias="feesAmount")
+    tax_amount: float | None = Field(default=None, alias="taxAmount")
     department: str | None = None
     order_lines: list[OrderLineIn] = Field(alias="orderLines")
 
@@ -106,6 +112,9 @@ class RequestOut(BaseModel):
     approved_by: uuid.UUID | None
     approved_at: datetime | None
     total_cost: float | None
+    shipping_amount: float | None = None
+    fees_amount: float | None = None
+    tax_amount: float | None = None
     created_at: datetime
     updated_at: datetime
     order_lines: list[OrderLineOut]

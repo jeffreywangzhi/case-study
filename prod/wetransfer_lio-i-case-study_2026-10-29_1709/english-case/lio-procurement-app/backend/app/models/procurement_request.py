@@ -60,8 +60,11 @@ class ProcurementRequest(Base, TimestampMixin):
         DateTime(timezone=True), nullable=True
     )
 
-    # Financial
+    # Financial: total_cost = sum(order line totals) + shipping + fees + tax
     total_cost: Mapped[float | None] = mapped_column(Numeric(12, 2), nullable=True)
+    shipping_amount: Mapped[float | None] = mapped_column(Numeric(12, 2), nullable=True)
+    fees_amount: Mapped[float | None] = mapped_column(Numeric(12, 2), nullable=True)
+    tax_amount: Mapped[float | None] = mapped_column(Numeric(12, 2), nullable=True)
 
     # Multi-tenancy (added in migration 003, nullable for backward compatibility)
     organization_id: Mapped[uuid.UUID | None] = mapped_column(

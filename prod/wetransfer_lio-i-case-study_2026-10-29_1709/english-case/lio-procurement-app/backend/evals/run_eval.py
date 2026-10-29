@@ -9,8 +9,8 @@ Saved runs can be re-scored offline against the current labels, so tightening
 the labels never requires re-running old code or paying for new API calls.
 
 Usage:
-    python backend/evals/run_eval.py [--runs 3] [--pipeline legacy] [--tag NAME]
-        [--model gpt-4o-mini] [--out FILE] [--api URL] [--quotes DIR]
+    python backend/evals/run_eval.py [--runs 3] [--pipeline pdf|text] [--file QT-4120]
+        [--tag NAME] [--model gpt-4o-mini] [--out FILE] [--api URL] [--quotes DIR]
     python backend/evals/run_eval.py --rescore backend/evals/results/baseline-legacy.json
 
 Stdlib only, so it runs from the host without a virtualenv.
@@ -34,8 +34,12 @@ APP_DIR = EVAL_DIR.parent.parent
 DEFAULT_QUOTES = APP_DIR.parent / "quotes"
 LABELS_FILE = EVAL_DIR / "labels.json"
 
-FIELDS = ["ok", "vendor", "vat_id", "grand_total", "lines", "commodity"]
+BASE_FIELDS = ["ok", "vendor", "vat_id", "grand_total", "lines", "commodity"]
+# Scored only for quotes whose label has an ``extended`` block; n/a otherwise.
+EXTENDED_FIELDS = ["department", "line_detail", "charges", "tax", "reconciles", "flagged"]
+FIELDS = BASE_FIELDS + EXTENDED_FIELDS
 MONEY_TOLERANCE = 0.01
+QUANTITY_TOLERANCE = 0.001
 
 
 # ---------------------------------------------------------------------------
@@ -89,8 +93,12 @@ def sign_in(api: str, email: str, password: str) -> str:
 # Pipelines: each returns the extraction envelope {success, data, error, ...}
 # ---------------------------------------------------------------------------
 
-def run_legacy(api: str, token: str, path: Path) -> dict:
-    """Current flow: /pdf/parse (text) then /extraction (LLM)."""
+def run_text(api: str, token: str, path: Path) -> dict:
+    """Two-step text flow: /pdf/parse (plain text) then /extraction (no images).
+
+    This was the original upload flow ("legacy" in the baseline); the endpoints
+    now run the new checks too, so it no longer measures the original code.
+    """
     status, body = _post_file(f"{api}/pdf/parse", path, token)
     if status != 200:
         return {"success": False, "error": f"/pdf/parse {status}: {body}"}
@@ -100,7 +108,15 @@ def run_legacy(api: str, token: str, path: Path) -> dict:
     return body
 
 
-PIPELINES = {"legacy": run_legacy}
+def run_pdf(api: str, token: str, path: Path) -> dict:
+    """Current upload flow: /extraction/pdf (layout text + page images + checks)."""
+    status, body = _post_file(f"{api}/extraction/pdf", path, token)
+    if status != 200:
+        return {"success": False, "error": f"/extraction/pdf {status}: {body}"}
+    return body
+
+
+PIPELINES = {"pdf": run_pdf, "text": run_text}
 
 
 # ---------------------------------------------------------------------------
@@ -115,15 +131,37 @@ def _has_total(totals: list[float], target: float) -> bool:
     return any(abs(t - target) <= MONEY_TOLERANCE for t in totals)
 
 
-def score(label: dict, envelope: dict) -> dict[str, bool]:
+def _close(actual: object, expected: float, tolerance: float = MONEY_TOLERANCE) -> bool:
+    return abs(float(actual or 0) - expected) <= tolerance
+
+
+def _line_detail_ok(expected_lines: list[dict], lines: list[dict]) -> bool:
+    """Every expected line is present (matched by total) with the right quantity and unit price."""
+    for expected in expected_lines:
+        match = next((line for line in lines if _close(line.get("totalPrice"), expected["total"])),
+                     None)
+        if match is None:
+            return False
+        if not _close(match.get("amount"), expected["quantity"], QUANTITY_TOLERANCE):
+            return False
+        if not _close(match.get("unitPrice"), expected["unit_price"]):
+            return False
+    return True
+
+
+def score(label: dict, envelope: dict) -> dict[str, bool | None]:
+    """Per-field pass/fail. ``None`` means the field isn't labelled for this quote (n/a)."""
+    extended = label.get("extended")
+    applicable = BASE_FIELDS + (EXTENDED_FIELDS if extended else [])
     data = envelope.get("data") or {}
     if not envelope.get("success") or not data:
-        return {f: False for f in FIELDS}
+        return {f: (False if f in applicable else None) for f in FIELDS}
 
     vendor = (data.get("vendorName") or "").lower()
-    line_totals = [float(line.get("totalPrice") or 0) for line in data.get("orderLines") or []]
+    lines = data.get("orderLines") or []
+    line_totals = [float(line.get("totalPrice") or 0) for line in lines]
     expected_vat = label["vat_id"]
-    return {
+    scores: dict[str, bool | None] = {
         "ok": True,
         "vendor": any(alias.lower() in vendor for alias in label["vendor_aliases"]),
         "vat_id": (
@@ -137,6 +175,29 @@ def score(label: dict, envelope: dict) -> dict[str, bool]:
         and not any(_has_total(line_totals, t) for t in label["forbidden_line_totals"]),
         "commodity": data.get("commodityGroupId") in label["commodity_group_ids"],
     }
+    if not extended:
+        return {**scores, **{f: None for f in EXTENDED_FIELDS}}
+
+    department = (data.get("department") or "").strip()
+    shipping = float(data.get("shippingAmount") or 0)
+    fees = float(data.get("feesAmount") or 0)
+    tax = float(data.get("taxAmount") or 0)
+    scores["department"] = (
+        not department
+        if extended["department"] is None
+        else extended["department"].lower() in department.lower()
+    )
+    scores["line_detail"] = _line_detail_ok(extended["lines"], lines)
+    scores["charges"] = _close(shipping, extended["shipping"]) and _close(fees, extended["fees"])
+    scores["tax"] = _close(tax, extended["tax"])
+    # Internal consistency of the extraction itself: lines + shipping + fees + tax = total cost.
+    scores["reconciles"] = _close(sum(line_totals) + shipping + fees + tax,
+                                  float(data.get("totalCost") or 0))
+    # No silent errors: either everything above is right, or the response carries a warning.
+    # (Legacy responses only have missingFields; the new pipeline returns warnings.)
+    warned = bool(envelope.get("warnings") or envelope.get("missingFields"))
+    scores["flagged"] = all(scores.values()) or warned
+    return scores
 
 
 # ---------------------------------------------------------------------------
@@ -144,21 +205,34 @@ def score(label: dict, envelope: dict) -> dict[str, bool]:
 # ---------------------------------------------------------------------------
 
 def report(results: list[dict], labels: list[dict]) -> dict:
-    """Print per-quote x per-field pass counts and overall accuracy; return the summary."""
+    """Print per-quote x per-field pass counts and overall accuracy; return the summary.
+
+    Fields that are n/a for a quote (``None``) are shown as "-" and left out of the totals.
+    """
+    def scored(rows: list[dict], field: str) -> list[bool]:
+        return [r["scores"].get(field) for r in rows if r["scores"].get(field) is not None]
+
+    width = max(len(f) for f in FIELDS) + 1
     per_quote = {}
-    print(f"\n{'quote':40} " + " ".join(f"{f:>11}" for f in FIELDS))
+    print(f"\n{'quote':40} " + " ".join(f"{f:>{width}}" for f in FIELDS))
     for label in labels:
         rows = [r for r in results if r["file"] == label["file"]]
         if not rows:
             continue
-        counts = {f: sum(r["scores"][f] for r in rows) for f in FIELDS}
+        cells, counts = [], {}
+        for f in FIELDS:
+            values = scored(rows, f)
+            counts[f] = f"{sum(values)}/{len(values)}" if values else None
+            cells.append(counts[f] or "-")
         per_quote[label["file"]] = {"runs": len(rows), **counts}
-        print(f"{label['file'][:40]:40} "
-              + " ".join(f"{f'{counts[f]}/{len(rows)}':>11}" for f in FIELDS))
+        print(f"{label['file'][:40]:40} " + " ".join(f"{c:>{width}}" for c in cells))
 
-    overall = {f: round(100 * sum(r["scores"][f] for r in results) / len(results))
-               for f in FIELDS}
-    print(f"{'ALL':40} " + " ".join(f"{f'{overall[f]}%':>11}" for f in FIELDS))
+    overall = {}
+    for f in FIELDS:
+        values = scored(results, f)
+        overall[f] = round(100 * sum(values) / len(values)) if values else None
+    print(f"{'ALL':40} " + " ".join(
+        f"{(f'{overall[f]}%' if overall[f] is not None else '-'):>{width}}" for f in FIELDS))
 
     seconds = sorted(r["seconds"] for r in results)
     latency = {"p50": seconds[len(seconds) // 2], "max": seconds[-1]}
@@ -207,7 +281,9 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--api", default="http://localhost:7200")
     parser.add_argument("--quotes", type=Path, default=DEFAULT_QUOTES)
-    parser.add_argument("--pipeline", choices=sorted(PIPELINES), default="legacy")
+    parser.add_argument("--pipeline", choices=sorted(PIPELINES), default="pdf")
+    parser.add_argument("--file", default=None,
+                        help="only run quotes whose file name contains this text")
     parser.add_argument("--runs", type=int, default=3)
     parser.add_argument("--model", default=None,
                         help="model the backend runs (default: OPENAI_MODEL from .env)")
@@ -221,6 +297,8 @@ def main() -> None:
 
     labels = json.loads(LABELS_FILE.read_text())["quotes"]
     labels_by_file = {label["file"]: label for label in labels}
+    if args.file:
+        labels = [label for label in labels if args.file in label["file"]]
 
     if args.rescore:
         run = load_run(args.rescore)
@@ -247,7 +325,7 @@ def main() -> None:
             scores = score(label, envelope)
             results.append({"file": label["file"], "run": run_no, "seconds": round(elapsed, 1),
                             "scores": scores, "response": envelope})
-            failed = [f for f, passed in scores.items() if not passed]
+            failed = [f for f, passed in scores.items() if passed is False]  # None = n/a
             print(f"{label['file'][:40]:40} run {run_no}  {elapsed:5.1f}s  "
                   f"{'PASS' if not failed else 'fail: ' + ', '.join(failed)}"
                   + (f"  [{envelope.get('error')}]" if envelope.get("error") else ""))

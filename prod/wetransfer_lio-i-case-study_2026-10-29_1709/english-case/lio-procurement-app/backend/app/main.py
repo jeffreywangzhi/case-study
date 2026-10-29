@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -15,6 +17,9 @@ from app.routers import (
 
 
 def create_app() -> FastAPI:
+    # App loggers (e.g. extraction latency/tokens/retries) at INFO; uvicorn keeps its own.
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
+
     app = FastAPI(
         title="askLio Procurement API",
         version="0.1.0",

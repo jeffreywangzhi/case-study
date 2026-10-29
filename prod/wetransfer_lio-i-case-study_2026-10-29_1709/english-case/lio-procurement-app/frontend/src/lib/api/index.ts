@@ -69,6 +69,9 @@ export interface CreateRequestInput {
   vatId: string;
   commodityGroupId: number;
   totalCost: number;
+  shippingAmount: number;
+  feesAmount: number;
+  taxAmount: number;
   department: string;
   orderLines: OrderLineInput[];
 }
@@ -80,8 +83,18 @@ export interface UpdateRequestInput {
   vatId: string;
   commodityGroupId: number;
   totalCost: number;
+  shippingAmount: number;
+  feesAmount: number;
+  taxAmount: number;
   department: string;
   orderLines: OrderLineInput[];
+}
+
+export type ExtractedLineType =
+  | 'item' | 'shipping' | 'fee' | 'discount' | 'alternative' | 'optional' | 'heading';
+
+export interface ExtractedOrderLine extends OrderLineInput {
+  lineType: ExtractedLineType;
 }
 
 export interface ExtractedVendorData {
@@ -89,10 +102,23 @@ export interface ExtractedVendorData {
   vendorName: string;
   vatId: string;
   department: string;
-  orderLines: OrderLineInput[];
+  /** Only what is being bought; shipping, fees and tax are in the breakdown below. */
+  orderLines: ExtractedOrderLine[];
+  /** Alternatives / optional items the quote lists but doesn't include in its total. */
+  excludedLines: ExtractedOrderLine[];
+  /** totalCost = order lines + shippingAmount + feesAmount + taxAmount */
+  shippingAmount: number;
+  feesAmount: number;
+  taxAmount: number;
   totalCost: number;
   commodityGroupId: number | null;
   commodityGroupName: string | null;
+}
+
+export interface ExtractionWarning {
+  code: string;
+  field: string;
+  message: string;
 }
 
 export interface ExtractionResponse {
@@ -100,6 +126,9 @@ export interface ExtractionResponse {
   data?: ExtractedVendorData;
   error?: string;
   missingFields?: string[];
+  warnings?: ExtractionWarning[];
+  /** "verified": every consistency check passed; "needs_review": see warnings. */
+  status?: 'verified' | 'needs_review' | null;
 }
 
 export interface Supplier {
@@ -332,5 +361,12 @@ export const pdf = {
 export const extraction = {
   extract(text: string): Promise<ExtractionResponse> {
     return apiFetch('/extraction', { body: { text } });
+  },
+
+  /** Upload flow: the server reads the PDF's layout text and page images, then checks the result. */
+  extractPdf(file: File): Promise<ExtractionResponse> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return apiFetch('/extraction/pdf', { formData });
   },
 };
