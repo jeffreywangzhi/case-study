@@ -14,6 +14,7 @@ from app.models.procurement_request import (
     RequestDocument,
 )
 from app.models.supplier import Supplier
+from app.models.text_embedding import TextEmbedding
 from app.models.user import Profile, User
 
 __all__ = [
@@ -28,5 +29,6 @@ __all__ = [
     "RequestActivity",
     "RequestDocument",
     "Supplier",
+    "TextEmbedding",
     "Article",
 ]

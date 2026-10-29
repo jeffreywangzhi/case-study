@@ -136,6 +136,82 @@ def seed_articles(db: Session, organization_id: uuid.UUID) -> int:
     return len(new)
 
 
+# Names Acme's vendor quotes are addressed to besides "Acme Corp" (all five sample quotes
+# are addressed to Lio Technologies, Inc.). An assumption to confirm with the customer;
+# admins can edit it under Organization > Settings. See DECISIONS.md D30.
+ACME_BUYER_IDENTITIES = [
+    {
+        "name": "Lio Technologies, Inc.",
+        "addresses": [
+            "1160 Folsom Street, Suite 300, San Francisco, CA 94103",
+            "2250 Chestnut Street, Suite 210, San Francisco, CA 94123",
+        ],
+    }
+]
+
+
+# "Office Supplies" isn't in the generated taxonomy (ids 1-2000) but Acme books small software
+# subscriptions there; added as its own group (an assumption to confirm with the customer).
+EXTRA_COMMODITY_GROUPS = [(2001, "Office & Administration", "Office Supplies")]
+
+# Acme's booking rules (Task 3). Keywords are deliberately precise: every hit is a guaranteed
+# override. "Small" = request total up to $1,000 (an assumption to confirm with the customer).
+ACME_COMMODITY_RULES = [
+    {"name": "Cable ties", "commodity_group_id": 11,
+     "keywords": ["cable tie", "zip tie", "tie wrap", "wire tie", "nylon tie"]},
+    {"name": "Printer toner", "commodity_group_id": 29, "keywords": ["toner"]},
+    {"name": "Small software subscriptions", "commodity_group_id": 2001, "max_total": 1000,
+     "keywords": ["software subscription", "saas", "software license", "software licence",
+                  "app subscription", "cloud subscription"]},
+]
+
+
+def seed_extra_commodity_groups(db: Session) -> int:
+    existing = set(db.scalars(select(CommodityGroup.id)))
+    new = [CommodityGroup(id=i, category=c, name=n)
+           for i, c, n in EXTRA_COMMODITY_GROUPS if i not in existing]
+    db.add_all(new)
+    return len(new)
+
+
+def seed_commodity_rules(db: Session, organization_id: uuid.UUID) -> int:
+    """Give the dev org its booking rules unless the setting already exists."""
+    org = db.get(Organization, organization_id)
+    settings = dict(org.settings or {})
+    if "commodity_rules" in settings:
+        return 0
+    settings["commodity_rules"] = ACME_COMMODITY_RULES
+    org.settings = settings  # reassign so the JSON column is marked dirty
+    return 1
+
+
+def seed_buyer_identities(db: Session, organization_id: uuid.UUID) -> int:
+    """Give the dev org its buyer identities unless the setting already exists."""
+    org = db.get(Organization, organization_id)
+    settings = dict(org.settings or {})
+    if "buyer_identities" in settings:
+        return 0
+    settings["buyer_identities"] = ACME_BUYER_IDENTITIES
+    org.settings = settings  # reassign so the JSON column is marked dirty
+    return 1
+
+
+# "Anything below $2,000 shouldn't need approval at all" (bonus task). Gross total; an
+# assumption to confirm with the customer (DECISIONS D15).
+ACME_AUTO_APPROVAL_THRESHOLD = 2000
+
+
+def seed_auto_approval_threshold(db: Session, organization_id: uuid.UUID) -> int:
+    """Give the dev org its auto-approval limit unless the setting already exists."""
+    org = db.get(Organization, organization_id)
+    settings = dict(org.settings or {})
+    if "auto_approval_threshold" in settings:
+        return 0
+    settings["auto_approval_threshold"] = ACME_AUTO_APPROVAL_THRESHOLD
+    org.settings = settings  # reassign so the JSON column is marked dirty
+    return 1
+
+
 def seed_organizations_and_accounts(db: Session) -> tuple[int, int]:
     """Create the tenants and their accounts (keyed by slug / email)."""
     orgs_created = 0
@@ -179,6 +255,12 @@ def seed(db: Session) -> dict[str, int]:
         "suppliers": seed_suppliers(db, dev_org_id) if dev_org_id else 0,
         # Articles reference suppliers by name, so this must run after suppliers.
         "articles": seed_articles(db, dev_org_id) if dev_org_id else 0,
+        "buyer_identities": seed_buyer_identities(db, dev_org_id) if dev_org_id else 0,
+        "extra_commodity_groups": seed_extra_commodity_groups(db),
+        "commodity_rules": seed_commodity_rules(db, dev_org_id) if dev_org_id else 0,
+        "auto_approval_threshold": (
+            seed_auto_approval_threshold(db, dev_org_id) if dev_org_id else 0
+        ),
         "organizations": orgs_created,
         "users": users_created,
     }

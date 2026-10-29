@@ -66,3 +66,16 @@ export function getStatusLabel(status: 'open' | 'in_progress' | 'closed'): strin
   return labels[status] || status;
 }
 
+
+/**
+ * Approval badge text: "Auto-approved" when the organization's limit approved the request.
+ */
+export function approvalLabel(request: {
+  approval_status: string;
+  approval_method?: string | null;
+}): string {
+  if (request.approval_status === 'approved' && request.approval_method === 'auto') {
+    return 'Auto-approved';
+  }
+  return request.approval_status.charAt(0).toUpperCase() + request.approval_status.slice(1);
+}

@@ -1,0 +1,147 @@
+{
+  "_doc": "Ground truth for catalog suggestions (Task 2), written before the matcher. Each case is one order line as it appears in a request: either an extracted quote line or something a requester types. expected_items: catalog item descriptions (Acme's catalog) any of which is an acceptable suggestion. must_be_none: the catalog has nothing suitable, so no suggestion may be shown. Scored by backend/evals/run_match_eval.py. expected_quality: the badge each suggested item may get (equivalent = same product and key specs; close = only minor differences; alternative = a major difference such as platform, size class or custom vs standard). Items not listed may be close or alternative but never equivalent. Scored as 'label' (per suggestion) and 'stable' (same label across runs).",
+  "cases": [
+    {
+      "id": "qt4120-moss-panel",
+      "source": "QT-4120 line 2",
+      "description": "Moss Art Panel, Mixed Moss 63 x 31.5 in",
+      "unit": "ea.",
+      "unit_price": 715.26,
+      "quantity": 1,
+      "expected_items": [
+        "Framed preserved moss panel with company logo cut-out",
+        "Custom moss wall, preserved reindeer moss, made to measure"
+      ]
+    },
+    {
+      "id": "verdeform-moss-module",
+      "source": "QT-OF2312380 line 1",
+      "description": "verdeform CUSTOM - sq ft Module - forest & ball moss",
+      "unit": "sq ft",
+      "unit_price": 52.0,
+      "quantity": 13.78,
+      "expected_items": [
+        "Custom moss wall, preserved reindeer moss, made to measure",
+        "Framed preserved moss panel with company logo cut-out"
+      ]
+    },
+    {
+      "id": "hollis-moss-panel",
+      "source": "QuoteA0492_23 line 1.1",
+      "description": "Moss panel \"70:30\" with \"askLio\" lettering",
+      "unit": "",
+      "unit_price": 1560.0,
+      "quantity": 1,
+      "expected_items": [
+        "Framed preserved moss panel with company logo cut-out",
+        "Custom moss wall, preserved reindeer moss, made to measure"
+      ],
+      "expected_quality": {
+        "Framed preserved moss panel with company logo cut-out": [
+          "close",
+          "alternative"
+        ],
+        "Custom moss wall, preserved reindeer moss, made to measure": [
+          "close",
+          "alternative"
+        ]
+      }
+    },
+    {
+      "id": "macbook",
+      "source": "Quote_1 line 1",
+      "description": "13\" MacBook Air: Apple M2 Chip - Space Gray, 16GB unified memory, 512GB SSD",
+      "unit": "ea.",
+      "unit_price": 1409.06,
+      "quantity": 1,
+      "expected_items": [
+        "Business laptop 13\" ultralight / 16 GB / 1 TB",
+        "Business laptop 14\" i5 / 16 GB / 512 GB SSD",
+        "Business laptop 15\" Ryzen 7 / 16 GB / 512 GB",
+        "Business laptop 14\" i7 / 32 GB / 1 TB SSD"
+      ],
+      "expected_quality": {
+        "Business laptop 13\" ultralight / 16 GB / 1 TB": [
+          "alternative"
+        ],
+        "Business laptop 14\" i5 / 16 GB / 512 GB SSD": [
+          "alternative"
+        ],
+        "Business laptop 15\" Ryzen 7 / 16 GB / 512 GB": [
+          "alternative"
+        ],
+        "Business laptop 14\" i7 / 32 GB / 1 TB SSD": [
+          "alternative"
+        ]
+      }
+    },
+    {
+      "id": "hartwell-grinder",
+      "source": "Hartwell line 1",
+      "description": "Grinding machine HW-GS 450",
+      "unit": "ea.",
+      "unit_price": 15000.0,
+      "quantity": 1,
+      "must_be_none": true
+    },
+    {
+      "id": "hartwell-install",
+      "source": "Hartwell line 2",
+      "description": "Delivery and installation",
+      "unit": "lump sum",
+      "unit_price": 2000.0,
+      "quantity": 1,
+      "must_be_none": true
+    },
+    {
+      "id": "typed-dock",
+      "source": "typed",
+      "description": "usb-c docking station dual monitor",
+      "unit": "",
+      "unit_price": 0,
+      "quantity": 1,
+      "expected_items": [
+        "Docking station USB-C, dual 4K",
+        "Docking station USB-C, 90 W PD"
+      ],
+      "expected_quality": {
+        "Docking station USB-C, dual 4K": [
+          "equivalent"
+        ],
+        "Docking station USB-C, 90 W PD": [
+          "close",
+          "alternative"
+        ],
+        "Docking station Thunderbolt 4": [
+          "close",
+          "alternative"
+        ]
+      }
+    },
+    {
+      "id": "typed-toner",
+      "source": "typed",
+      "description": "cyan toner",
+      "unit": "",
+      "unit_price": 0,
+      "quantity": 1,
+      "expected_items": [
+        "Toner cartridge cyan"
+      ],
+      "expected_quality": {
+        "Toner cartridge cyan": [
+          "equivalent"
+        ]
+      }
+    },
+    {
+      "id": "typed-zip-ties",
+      "source": "typed (Task 3's cable ties; not in the catalog)",
+      "description": "zip ties 8 inch, pack of 100",
+      "unit": "pack",
+      "unit_price": 0,
+      "quantity": 1,
+      "must_be_none": true
+    }
+  ]
+}

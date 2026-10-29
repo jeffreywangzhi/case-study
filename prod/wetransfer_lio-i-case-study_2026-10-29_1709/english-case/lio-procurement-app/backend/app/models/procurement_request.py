@@ -29,6 +29,10 @@ class ProcurementRequest(Base, TimestampMixin):
             "approval_status IN ('pending', 'approved', 'rejected')",
             name="ck_procurement_request_approval_status",
         ),
+        CheckConstraint(
+            "approval_method IS NULL OR approval_method IN ('manual', 'auto')",
+            name="ck_procurement_request_approval_method",
+        ),
     )
 
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
@@ -49,10 +53,12 @@ class ProcurementRequest(Base, TimestampMixin):
     # Status tracking
     status: Mapped[str] = mapped_column(String, nullable=False, default="open", index=True)
 
-    # Approval: every request needs sign-off by a buyer or admin.
+    # Approval: sign-off by a buyer or admin, unless the organization's auto-approval
+    # limit approves it ("manual" / "auto"; NULL while pending).
     approval_status: Mapped[str] = mapped_column(
         String, nullable=False, default="pending", index=True
     )
+    approval_method: Mapped[str | None] = mapped_column(String, nullable=True)
     approved_by: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("users.id", ondelete="SET NULL"), nullable=True
     )
@@ -60,8 +66,11 @@ class ProcurementRequest(Base, TimestampMixin):
         DateTime(timezone=True), nullable=True
     )
 
-    # Financial
+    # Financial: total_cost = sum(order line totals) + shipping + fees + tax
     total_cost: Mapped[float | None] = mapped_column(Numeric(12, 2), nullable=True)
+    shipping_amount: Mapped[float | None] = mapped_column(Numeric(12, 2), nullable=True)
+    fees_amount: Mapped[float | None] = mapped_column(Numeric(12, 2), nullable=True)
+    tax_amount: Mapped[float | None] = mapped_column(Numeric(12, 2), nullable=True)
 
     # Multi-tenancy (added in migration 003, nullable for backward compatibility)
     organization_id: Mapped[uuid.UUID | None] = mapped_column(
@@ -96,6 +105,11 @@ class OrderLine(Base, CreatedAtMixin):
     unit: Mapped[str] = mapped_column(Text, nullable=False)
     total_price: Mapped[float] = mapped_column(Numeric(12, 2), nullable=False)
     line_order: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    # The catalog agreement this line uses (if any) and its negotiated price at the time.
+    article_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("articles.id", ondelete="SET NULL"), nullable=True, index=True
+    )
+    catalog_unit_price: Mapped[float | None] = mapped_column(Numeric(12, 2), nullable=True)
 
     request: Mapped["ProcurementRequest"] = relationship(back_populates="order_lines")
 

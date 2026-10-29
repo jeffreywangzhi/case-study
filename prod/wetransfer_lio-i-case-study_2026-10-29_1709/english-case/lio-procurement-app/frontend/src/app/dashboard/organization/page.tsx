@@ -27,6 +27,8 @@ export default function OrganizationPage() {
   const [role, setRole] = useState<api.MemberRole | null>(null);
   const [requiredFields, setRequiredFields] = useState<api.ConfigurableRequiredField[]>([]);
   const [savingSettings, setSavingSettings] = useState(false);
+  // Auto-approval limit as typed ('' = off: every request needs a buyer).
+  const [autoApprovalInput, setAutoApprovalInput] = useState('');
 
   useEffect(() => {
     loadOrganization();
@@ -48,6 +50,7 @@ export default function OrganizationPage() {
       setMembers(result.members);
       setInvites(result.invites);
       setRequiredFields(settings.required_fields);
+      setAutoApprovalInput(settings.auto_approval_threshold ? String(settings.auto_approval_threshold) : '');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load organization');
     }
@@ -109,6 +112,29 @@ export default function OrganizationPage() {
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update settings');
       await loadOrganization(); // revert to server state
+    }
+    setSavingSettings(false);
+  };
+
+  const saveAutoApproval = async () => {
+    const value = autoApprovalInput.trim() === '' ? null : Number(autoApprovalInput);
+    if (value !== null && (!Number.isFinite(value) || value <= 0)) {
+      setError('The auto-approval limit must be a positive amount, or empty to turn it off.');
+      return;
+    }
+    setSavingSettings(true);
+    setError('');
+    setSuccess('');
+    try {
+      const saved = await api.organizations.updateSettings({ auto_approval_threshold: value });
+      setAutoApprovalInput(saved.auto_approval_threshold ? String(saved.auto_approval_threshold) : '');
+      setSuccess(
+        saved.auto_approval_threshold
+          ? `Requests below $${saved.auto_approval_threshold.toLocaleString('en-US')} are now approved automatically`
+          : 'Auto-approval is off: every request needs a buyer'
+      );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update settings');
     }
     setSavingSettings(false);
   };
@@ -291,6 +317,31 @@ export default function OrganizationPage() {
                 </label>
               );
             })}
+          </div>
+
+          <h3 className="text-base font-semibold tracking-tight text-ink mt-8">Auto-approval</h3>
+          <p className="text-sm text-ink/55 mt-1 mb-3">
+            Requests whose total cost (including shipping, fees and tax) is below this amount are
+            approved automatically. A buyer still approves requests whose charges weren&apos;t
+            entered, and possible splits (several requests to the same vendor within 7 days).
+            Leave empty to require a buyer for every request.
+          </p>
+          <div className="flex items-end gap-3 max-w-md">
+            <div className="flex-1">
+              <Input
+                label="Approve automatically below ($)"
+                type="number"
+                min="0"
+                step="0.01"
+                placeholder="Off"
+                value={autoApprovalInput}
+                onChange={(e) => setAutoApprovalInput(e.target.value)}
+                disabled={savingSettings}
+              />
+            </div>
+            <Button type="button" onClick={saveAutoApproval} disabled={savingSettings}>
+              Save
+            </Button>
           </div>
         </div>
       )}

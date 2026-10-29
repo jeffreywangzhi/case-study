@@ -47,6 +47,8 @@ export type ConfigurableRequiredField = 'vat_id' | 'department';
 
 export interface OrganizationSettings {
   required_fields: ConfigurableRequiredField[];
+  /** Requests with a total cost below this (USD, gross) are approved automatically; null = off. */
+  auto_approval_threshold?: number | null;
 }
 
 export interface MembersResponse {
@@ -60,6 +62,8 @@ export interface OrderLineInput {
   amount: number;
   unit: string;
   totalPrice: number;
+  /** Set when the line uses a negotiated catalog agreement. */
+  articleId?: string | null;
 }
 
 export interface CreateRequestInput {
@@ -69,8 +73,13 @@ export interface CreateRequestInput {
   vatId: string;
   commodityGroupId: number;
   totalCost: number;
+  shippingAmount: number;
+  feesAmount: number;
+  taxAmount: number;
   department: string;
   orderLines: OrderLineInput[];
+  /** True while shipping/fees/tax were reset by a vendor switch and not re-entered. */
+  chargesIncomplete?: boolean;
 }
 
 export interface UpdateRequestInput {
@@ -80,8 +89,20 @@ export interface UpdateRequestInput {
   vatId: string;
   commodityGroupId: number;
   totalCost: number;
+  shippingAmount: number;
+  feesAmount: number;
+  taxAmount: number;
   department: string;
   orderLines: OrderLineInput[];
+  /** True while shipping/fees/tax were reset by a vendor switch and not re-entered. */
+  chargesIncomplete?: boolean;
+}
+
+export type ExtractedLineType =
+  | 'item' | 'shipping' | 'fee' | 'discount' | 'alternative' | 'optional' | 'heading';
+
+export interface ExtractedOrderLine extends OrderLineInput {
+  lineType: ExtractedLineType;
 }
 
 export interface ExtractedVendorData {
@@ -89,10 +110,25 @@ export interface ExtractedVendorData {
   vendorName: string;
   vatId: string;
   department: string;
-  orderLines: OrderLineInput[];
+  /** Only what is being bought; shipping, fees and tax are in the breakdown below. */
+  orderLines: ExtractedOrderLine[];
+  /** Alternatives / optional items the quote lists but doesn't include in its total. */
+  excludedLines: ExtractedOrderLine[];
+  /** totalCost = order lines + shippingAmount + feesAmount + taxAmount */
+  shippingAmount: number;
+  feesAmount: number;
+  taxAmount: number;
   totalCost: number;
   commodityGroupId: number | null;
   commodityGroupName: string | null;
+  /** Set when an organization booking rule chose the group (overrides the classifier). */
+  commodityRule?: string | null;
+}
+
+export interface ExtractionWarning {
+  code: string;
+  field: string;
+  message: string;
 }
 
 export interface ExtractionResponse {
@@ -100,6 +136,9 @@ export interface ExtractionResponse {
   data?: ExtractedVendorData;
   error?: string;
   missingFields?: string[];
+  warnings?: ExtractionWarning[];
+  /** "verified": every consistency check passed; "needs_review": see warnings. */
+  status?: 'verified' | 'needs_review' | null;
 }
 
 export interface Supplier {
@@ -132,6 +171,56 @@ export interface ArticlePage {
   total: number;
   limit: number;
   offset: number;
+}
+
+/** One supplier's negotiated price for a catalog item (decimals arrive as strings). */
+export interface CatalogAgreement {
+  article_id: string;
+  article_number: string;
+  supplier_id: string;
+  supplier_name: string;
+  supplier_vat_id: string | null;
+  unit_price: string;
+  unit: string;
+  currency: string;
+  /** Meaning not confirmed yet (minimum order? pack size?); shown as information. */
+  quantity: string;
+  /** Prices are compared only when the units match. */
+  same_unit: boolean;
+  /** Quoted minus negotiated; negative means the quote is cheaper. */
+  saving_per_unit: string | null;
+  saving_total: string | null;
+}
+
+export interface CatalogDifference {
+  aspect: string;
+  detail: string;
+  impact: 'minor' | 'major';
+}
+
+export interface CatalogSuggestion {
+  item: string;
+  /** Decided from the differences: none = equivalent, only minor = close, any major = alternative. */
+  quality: 'equivalent' | 'close' | 'alternative';
+  reason: string;
+  /** Major first. */
+  differences: CatalogDifference[];
+  /** Every supplier's agreement for the item, cheapest first. */
+  agreements: CatalogAgreement[];
+}
+
+export interface CatalogMatchLine {
+  description: string;
+  unit?: string;
+  unit_price?: number | null;
+  quantity?: number;
+}
+
+export interface CatalogMatchResponse {
+  lines: { index: number; suggestions: CatalogSuggestion[] }[];
+  known_supplier: { id: string; name: string; vat_id: string | null } | null;
+  /** False when the AI check was unavailable and suggestions are keyword matches only. */
+  verified: boolean;
 }
 
 // ============================================================================
@@ -170,7 +259,10 @@ export interface RequestActivity {
   id: string;
   request_id: string;
   actor_id: string | null;
-  action: 'created' | 'updated' | 'status_changed' | 'approved' | 'rejected' | 'document_attached';
+  action:
+    | 'created' | 'updated' | 'status_changed' | 'approved' | 'rejected' | 'document_attached'
+    | 'catalog_applied' | 'commodity_rule_applied'
+    | 'auto_approved' | 'approval_required' | 'approval_reset';
   summary: string;
   detail: Record<string, unknown> | null;
   created_at: string;
@@ -260,7 +352,8 @@ export const organizations = {
     return apiFetch('/organizations/me/settings');
   },
 
-  updateSettings(settings: OrganizationSettings): Promise<OrganizationSettings> {
+  /** PATCH: only the settings sent change. */
+  updateSettings(settings: Partial<OrganizationSettings>): Promise<OrganizationSettings> {
     return apiFetch('/organizations/me/settings', { method: 'PATCH', body: settings });
   },
 };
@@ -315,6 +408,23 @@ export const articles = {
   count(): Promise<{ count: number }> {
     return apiFetch('/articles/count');
   },
+
+  /** Typeahead: catalog items with negotiated prices that clearly match what's typed. */
+  suggest(q: string, limit = 5): Promise<CatalogSuggestion[]> {
+    const qs = new URLSearchParams({ q, limit: String(limit) });
+    return apiFetch(`/articles/suggest?${qs.toString()}`);
+  },
+
+  /** AI-checked catalog agreements per request line, plus whether the vendor is known. */
+  match(params: {
+    lines: CatalogMatchLine[];
+    vendorName?: string;
+    vatId?: string;
+  }): Promise<CatalogMatchResponse> {
+    return apiFetch('/articles/match', {
+      body: { lines: params.lines, vendor_name: params.vendorName, vat_id: params.vatId },
+    });
+  },
 };
 
 // ============================================================================
@@ -332,5 +442,12 @@ export const pdf = {
 export const extraction = {
   extract(text: string): Promise<ExtractionResponse> {
     return apiFetch('/extraction', { body: { text } });
+  },
+
+  /** Upload flow: the server reads the PDF's layout text and page images, then checks the result. */
+  extractPdf(file: File): Promise<ExtractionResponse> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return apiFetch('/extraction/pdf', { formData });
   },
 };

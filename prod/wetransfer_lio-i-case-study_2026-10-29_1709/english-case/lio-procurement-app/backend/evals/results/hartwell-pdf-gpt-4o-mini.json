@@ -1,0 +1,228 @@
+{
+  "meta": {
+    "tag": "hartwell-pdf-gpt-4o-mini",
+    "pipeline": "pdf",
+    "model": "gpt-4o-mini",
+    "runs_per_quote": 3,
+    "started_at": "2026-10-29T20:25:50+00:00",
+    "git_commit": "37de328",
+    "git_dirty": true,
+    "labels_sha256": "8e25d0bef460",
+    "summary": {
+      "overall_pct": {
+        "ok": 100,
+        "vendor": 100,
+        "vat_id": 100,
+        "grand_total": 100,
+        "lines": 100,
+        "commodity": 0,
+        "department": 100,
+        "line_detail": 100,
+        "charges": 100,
+        "tax": 100,
+        "reconciles": 100,
+        "flagged": 100
+      },
+      "per_quote": {
+        "Quote_Hartwell_Cleveland_ACME_Grinding_Machine.pdf": {
+          "runs": 3,
+          "ok": "3/3",
+          "vendor": "3/3",
+          "vat_id": "3/3",
+          "grand_total": "3/3",
+          "lines": "3/3",
+          "commodity": "0/3",
+          "department": "3/3",
+          "line_detail": "3/3",
+          "charges": "3/3",
+          "tax": "3/3",
+          "reconciles": "3/3",
+          "flagged": "3/3"
+        }
+      },
+      "latency_s": {
+        "p50": 5.0,
+        "max": 5.0
+      }
+    }
+  },
+  "results": [
+    {
+      "file": "Quote_Hartwell_Cleveland_ACME_Grinding_Machine.pdf",
+      "run": 1,
+      "seconds": 5.0,
+      "scores": {
+        "ok": true,
+        "vendor": true,
+        "vat_id": true,
+        "grand_total": true,
+        "lines": true,
+        "commodity": false,
+        "department": true,
+        "line_detail": true,
+        "charges": true,
+        "tax": true,
+        "reconciles": true,
+        "flagged": true
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Surface grinding machine including delivery and installation",
+          "vendorName": "Hartwell Industrial Tools, Inc.",
+          "vatId": "",
+          "department": "Purchasing / Engineering",
+          "orderLines": [
+            {
+              "positionDescription": "Grinding machine HW-GS 450",
+              "unitPrice": 15000.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 15000.0,
+              "lineType": "item"
+            },
+            {
+              "positionDescription": "Delivery and installation",
+              "unitPrice": 2000.0,
+              "amount": 1.0,
+              "unit": "lump sum",
+              "totalPrice": 2000.0,
+              "lineType": "item"
+            }
+          ],
+          "excludedLines": [],
+          "shippingAmount": 0.0,
+          "feesAmount": 0.0,
+          "taxAmount": 1402.5,
+          "totalCost": 18402.5,
+          "commodityGroupId": 15,
+          "commodityGroupName": "Office Equipment"
+        },
+        "error": null,
+        "missingFields": [
+          "Tax ID"
+        ],
+        "warnings": [],
+        "status": "verified"
+      }
+    },
+    {
+      "file": "Quote_Hartwell_Cleveland_ACME_Grinding_Machine.pdf",
+      "run": 2,
+      "seconds": 5.0,
+      "scores": {
+        "ok": true,
+        "vendor": true,
+        "vat_id": true,
+        "grand_total": true,
+        "lines": true,
+        "commodity": false,
+        "department": true,
+        "line_detail": true,
+        "charges": true,
+        "tax": true,
+        "reconciles": true,
+        "flagged": true
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Surface grinding machine including delivery and installation",
+          "vendorName": "Hartwell Industrial Tools, Inc.",
+          "vatId": "",
+          "department": "Purchasing / Engineering",
+          "orderLines": [
+            {
+              "positionDescription": "Grinding machine HW-GS 450",
+              "unitPrice": 15000.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 15000.0,
+              "lineType": "item"
+            },
+            {
+              "positionDescription": "Delivery and installation",
+              "unitPrice": 2000.0,
+              "amount": 1.0,
+              "unit": "lump sum",
+              "totalPrice": 2000.0,
+              "lineType": "item"
+            }
+          ],
+          "excludedLines": [],
+          "shippingAmount": 0.0,
+          "feesAmount": 0.0,
+          "taxAmount": 1402.5,
+          "totalCost": 18402.5,
+          "commodityGroupId": 15,
+          "commodityGroupName": "Office Equipment"
+        },
+        "error": null,
+        "missingFields": [
+          "Tax ID"
+        ],
+        "warnings": [],
+        "status": "verified"
+      }
+    },
+    {
+      "file": "Quote_Hartwell_Cleveland_ACME_Grinding_Machine.pdf",
+      "run": 3,
+      "seconds": 4.9,
+      "scores": {
+        "ok": true,
+        "vendor": true,
+        "vat_id": true,
+        "grand_total": true,
+        "lines": true,
+        "commodity": false,
+        "department": true,
+        "line_detail": true,
+        "charges": true,
+        "tax": true,
+        "reconciles": true,
+        "flagged": true
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Surface grinding machine including delivery and installation",
+          "vendorName": "Hartwell Industrial Tools, Inc.",
+          "vatId": "",
+          "department": "Purchasing / Engineering",
+          "orderLines": [
+            {
+              "positionDescription": "Grinding machine HW-GS 450",
+              "unitPrice": 15000.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 15000.0,
+              "lineType": "item"
+            },
+            {
+              "positionDescription": "Delivery and installation",
+              "unitPrice": 2000.0,
+              "amount": 1.0,
+              "unit": "lump sum",
+              "totalPrice": 2000.0,
+              "lineType": "item"
+            }
+          ],
+          "excludedLines": [],
+          "shippingAmount": 0.0,
+          "feesAmount": 0.0,
+          "taxAmount": 1402.5,
+          "totalCost": 18402.5,
+          "commodityGroupId": 15,
+          "commodityGroupName": "Office Equipment"
+        },
+        "error": null,
+        "missingFields": [
+          "Tax ID"
+        ],
+        "warnings": [],
+        "status": "verified"
+      }
+    }
+  ]
+}

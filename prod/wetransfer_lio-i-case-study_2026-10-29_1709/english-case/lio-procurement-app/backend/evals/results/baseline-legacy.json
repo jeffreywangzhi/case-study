@@ -1,0 +1,620 @@
+{
+  "meta": {
+    "tag": "baseline-legacy",
+    "pipeline": "legacy",
+    "model": "gpt-4o-mini",
+    "temperature": 0.3,
+    "runs_per_quote": 3,
+    "finished_at": "2026-10-29T18:07:22+00:00",
+    "git_commit": "4126767",
+    "git_dirty": true,
+    "notes": "Original pipeline as delivered (pypdf text -> single gpt-4o-mini call, temperature 0.3, free-form JSON). Only local change at run time: OPENSSL_armcap=0 in backend/Dockerfile (boot fix, no effect on extraction).",
+    "labels_sha256": "d40bc2954450",
+    "summary": {
+      "overall_pct": {
+        "ok": 60,
+        "vendor": 20,
+        "vat_id": 60,
+        "grand_total": 47,
+        "lines": 20,
+        "commodity": 60
+      },
+      "per_quote": {
+        "QT-4120-Cust-14918.pdf": {
+          "runs": 3,
+          "ok": 3,
+          "vendor": 0,
+          "vat_id": 3,
+          "grand_total": 3,
+          "lines": 0,
+          "commodity": 3
+        },
+        "QT-OF2312380-Cust-57692.pdf": {
+          "runs": 3,
+          "ok": 0,
+          "vendor": 0,
+          "vat_id": 0,
+          "grand_total": 0,
+          "lines": 0,
+          "commodity": 0
+        },
+        "QuoteA0492_23.Pdf": {
+          "runs": 3,
+          "ok": 3,
+          "vendor": 0,
+          "vat_id": 3,
+          "grand_total": 1,
+          "lines": 0,
+          "commodity": 3
+        },
+        "Quote_1__Lio_Technologies_Inc__1x_MBA___2214703918.pdf": {
+          "runs": 3,
+          "ok": 3,
+          "vendor": 3,
+          "vat_id": 3,
+          "grand_total": 3,
+          "lines": 3,
+          "commodity": 3
+        },
+        "Quote_Hartwell_Cleveland_ACME_Grinding_Machine.pdf": {
+          "runs": 3,
+          "ok": 0,
+          "vendor": 0,
+          "vat_id": 0,
+          "grand_total": 0,
+          "lines": 0,
+          "commodity": 0
+        }
+      },
+      "latency_s": {
+        "p50": 4.7,
+        "max": 16.3
+      }
+    }
+  },
+  "results": [
+    {
+      "file": "QT-4120-Cust-14918.pdf",
+      "run": 1,
+      "seconds": 16.3,
+      "scores": {
+        "ok": true,
+        "vendor": false,
+        "vat_id": true,
+        "grand_total": true,
+        "lines": false,
+        "commodity": true
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Moss Art Panels and Logo Integration",
+          "vendorName": "Lio Technologies, Inc.",
+          "vatId": "85-3252405",
+          "department": "Greenmantle Moss Studio, LLC",
+          "orderLines": [
+            {
+              "positionDescription": "Moss Art Panel, Mixed Moss 63 x 31.5 in",
+              "unitPrice": 894.08,
+              "amount": 2.0,
+              "unit": "pieces",
+              "totalPrice": 715.26
+            },
+            {
+              "positionDescription": "Logo integration 'asklio' horizontal",
+              "unitPrice": 622.0,
+              "amount": 1.0,
+              "unit": "pieces",
+              "totalPrice": 622.0
+            },
+            {
+              "positionDescription": "Logo integration 'asklio' vertical",
+              "unitPrice": 430.0,
+              "amount": 1.0,
+              "unit": "pieces",
+              "totalPrice": 430.0
+            }
+          ],
+          "totalCost": 1686.14,
+          "commodityGroupId": 15,
+          "commodityGroupName": "Office Equipment"
+        },
+        "error": null,
+        "missingFields": null
+      }
+    },
+    {
+      "file": "QT-4120-Cust-14918.pdf",
+      "run": 2,
+      "seconds": 3.9,
+      "scores": {
+        "ok": true,
+        "vendor": false,
+        "vat_id": true,
+        "grand_total": true,
+        "lines": false,
+        "commodity": true
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Moss Art Panels and Logo Integration",
+          "vendorName": "Lio Technologies, Inc.",
+          "vatId": "85-3252405",
+          "department": "Greenmantle Moss Studio, LLC",
+          "orderLines": [
+            {
+              "positionDescription": "Moss Art Panel, Mixed Moss 63 x 31.5 in",
+              "unitPrice": 894.08,
+              "amount": 2.0,
+              "unit": "pieces",
+              "totalPrice": 715.26
+            },
+            {
+              "positionDescription": "Logo integration 'asklio' horizontal",
+              "unitPrice": 622.0,
+              "amount": 1.0,
+              "unit": "pieces",
+              "totalPrice": 622.0
+            },
+            {
+              "positionDescription": "Logo integration 'asklio' vertical",
+              "unitPrice": 430.0,
+              "amount": 1.0,
+              "unit": "pieces",
+              "totalPrice": 430.0
+            }
+          ],
+          "totalCost": 1686.14,
+          "commodityGroupId": 15,
+          "commodityGroupName": "Office Equipment"
+        },
+        "error": null,
+        "missingFields": null
+      }
+    },
+    {
+      "file": "QT-4120-Cust-14918.pdf",
+      "run": 3,
+      "seconds": 3.6,
+      "scores": {
+        "ok": true,
+        "vendor": false,
+        "vat_id": true,
+        "grand_total": true,
+        "lines": false,
+        "commodity": true
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Moss Art Panels and Logo Integration",
+          "vendorName": "Lio Technologies, Inc.",
+          "vatId": "85-3252405",
+          "department": "Greenmantle Moss Studio, LLC",
+          "orderLines": [
+            {
+              "positionDescription": "Moss Art Panel, Mixed Moss 63 x 31.5 in",
+              "unitPrice": 894.08,
+              "amount": 2.0,
+              "unit": "pieces",
+              "totalPrice": 715.26
+            },
+            {
+              "positionDescription": "Logo integration 'asklio' horizontal",
+              "unitPrice": 622.0,
+              "amount": 1.0,
+              "unit": "pieces",
+              "totalPrice": 622.0
+            },
+            {
+              "positionDescription": "Logo integration 'asklio' vertical",
+              "unitPrice": 430.0,
+              "amount": 1.0,
+              "unit": "pieces",
+              "totalPrice": 430.0
+            }
+          ],
+          "totalCost": 1686.14,
+          "commodityGroupId": 15,
+          "commodityGroupName": "Office Equipment"
+        },
+        "error": null,
+        "missingFields": null
+      }
+    },
+    {
+      "file": "QT-OF2312380-Cust-57692.pdf",
+      "run": 1,
+      "seconds": 14.9,
+      "scores": {
+        "ok": false,
+        "vendor": false,
+        "vat_id": false,
+        "grand_total": false,
+        "lines": false,
+        "commodity": false
+      },
+      "response": {
+        "success": false,
+        "data": null,
+        "error": "1 validation error for ExtractedVendorData\nvatId\n  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]\n    For further information visit https://errors.pydantic.dev/2.14/v/string_type",
+        "missingFields": null
+      }
+    },
+    {
+      "file": "QT-OF2312380-Cust-57692.pdf",
+      "run": 2,
+      "seconds": 5.4,
+      "scores": {
+        "ok": false,
+        "vendor": false,
+        "vat_id": false,
+        "grand_total": false,
+        "lines": false,
+        "commodity": false
+      },
+      "response": {
+        "success": false,
+        "data": null,
+        "error": "1 validation error for ExtractedVendorData\nvatId\n  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]\n    For further information visit https://errors.pydantic.dev/2.14/v/string_type",
+        "missingFields": null
+      }
+    },
+    {
+      "file": "QT-OF2312380-Cust-57692.pdf",
+      "run": 3,
+      "seconds": 5.0,
+      "scores": {
+        "ok": false,
+        "vendor": false,
+        "vat_id": false,
+        "grand_total": false,
+        "lines": false,
+        "commodity": false
+      },
+      "response": {
+        "success": false,
+        "data": null,
+        "error": "1 validation error for ExtractedVendorData\nvatId\n  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]\n    For further information visit https://errors.pydantic.dev/2.14/v/string_type",
+        "missingFields": null
+      }
+    },
+    {
+      "file": "QuoteA0492_23.Pdf",
+      "run": 1,
+      "seconds": 9.7,
+      "scores": {
+        "ok": true,
+        "vendor": false,
+        "vat_id": true,
+        "grand_total": false,
+        "lines": false,
+        "commodity": true
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Moss Art Panel Purchase",
+          "vendorName": "Lio Technologies, Inc.",
+          "vatId": "941985704",
+          "department": "Hollis Greenscapes",
+          "orderLines": [
+            {
+              "positionDescription": "Moss panel \"70:30\" with \"askLio\" lettering",
+              "unitPrice": 1560.0,
+              "amount": 1.0,
+              "unit": "pieces",
+              "totalPrice": 1560.0
+            },
+            {
+              "positionDescription": "As previous item, but ball moss only.",
+              "unitPrice": 2090.0,
+              "amount": 1.0,
+              "unit": "pieces",
+              "totalPrice": 2090.0
+            },
+            {
+              "positionDescription": "As item 1.1, but forest moss throughout; instead of the blue element of the logo, ball moss shaped into the \"fin shape\" of the logo.",
+              "unitPrice": 1830.0,
+              "amount": 1.0,
+              "unit": "pieces",
+              "totalPrice": 1830.0
+            },
+            {
+              "positionDescription": "Transport, packing and shipping. Curbside delivery, without installation.",
+              "unitPrice": 320.0,
+              "amount": 1.0,
+              "unit": "pieces",
+              "totalPrice": 320.0
+            }
+          ],
+          "totalCost": 4020.0,
+          "commodityGroupId": 15,
+          "commodityGroupName": "Office Equipment"
+        },
+        "error": null,
+        "missingFields": null
+      }
+    },
+    {
+      "file": "QuoteA0492_23.Pdf",
+      "run": 2,
+      "seconds": 4.4,
+      "scores": {
+        "ok": true,
+        "vendor": false,
+        "vat_id": true,
+        "grand_total": false,
+        "lines": false,
+        "commodity": true
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Moss Art Panel Procurement",
+          "vendorName": "Lio Technologies, Inc.",
+          "vatId": "941985704",
+          "department": "Hollis Greenscapes",
+          "orderLines": [
+            {
+              "positionDescription": "Moss panel \"70:30\" with \"askLio\" lettering",
+              "unitPrice": 1560.0,
+              "amount": 1.0,
+              "unit": "pieces",
+              "totalPrice": 1560.0
+            },
+            {
+              "positionDescription": "As previous item, but ball moss only.",
+              "unitPrice": 2090.0,
+              "amount": 1.0,
+              "unit": "pieces",
+              "totalPrice": 2090.0
+            },
+            {
+              "positionDescription": "As item 1.1, but forest moss throughout; instead of the blue element of the logo, ball moss shaped into the \"fin shape\" of the logo.",
+              "unitPrice": 1830.0,
+              "amount": 1.0,
+              "unit": "pieces",
+              "totalPrice": 1830.0
+            },
+            {
+              "positionDescription": "Transport, packing and shipping. Curbside delivery, without installation.",
+              "unitPrice": 320.0,
+              "amount": 1.0,
+              "unit": "pieces",
+              "totalPrice": 320.0
+            }
+          ],
+          "totalCost": 4020.0,
+          "commodityGroupId": 15,
+          "commodityGroupName": "Office Equipment"
+        },
+        "error": null,
+        "missingFields": null
+      }
+    },
+    {
+      "file": "QuoteA0492_23.Pdf",
+      "run": 3,
+      "seconds": 4.7,
+      "scores": {
+        "ok": true,
+        "vendor": false,
+        "vat_id": true,
+        "grand_total": true,
+        "lines": false,
+        "commodity": true
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Moss Art Panel Purchase",
+          "vendorName": "Lio Technologies, Inc.",
+          "vatId": "941985704",
+          "department": "Hollis Greenscapes",
+          "orderLines": [
+            {
+              "positionDescription": "Moss panel \"70:30\" with \"askLio\" lettering",
+              "unitPrice": 1560.0,
+              "amount": 1.0,
+              "unit": "pieces",
+              "totalPrice": 1560.0
+            },
+            {
+              "positionDescription": "As previous item, but ball moss only.",
+              "unitPrice": 2090.0,
+              "amount": 1.0,
+              "unit": "pieces",
+              "totalPrice": 2090.0
+            },
+            {
+              "positionDescription": "As item 1.1, but forest moss throughout; instead of the blue element of the logo, ball moss shaped into the \"fin shape\" of the logo.",
+              "unitPrice": 1830.0,
+              "amount": 1.0,
+              "unit": "pieces",
+              "totalPrice": 1830.0
+            },
+            {
+              "positionDescription": "Transport, packing and shipping. Curbside delivery, without installation.",
+              "unitPrice": 320.0,
+              "amount": 1.0,
+              "unit": "pieces",
+              "totalPrice": 320.0
+            }
+          ],
+          "totalCost": 2042.15,
+          "commodityGroupId": 15,
+          "commodityGroupName": "Office Equipment"
+        },
+        "error": null,
+        "missingFields": null
+      }
+    },
+    {
+      "file": "Quote_1__Lio_Technologies_Inc__1x_MBA___2214703918.pdf",
+      "run": 1,
+      "seconds": 6.8,
+      "scores": {
+        "ok": true,
+        "vendor": true,
+        "vat_id": true,
+        "grand_total": true,
+        "lines": true,
+        "commodity": true
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "MacBook Air Purchase",
+          "vendorName": "Apple Business Team",
+          "vatId": "94-2404110",
+          "department": "Lio Technologies, Inc.",
+          "orderLines": [
+            {
+              "positionDescription": "13\" MacBook Air: Apple M2 Chip - Space Gray",
+              "unitPrice": 1409.06,
+              "amount": 1.0,
+              "unit": "pieces",
+              "totalPrice": 1409.06
+            }
+          ],
+          "totalCost": 1534.59,
+          "commodityGroupId": 29,
+          "commodityGroupName": "Hardware"
+        },
+        "error": null,
+        "missingFields": null
+      }
+    },
+    {
+      "file": "Quote_1__Lio_Technologies_Inc__1x_MBA___2214703918.pdf",
+      "run": 2,
+      "seconds": 2.8,
+      "scores": {
+        "ok": true,
+        "vendor": true,
+        "vat_id": true,
+        "grand_total": true,
+        "lines": true,
+        "commodity": true
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "MacBook Air Purchase",
+          "vendorName": "Apple Business Team",
+          "vatId": "94-2404110",
+          "department": "Lio Technologies, Inc.",
+          "orderLines": [
+            {
+              "positionDescription": "13\" MacBook Air: Apple M2 Chip - Space Gray",
+              "unitPrice": 1409.06,
+              "amount": 1.0,
+              "unit": "pieces",
+              "totalPrice": 1409.06
+            }
+          ],
+          "totalCost": 1534.59,
+          "commodityGroupId": 29,
+          "commodityGroupName": "Hardware"
+        },
+        "error": null,
+        "missingFields": null
+      }
+    },
+    {
+      "file": "Quote_1__Lio_Technologies_Inc__1x_MBA___2214703918.pdf",
+      "run": 3,
+      "seconds": 2.2,
+      "scores": {
+        "ok": true,
+        "vendor": true,
+        "vat_id": true,
+        "grand_total": true,
+        "lines": true,
+        "commodity": true
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Laptop Purchase",
+          "vendorName": "Apple Business Team",
+          "vatId": "94-2404110",
+          "department": "Lio Technologies, Inc.",
+          "orderLines": [
+            {
+              "positionDescription": "13\" MacBook Air: Apple M2 Chip - Space Gray",
+              "unitPrice": 1409.06,
+              "amount": 1.0,
+              "unit": "pieces",
+              "totalPrice": 1409.06
+            }
+          ],
+          "totalCost": 1534.59,
+          "commodityGroupId": 29,
+          "commodityGroupName": "Hardware"
+        },
+        "error": null,
+        "missingFields": null
+      }
+    },
+    {
+      "file": "Quote_Hartwell_Cleveland_ACME_Grinding_Machine.pdf",
+      "run": 1,
+      "seconds": 6.2,
+      "scores": {
+        "ok": false,
+        "vendor": false,
+        "vat_id": false,
+        "grand_total": false,
+        "lines": false,
+        "commodity": false
+      },
+      "response": {
+        "success": false,
+        "data": null,
+        "error": "1 validation error for ExtractedVendorData\nvatId\n  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]\n    For further information visit https://errors.pydantic.dev/2.14/v/string_type",
+        "missingFields": null
+      }
+    },
+    {
+      "file": "Quote_Hartwell_Cleveland_ACME_Grinding_Machine.pdf",
+      "run": 2,
+      "seconds": 3.2,
+      "scores": {
+        "ok": false,
+        "vendor": false,
+        "vat_id": false,
+        "grand_total": false,
+        "lines": false,
+        "commodity": false
+      },
+      "response": {
+        "success": false,
+        "data": null,
+        "error": "1 validation error for ExtractedVendorData\nvatId\n  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]\n    For further information visit https://errors.pydantic.dev/2.14/v/string_type",
+        "missingFields": null
+      }
+    },
+    {
+      "file": "Quote_Hartwell_Cleveland_ACME_Grinding_Machine.pdf",
+      "run": 3,
+      "seconds": 3.2,
+      "scores": {
+        "ok": false,
+        "vendor": false,
+        "vat_id": false,
+        "grand_total": false,
+        "lines": false,
+        "commodity": false
+      },
+      "response": {
+        "success": false,
+        "data": null,
+        "error": "1 validation error for ExtractedVendorData\nvatId\n  Input should be a valid string [type=string_type, input_value=None, input_type=NoneType]\n    For further information visit https://errors.pydantic.dev/2.14/v/string_type",
+        "missingFields": null
+      }
+    }
+  ]
+}

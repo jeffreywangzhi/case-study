@@ -1,0 +1,879 @@
+[
+  {
+    "id": "qt4120-moss-panel",
+    "run": 1,
+    "match": {
+      "seconds": 2.6,
+      "verified": true,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        [
+          "Custom moss wall, preserved reindeer moss, made to measure",
+          "similar",
+          "Made to measure, not a standard size."
+        ],
+        [
+          "Framed preserved moss panel with company logo cut-out",
+          "similar",
+          "Different design with a logo cut-out."
+        ]
+      ]
+    },
+    "suggest": {
+      "seconds": 0.0,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        "Framed preserved moss panel with company logo cut-out",
+        "Custom moss wall, preserved reindeer moss, made to measure"
+      ]
+    }
+  },
+  {
+    "id": "qt4120-moss-panel",
+    "run": 2,
+    "match": {
+      "seconds": 2.3,
+      "verified": true,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        [
+          "Custom moss wall, preserved reindeer moss, made to measure",
+          "similar",
+          "Made to measure, not a standard size."
+        ],
+        [
+          "Framed preserved moss panel with company logo cut-out",
+          "similar",
+          "Different design with a logo cut-out."
+        ]
+      ]
+    },
+    "suggest": {
+      "seconds": 0.0,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        "Framed preserved moss panel with company logo cut-out",
+        "Custom moss wall, preserved reindeer moss, made to measure"
+      ]
+    }
+  },
+  {
+    "id": "qt4120-moss-panel",
+    "run": 3,
+    "match": {
+      "seconds": 2.6,
+      "verified": true,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        [
+          "Custom moss wall, preserved reindeer moss, made to measure",
+          "similar",
+          "Made to measure, not a standard size."
+        ],
+        [
+          "Framed preserved moss panel with company logo cut-out",
+          "similar",
+          "Different design with a logo cut-out."
+        ]
+      ]
+    },
+    "suggest": {
+      "seconds": 0.0,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        "Framed preserved moss panel with company logo cut-out",
+        "Custom moss wall, preserved reindeer moss, made to measure"
+      ]
+    }
+  },
+  {
+    "id": "verdeform-moss-module",
+    "run": 1,
+    "match": {
+      "seconds": 2.4,
+      "verified": true,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        [
+          "Custom moss wall, preserved reindeer moss, made to measure",
+          "similar",
+          "Different type of moss (reindeer vs. forest & ball) and made to measure vs. standard."
+        ]
+      ]
+    },
+    "suggest": {
+      "seconds": 0.0,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        "Custom moss wall, preserved reindeer moss, made to measure"
+      ]
+    }
+  },
+  {
+    "id": "verdeform-moss-module",
+    "run": 2,
+    "match": {
+      "seconds": 2.5,
+      "verified": true,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        [
+          "Custom moss wall, preserved reindeer moss, made to measure",
+          "similar",
+          "Different type of moss (reindeer vs. forest & ball) and made-to-measure vs. standard."
+        ]
+      ]
+    },
+    "suggest": {
+      "seconds": 0.1,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        "Custom moss wall, preserved reindeer moss, made to measure"
+      ]
+    }
+  },
+  {
+    "id": "verdeform-moss-module",
+    "run": 3,
+    "match": {
+      "seconds": 2.4,
+      "verified": true,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        [
+          "Custom moss wall, preserved reindeer moss, made to measure",
+          "similar",
+          "Different type of moss (reindeer vs. forest & ball) and made to measure vs. standard."
+        ]
+      ]
+    },
+    "suggest": {
+      "seconds": 0.1,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        "Custom moss wall, preserved reindeer moss, made to measure"
+      ]
+    }
+  },
+  {
+    "id": "hollis-moss-panel",
+    "run": 1,
+    "match": {
+      "seconds": 2.3,
+      "verified": true,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        [
+          "Custom moss wall, preserved reindeer moss, made to measure",
+          "similar",
+          "Made to measure vs standard size."
+        ],
+        [
+          "Framed preserved moss panel with company logo cut-out",
+          "similar",
+          "Different framing and logo cut-out design."
+        ]
+      ]
+    },
+    "suggest": {
+      "seconds": 0.0,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        "Framed preserved moss panel with company logo cut-out"
+      ]
+    }
+  },
+  {
+    "id": "hollis-moss-panel",
+    "run": 2,
+    "match": {
+      "seconds": 2.2,
+      "verified": true,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        [
+          "Custom moss wall, preserved reindeer moss, made to measure",
+          "similar",
+          "Made to measure vs standard size."
+        ],
+        [
+          "Framed preserved moss panel with company logo cut-out",
+          "similar",
+          "Different framing and logo cut-out design."
+        ]
+      ]
+    },
+    "suggest": {
+      "seconds": 0.0,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        "Framed preserved moss panel with company logo cut-out"
+      ]
+    }
+  },
+  {
+    "id": "hollis-moss-panel",
+    "run": 3,
+    "match": {
+      "seconds": 2.4,
+      "verified": true,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        [
+          "Custom moss wall, preserved reindeer moss, made to measure",
+          "similar",
+          "Made to measure vs standard size."
+        ],
+        [
+          "Framed preserved moss panel with company logo cut-out",
+          "similar",
+          "Different framing and logo cut-out design."
+        ]
+      ]
+    },
+    "suggest": {
+      "seconds": 0.0,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        "Framed preserved moss panel with company logo cut-out"
+      ]
+    }
+  },
+  {
+    "id": "macbook",
+    "run": 1,
+    "match": {
+      "seconds": 2.7,
+      "verified": true,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        [
+          "Business laptop 14\" i5 / 16 GB / 512 GB SSD",
+          "similar",
+          "Different size (13\" vs 14\") but same memory and storage capacity."
+        ],
+        [
+          "Business laptop 13\" ultralight / 16 GB / 1 TB",
+          "similar",
+          "Different size (13\" vs 14\") and storage (1 TB vs 512 GB SSD)."
+        ]
+      ]
+    },
+    "suggest": {
+      "seconds": 0.1,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        "Business laptop 13\" ultralight / 16 GB / 1 TB",
+        "Business laptop 14\" i5 / 16 GB / 512 GB SSD",
+        "Business laptop 14\" i7 / 32 GB / 1 TB SSD"
+      ]
+    }
+  },
+  {
+    "id": "macbook",
+    "run": 2,
+    "match": {
+      "seconds": 2.5,
+      "verified": true,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        [
+          "Business laptop 14\" i5 / 16 GB / 512 GB SSD",
+          "similar",
+          "Different screen size (14\" vs 13\") but same memory and storage."
+        ],
+        [
+          "Business laptop 14\" i7 / 32 GB / 1 TB SSD",
+          "similar",
+          "Different screen size (14\" vs 13\") and more memory (32 GB vs 16 GB)."
+        ],
+        [
+          "Business laptop 13\" ultralight / 16 GB / 1 TB",
+          "similar",
+          "Different storage capacity (1 TB vs 512 GB)."
+        ]
+      ]
+    },
+    "suggest": {
+      "seconds": 0.1,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        "Business laptop 13\" ultralight / 16 GB / 1 TB",
+        "Business laptop 14\" i5 / 16 GB / 512 GB SSD",
+        "Business laptop 14\" i7 / 32 GB / 1 TB SSD"
+      ]
+    }
+  },
+  {
+    "id": "macbook",
+    "run": 3,
+    "match": {
+      "seconds": 2.1,
+      "verified": true,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        [
+          "Business laptop 14\" i5 / 16 GB / 512 GB SSD",
+          "similar",
+          "Different screen size (14\" vs 13\") but same memory and storage."
+        ],
+        [
+          "Business laptop 14\" i7 / 32 GB / 1 TB SSD",
+          "similar",
+          "Different screen size (14\" vs 13\") and more memory/storage."
+        ],
+        [
+          "Business laptop 13\" ultralight / 16 GB / 1 TB",
+          "similar",
+          "Different storage capacity (1 TB vs 512 GB)."
+        ]
+      ]
+    },
+    "suggest": {
+      "seconds": 0.1,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        "Business laptop 13\" ultralight / 16 GB / 1 TB",
+        "Business laptop 14\" i5 / 16 GB / 512 GB SSD",
+        "Business laptop 14\" i7 / 32 GB / 1 TB SSD"
+      ]
+    }
+  },
+  {
+    "id": "hartwell-grinder",
+    "run": 1,
+    "match": {
+      "seconds": 2.9,
+      "verified": true,
+      "scores": {
+        "hit": null,
+        "top1": null,
+        "clean": true
+      },
+      "suggestions": []
+    },
+    "suggest": {
+      "seconds": 0.1,
+      "scores": {
+        "hit": null,
+        "top1": null,
+        "clean": true
+      },
+      "suggestions": []
+    }
+  },
+  {
+    "id": "hartwell-grinder",
+    "run": 2,
+    "match": {
+      "seconds": 3.1,
+      "verified": true,
+      "scores": {
+        "hit": null,
+        "top1": null,
+        "clean": true
+      },
+      "suggestions": []
+    },
+    "suggest": {
+      "seconds": 0.1,
+      "scores": {
+        "hit": null,
+        "top1": null,
+        "clean": true
+      },
+      "suggestions": []
+    }
+  },
+  {
+    "id": "hartwell-grinder",
+    "run": 3,
+    "match": {
+      "seconds": 2.4,
+      "verified": true,
+      "scores": {
+        "hit": null,
+        "top1": null,
+        "clean": true
+      },
+      "suggestions": []
+    },
+    "suggest": {
+      "seconds": 0.1,
+      "scores": {
+        "hit": null,
+        "top1": null,
+        "clean": true
+      },
+      "suggestions": []
+    }
+  },
+  {
+    "id": "hartwell-install",
+    "run": 1,
+    "match": {
+      "seconds": 2.5,
+      "verified": true,
+      "scores": {
+        "hit": null,
+        "top1": null,
+        "clean": true
+      },
+      "suggestions": []
+    },
+    "suggest": {
+      "seconds": 0.0,
+      "scores": {
+        "hit": null,
+        "top1": null,
+        "clean": true
+      },
+      "suggestions": []
+    }
+  },
+  {
+    "id": "hartwell-install",
+    "run": 2,
+    "match": {
+      "seconds": 2.5,
+      "verified": true,
+      "scores": {
+        "hit": null,
+        "top1": null,
+        "clean": true
+      },
+      "suggestions": []
+    },
+    "suggest": {
+      "seconds": 0.1,
+      "scores": {
+        "hit": null,
+        "top1": null,
+        "clean": true
+      },
+      "suggestions": []
+    }
+  },
+  {
+    "id": "hartwell-install",
+    "run": 3,
+    "match": {
+      "seconds": 2.6,
+      "verified": true,
+      "scores": {
+        "hit": null,
+        "top1": null,
+        "clean": true
+      },
+      "suggestions": []
+    },
+    "suggest": {
+      "seconds": 0.0,
+      "scores": {
+        "hit": null,
+        "top1": null,
+        "clean": true
+      },
+      "suggestions": []
+    }
+  },
+  {
+    "id": "typed-dock",
+    "run": 1,
+    "match": {
+      "seconds": 2.3,
+      "verified": true,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        [
+          "Docking station USB-C, dual 4K",
+          "equivalent",
+          "Same kind of product with dual monitor support."
+        ],
+        [
+          "Docking station USB-C, 90 W PD",
+          "similar",
+          "Different power delivery capability (90 W PD)."
+        ],
+        [
+          "Docking station Thunderbolt 4",
+          "similar",
+          "Thunderbolt 4 instead of USB-C; check compatibility."
+        ]
+      ]
+    },
+    "suggest": {
+      "seconds": 0.0,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        "Docking station USB-C, dual 4K",
+        "Docking station USB-C, 90 W PD",
+        "Docking station Thunderbolt 4",
+        "24-inch monitor 4K USB-C"
+      ]
+    }
+  },
+  {
+    "id": "typed-dock",
+    "run": 2,
+    "match": {
+      "seconds": 2.1,
+      "verified": true,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        [
+          "Docking station USB-C, dual 4K",
+          "equivalent",
+          "Same kind of product with dual monitor support."
+        ],
+        [
+          "Docking station USB-C, 90 W PD",
+          "similar",
+          "Different power delivery capability (90 W PD)."
+        ],
+        [
+          "Docking station Thunderbolt 4",
+          "similar",
+          "Thunderbolt 4 instead of USB-C; check compatibility."
+        ]
+      ]
+    },
+    "suggest": {
+      "seconds": 0.1,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        "Docking station USB-C, dual 4K",
+        "Docking station USB-C, 90 W PD",
+        "Docking station Thunderbolt 4",
+        "24-inch monitor 4K USB-C"
+      ]
+    }
+  },
+  {
+    "id": "typed-dock",
+    "run": 3,
+    "match": {
+      "seconds": 2.7,
+      "verified": true,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        [
+          "Docking station USB-C, dual 4K",
+          "equivalent",
+          "Same kind of product with the same key specs."
+        ],
+        [
+          "Docking station USB-C, 90 W PD",
+          "similar",
+          "Different power delivery capability; check if it meets requirements."
+        ],
+        [
+          "Docking station Thunderbolt 4",
+          "similar",
+          "Different interface (Thunderbolt vs USB-C); check compatibility."
+        ]
+      ]
+    },
+    "suggest": {
+      "seconds": 0.0,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        "Docking station USB-C, dual 4K",
+        "Docking station USB-C, 90 W PD",
+        "Docking station Thunderbolt 4",
+        "24-inch monitor 4K USB-C"
+      ]
+    }
+  },
+  {
+    "id": "typed-toner",
+    "run": 1,
+    "match": {
+      "seconds": 2.4,
+      "verified": true,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        [
+          "Toner cartridge cyan",
+          "equivalent",
+          "It is the same kind of product with the same key specs."
+        ]
+      ]
+    },
+    "suggest": {
+      "seconds": 0.1,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        "Toner cartridge cyan",
+        "Toner cartridge magenta",
+        "Toner cartridge yellow",
+        "Toner cartridge black, high-yield"
+      ]
+    }
+  },
+  {
+    "id": "typed-toner",
+    "run": 2,
+    "match": {
+      "seconds": 2.3,
+      "verified": true,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        [
+          "Toner cartridge cyan",
+          "equivalent",
+          "It is the same kind of toner cartridge in cyan."
+        ]
+      ]
+    },
+    "suggest": {
+      "seconds": 0.1,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        "Toner cartridge cyan",
+        "Toner cartridge magenta",
+        "Toner cartridge yellow",
+        "Toner cartridge black, high-yield"
+      ]
+    }
+  },
+  {
+    "id": "typed-toner",
+    "run": 3,
+    "match": {
+      "seconds": 2.3,
+      "verified": true,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        [
+          "Toner cartridge cyan",
+          "equivalent",
+          "It is the same kind of product with the same key specs."
+        ]
+      ]
+    },
+    "suggest": {
+      "seconds": 0.0,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        "Toner cartridge cyan",
+        "Toner cartridge magenta",
+        "Toner cartridge yellow",
+        "Toner cartridge black, high-yield"
+      ]
+    }
+  },
+  {
+    "id": "typed-zip-ties",
+    "run": 1,
+    "match": {
+      "seconds": 2.5,
+      "verified": true,
+      "scores": {
+        "hit": null,
+        "top1": null,
+        "clean": true
+      },
+      "suggestions": []
+    },
+    "suggest": {
+      "seconds": 0.1,
+      "scores": {
+        "hit": null,
+        "top1": null,
+        "clean": true
+      },
+      "suggestions": []
+    }
+  },
+  {
+    "id": "typed-zip-ties",
+    "run": 2,
+    "match": {
+      "seconds": 2.8,
+      "verified": true,
+      "scores": {
+        "hit": null,
+        "top1": null,
+        "clean": true
+      },
+      "suggestions": []
+    },
+    "suggest": {
+      "seconds": 0.0,
+      "scores": {
+        "hit": null,
+        "top1": null,
+        "clean": true
+      },
+      "suggestions": []
+    }
+  },
+  {
+    "id": "typed-zip-ties",
+    "run": 3,
+    "match": {
+      "seconds": 2.1,
+      "verified": true,
+      "scores": {
+        "hit": null,
+        "top1": null,
+        "clean": true
+      },
+      "suggestions": []
+    },
+    "suggest": {
+      "seconds": 0.1,
+      "scores": {
+        "hit": null,
+        "top1": null,
+        "clean": true
+      },
+      "suggestions": []
+    }
+  }
+]

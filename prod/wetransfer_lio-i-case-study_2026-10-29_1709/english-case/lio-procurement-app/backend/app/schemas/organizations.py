@@ -11,6 +11,15 @@ MemberRole = Literal["admin", "buyer", "requester"]
 ConfigurableRequiredField = Literal["vat_id", "department"]
 
 
+class BuyerIdentity(BaseModel):
+    """A legal name (and its addresses) that vendor quotes may be addressed to."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    name: str = Field(min_length=1)
+    addresses: list[str] = Field(default_factory=list)
+
+
 class OrganizationSettings(BaseModel):
     """Per-organization configuration. Stored as JSONB, validated here.
 
@@ -21,6 +30,33 @@ class OrganizationSettings(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     required_fields: list[ConfigurableRequiredField] = Field(default_factory=list)
+    # Names/addresses this organization buys under, besides its own name. Extraction
+    # tells the model these are the buyer, and flags a "vendor" that matches one.
+    buyer_identities: list[BuyerIdentity] = Field(default_factory=list)
+    # How this organization books certain purchases, whatever the classifier picks (Task 3).
+    # Earlier rules win when several match.
+    commodity_rules: list["CommodityRule"] = Field(default_factory=list)
+    # Requests whose total cost is *below* this (USD, gross: lines + shipping + fees + tax)
+    # are approved automatically. None: every request needs a buyer (the default).
+    auto_approval_threshold: float | None = Field(default=None, gt=0)
+
+
+class CommodityRule(BaseModel):
+    """'Cable ties are always booked under Electrical Engineering.'
+
+    Applies when any keyword appears (whole words, case-insensitive) in the request's title
+    or order lines, and, if set, the request total is at most ``max_total``.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    name: str = Field(min_length=1)
+    keywords: list[str] = Field(min_length=1)
+    commodity_group_id: int
+    max_total: float | None = Field(default=None, ge=0)
+
+
+OrganizationSettings.model_rebuild()
 
 
 class OrganizationCreate(BaseModel):

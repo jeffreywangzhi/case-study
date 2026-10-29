@@ -6,6 +6,7 @@ export type Profile = {
   id: string;
   email: string;
   full_name: string | null;
+  department?: string | null;
   avatar_url: string | null;
   created_at: string;
   updated_at: string;
@@ -58,9 +59,15 @@ export type ProcurementRequest = {
   department: string | null;
   status: 'open' | 'in_progress' | 'closed';
   approval_status: 'pending' | 'approved' | 'rejected';
+  /** 'auto' when the organization's auto-approval limit approved it; null while pending. */
+  approval_method?: 'manual' | 'auto' | null;
   approved_by: string | null;
   approved_at: string | null;
   total_cost: number | null;
+  /** total_cost = sum of order line totals + shipping_amount + fees_amount + tax_amount */
+  shipping_amount: number | null;
+  fees_amount: number | null;
+  tax_amount: number | null;
   created_at: string;
   updated_at: string;
 };
@@ -74,6 +81,9 @@ export type OrderLine = {
   unit: string;
   total_price: number;
   line_order: number;
+  /** The catalog agreement this line uses, and its negotiated price at the time. */
+  article_id: string | null;
+  catalog_unit_price: number | null;
   created_at: string;
 };
 

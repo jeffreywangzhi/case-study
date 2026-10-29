@@ -1,0 +1,383 @@
+{
+  "meta": {
+    "tag": "hollis-pdf-gpt-4o-mini",
+    "pipeline": "pdf",
+    "model": "gpt-4o-mini",
+    "runs_per_quote": 5,
+    "started_at": "2026-10-29T20:38:19+00:00",
+    "git_commit": "d736ef7",
+    "git_dirty": true,
+    "labels_sha256": "1929ec075603",
+    "summary": {
+      "overall_pct": {
+        "ok": 100,
+        "vendor": 100,
+        "vat_id": 100,
+        "grand_total": 100,
+        "lines": 100,
+        "commodity": 0,
+        "department": 80,
+        "line_detail": 100,
+        "charges": 100,
+        "tax": 100,
+        "reconciles": 100,
+        "flagged": 20
+      },
+      "per_quote": {
+        "QuoteA0492_23.Pdf": {
+          "runs": 5,
+          "ok": "5/5",
+          "vendor": "5/5",
+          "vat_id": "5/5",
+          "grand_total": "5/5",
+          "lines": "5/5",
+          "commodity": "0/5",
+          "department": "4/5",
+          "line_detail": "5/5",
+          "charges": "5/5",
+          "tax": "5/5",
+          "reconciles": "5/5",
+          "flagged": "1/5"
+        }
+      },
+      "latency_s": {
+        "p50": 7.3,
+        "max": 10.0
+      }
+    }
+  },
+  "results": [
+    {
+      "file": "QuoteA0492_23.Pdf",
+      "run": 1,
+      "seconds": 10.0,
+      "scores": {
+        "ok": true,
+        "vendor": true,
+        "vat_id": true,
+        "grand_total": true,
+        "lines": true,
+        "commodity": false,
+        "department": true,
+        "line_detail": true,
+        "charges": true,
+        "tax": true,
+        "reconciles": true,
+        "flagged": false
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Moss Art Panel",
+          "vendorName": "Hollis Greenscapes",
+          "vatId": "94-1985704",
+          "department": "",
+          "orderLines": [
+            {
+              "positionDescription": "Moss panel \"70:30\" with \"askLio\" lettering",
+              "unitPrice": 1560.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 1560.0,
+              "lineType": "item"
+            }
+          ],
+          "excludedLines": [
+            {
+              "positionDescription": "As previous item, but ball moss only.",
+              "unitPrice": 2090.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 2090.0,
+              "lineType": "alternative"
+            },
+            {
+              "positionDescription": "As item 1.1, but forest moss throughout; instead of the blue element of the logo, ball moss shaped into the \"fin shape\" of the logo. Lettering as described in item 1.1.",
+              "unitPrice": 1830.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 1830.0,
+              "lineType": "alternative"
+            }
+          ],
+          "shippingAmount": 320.0,
+          "feesAmount": 0.0,
+          "taxAmount": 162.15,
+          "totalCost": 2042.15,
+          "commodityGroupId": 9,
+          "commodityGroupName": "Miscellaneous Services"
+        },
+        "error": null,
+        "missingFields": null,
+        "warnings": [],
+        "status": "verified"
+      }
+    },
+    {
+      "file": "QuoteA0492_23.Pdf",
+      "run": 2,
+      "seconds": 7.3,
+      "scores": {
+        "ok": true,
+        "vendor": true,
+        "vat_id": true,
+        "grand_total": true,
+        "lines": true,
+        "commodity": false,
+        "department": true,
+        "line_detail": true,
+        "charges": true,
+        "tax": true,
+        "reconciles": true,
+        "flagged": false
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Moss Art Panel",
+          "vendorName": "Hollis Greenscapes",
+          "vatId": "94-1985704",
+          "department": "",
+          "orderLines": [
+            {
+              "positionDescription": "Moss panel \"70:30\" with \"askLio\" lettering",
+              "unitPrice": 1560.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 1560.0,
+              "lineType": "item"
+            }
+          ],
+          "excludedLines": [
+            {
+              "positionDescription": "As previous item, but ball moss only.",
+              "unitPrice": 2090.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 2090.0,
+              "lineType": "alternative"
+            },
+            {
+              "positionDescription": "As item 1.1, but forest moss throughout; instead of the blue element of the logo, ball moss shaped into the \"fin shape\" of the logo. Lettering as described in item 1.1.",
+              "unitPrice": 1830.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 1830.0,
+              "lineType": "alternative"
+            }
+          ],
+          "shippingAmount": 320.0,
+          "feesAmount": 0.0,
+          "taxAmount": 162.15,
+          "totalCost": 2042.15,
+          "commodityGroupId": 9,
+          "commodityGroupName": "Miscellaneous Services"
+        },
+        "error": null,
+        "missingFields": null,
+        "warnings": [],
+        "status": "verified"
+      }
+    },
+    {
+      "file": "QuoteA0492_23.Pdf",
+      "run": 3,
+      "seconds": 7.0,
+      "scores": {
+        "ok": true,
+        "vendor": true,
+        "vat_id": true,
+        "grand_total": true,
+        "lines": true,
+        "commodity": false,
+        "department": true,
+        "line_detail": true,
+        "charges": true,
+        "tax": true,
+        "reconciles": true,
+        "flagged": false
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Moss Art Panel",
+          "vendorName": "Hollis Greenscapes",
+          "vatId": "94-1985704",
+          "department": "",
+          "orderLines": [
+            {
+              "positionDescription": "Moss panel \"70:30\" with \"askLio\" lettering",
+              "unitPrice": 1560.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 1560.0,
+              "lineType": "item"
+            }
+          ],
+          "excludedLines": [
+            {
+              "positionDescription": "As previous item, but ball moss only.",
+              "unitPrice": 2090.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 2090.0,
+              "lineType": "alternative"
+            },
+            {
+              "positionDescription": "As item 1.1, but forest moss throughout; instead of the blue element of the logo, ball moss shaped into the \"fin shape\" of the logo. Lettering as described in item 1.1.",
+              "unitPrice": 1830.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 1830.0,
+              "lineType": "alternative"
+            }
+          ],
+          "shippingAmount": 320.0,
+          "feesAmount": 0.0,
+          "taxAmount": 162.15,
+          "totalCost": 2042.15,
+          "commodityGroupId": 9,
+          "commodityGroupName": "Miscellaneous Services"
+        },
+        "error": null,
+        "missingFields": null,
+        "warnings": [],
+        "status": "verified"
+      }
+    },
+    {
+      "file": "QuoteA0492_23.Pdf",
+      "run": 4,
+      "seconds": 7.3,
+      "scores": {
+        "ok": true,
+        "vendor": true,
+        "vat_id": true,
+        "grand_total": true,
+        "lines": true,
+        "commodity": false,
+        "department": true,
+        "line_detail": true,
+        "charges": true,
+        "tax": true,
+        "reconciles": true,
+        "flagged": false
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Moss Art Panel",
+          "vendorName": "Hollis Greenscapes",
+          "vatId": "94-1985704",
+          "department": "",
+          "orderLines": [
+            {
+              "positionDescription": "Moss panel \"70:30\" with \"askLio\" lettering",
+              "unitPrice": 1560.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 1560.0,
+              "lineType": "item"
+            }
+          ],
+          "excludedLines": [
+            {
+              "positionDescription": "As previous item, but ball moss only.",
+              "unitPrice": 2090.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 2090.0,
+              "lineType": "alternative"
+            },
+            {
+              "positionDescription": "As item 1.1, but forest moss throughout; instead of the blue element of the logo, ball moss shaped into the \"fin shape\" of the logo. Lettering as described in item 1.1.",
+              "unitPrice": 1830.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 1830.0,
+              "lineType": "alternative"
+            }
+          ],
+          "shippingAmount": 320.0,
+          "feesAmount": 0.0,
+          "taxAmount": 162.15,
+          "totalCost": 2042.15,
+          "commodityGroupId": 9,
+          "commodityGroupName": "Miscellaneous Services"
+        },
+        "error": null,
+        "missingFields": null,
+        "warnings": [],
+        "status": "verified"
+      }
+    },
+    {
+      "file": "QuoteA0492_23.Pdf",
+      "run": 5,
+      "seconds": 7.1,
+      "scores": {
+        "ok": true,
+        "vendor": true,
+        "vat_id": true,
+        "grand_total": true,
+        "lines": true,
+        "commodity": false,
+        "department": false,
+        "line_detail": true,
+        "charges": true,
+        "tax": true,
+        "reconciles": true,
+        "flagged": true
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Moss Art Panel",
+          "vendorName": "Hollis Greenscapes",
+          "vatId": "94-1985704",
+          "department": "null",
+          "orderLines": [
+            {
+              "positionDescription": "Moss panel \"70:30\" with \"askLio\" lettering",
+              "unitPrice": 1560.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 1560.0,
+              "lineType": "item"
+            }
+          ],
+          "excludedLines": [
+            {
+              "positionDescription": "As previous item, but ball moss only.",
+              "unitPrice": 2090.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 2090.0,
+              "lineType": "alternative"
+            },
+            {
+              "positionDescription": "As item 1.1, but forest moss throughout; instead of the blue element of the logo, ball moss shaped into the \"fin shape\" of the logo. Lettering as described in item 1.1.",
+              "unitPrice": 1830.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 1830.0,
+              "lineType": "alternative"
+            }
+          ],
+          "shippingAmount": 320.0,
+          "feesAmount": 0.0,
+          "taxAmount": 162.15,
+          "totalCost": 2042.15,
+          "commodityGroupId": null,
+          "commodityGroupName": null
+        },
+        "error": null,
+        "missingFields": [
+          "Commodity Group"
+        ],
+        "warnings": [],
+        "status": "verified"
+      }
+    }
+  ]
+}

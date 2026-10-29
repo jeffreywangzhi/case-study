@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import * as api from '@/lib/api';
+import { approvalLabel } from '@/lib/utils';
 import { Button, Input, Alert } from '@/components/base';
 import { useCommodityGroups } from '@/lib/hooks/useCommodityGroups';
 import type { ProcurementRequestWithDetails } from '@/types/database';
@@ -40,8 +41,13 @@ export default function RequestDetailPage() {
   // Edit form state
   const [form, setForm] = useState({
     requestorName: '', title: '', vendorName: '', vatId: '', department: '',
-    commodityGroupId: null as number | null, totalCost: 0,
+    commodityGroupId: null as number | null, shippingAmount: 0, feesAmount: 0, taxAmount: 0,
   });
+
+  // total = order lines + shipping + fees + tax (lines are edited in the creation flow, not here)
+  const linesTotal = (request?.order_lines || []).reduce((sum, l) => sum + l.total_price, 0);
+  const editTotal =
+    Math.round((linesTotal + form.shippingAmount + form.feesAmount + form.taxAmount) * 100) / 100;
 
   const load = async () => {
     try {
@@ -127,7 +133,9 @@ export default function RequestDetailPage() {
       vatId: request.vat_id || '',
       department: request.department || '',
       commodityGroupId: request.commodity_group_id,
-      totalCost: request.total_cost || 0,
+      shippingAmount: request.shipping_amount || 0,
+      feesAmount: request.fees_amount || 0,
+      taxAmount: request.tax_amount || 0,
     });
     setEditing(true);
   };
@@ -142,7 +150,10 @@ export default function RequestDetailPage() {
         vendorName: form.vendorName,
         vatId: form.vatId,
         commodityGroupId: form.commodityGroupId || 0,
-        totalCost: form.totalCost,
+        totalCost: editTotal,
+        shippingAmount: form.shippingAmount,
+        feesAmount: form.feesAmount,
+        taxAmount: form.taxAmount,
         department: form.department,
         orderLines: (request.order_lines || []).map((l) => ({
           positionDescription: l.position_description,
@@ -150,6 +161,7 @@ export default function RequestDetailPage() {
           amount: l.amount,
           unit: l.unit,
           totalPrice: l.total_price,
+          articleId: l.article_id, // keep the catalog link on edit
         })),
       });
       setEditing(false);
@@ -199,7 +211,7 @@ export default function RequestDetailPage() {
               {titleCase(request.status)}
             </span>
             <span className={`inline-flex px-2.5 py-1 text-xs font-semibold rounded-full ${APPROVAL_BADGE[request.approval_status]}`}>
-              {titleCase(request.approval_status)}
+              {approvalLabel(request)}
             </span>
           </div>
         </div>
@@ -255,6 +267,9 @@ export default function RequestDetailPage() {
                   ? `${request.commodity_groups.category} · ${request.commodity_groups.name}`
                   : '—'}
               />
+              <Field label="Shipping" value={usd(request.shipping_amount)} />
+              <Field label="Fees" value={usd(request.fees_amount)} />
+              <Field label="Sales Tax" value={usd(request.tax_amount)} />
               <Field label="Total Cost" value={usd(request.total_cost)} />
             </dl>
           </div>
@@ -269,6 +284,12 @@ export default function RequestDetailPage() {
                     <p className="text-sm text-ink/55 mt-0.5">
                       {line.amount} {line.unit} × {usd(line.unit_price)}
                     </p>
+                    {line.article_id && (
+                      <span className="mt-1 inline-flex px-2 py-0.5 text-xs font-medium rounded-full bg-green-50 text-green-800">
+                        Negotiated catalog price
+                        {line.catalog_unit_price !== null && ` · ${usd(line.catalog_unit_price)}`}
+                      </span>
+                    )}
                   </div>
                   <p className="text-sm font-semibold text-ink">{usd(line.total_price)}</p>
                 </div>
@@ -354,9 +375,22 @@ export default function RequestDetailPage() {
                   ))}
                 </select>
               </div>
-              <Input label="Total Cost ($) *" type="number" step="0.01" value={form.totalCost}
-                onChange={(e) => setForm({ ...form, totalCost: parseFloat(e.target.value) || 0 })} />
-              <p className="text-xs text-ink/45">Order lines are edited from the request creation flow.</p>
+              <div className="grid grid-cols-3 gap-4">
+                <Input label="Shipping ($)" type="number" step="0.01" min="0" value={form.shippingAmount}
+                  onChange={(e) => setForm({ ...form, shippingAmount: parseFloat(e.target.value) || 0 })} />
+                <Input label="Fees ($)" type="number" step="0.01" min="0" value={form.feesAmount}
+                  onChange={(e) => setForm({ ...form, feesAmount: parseFloat(e.target.value) || 0 })} />
+                <Input label="Sales Tax ($)" type="number" step="0.01" min="0" value={form.taxAmount}
+                  onChange={(e) => setForm({ ...form, taxAmount: parseFloat(e.target.value) || 0 })} />
+              </div>
+              <div className="flex items-center justify-between">
+                <p className="text-xs text-ink/45">Items {usd(linesTotal)} + shipping + fees + tax</p>
+                <p className="text-lg font-semibold text-ink">Total {usd(editTotal)}</p>
+              </div>
+              <p className="text-xs text-ink/45">
+                Order lines are edited from the request creation flow. The total is always the
+                order lines plus shipping, fees and tax.
+              </p>
             </div>
             <div className="border-t border-line p-6 bg-ink-800/[0.02] flex gap-3">
               <Button onClick={saveEdit} loading={busy} disabled={busy} className="flex-1">Save Changes</Button>

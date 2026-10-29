@@ -1,0 +1,1019 @@
+[
+  {
+    "id": "qt4120-moss-panel",
+    "run": 1,
+    "match": {
+      "seconds": 7.6,
+      "verified": true,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "labels": [
+        true,
+        true
+      ],
+      "suggestions": [
+        [
+          "Framed preserved moss panel with company logo cut-out",
+          "close",
+          "materials_or_variant: mixed moss vs preserved moss"
+        ],
+        [
+          "Custom moss wall, preserved reindeer moss, made to measure",
+          "alternative",
+          "product_type: Moss Art Panel vs Custom moss wall; customization: standard vs made to measure; materials_or_variant: mixed moss vs preserved reindeer moss"
+        ]
+      ]
+    },
+    "suggest": {
+      "seconds": 0.0,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        "Framed preserved moss panel with company logo cut-out",
+        "Custom moss wall, preserved reindeer moss, made to measure"
+      ]
+    }
+  },
+  {
+    "id": "qt4120-moss-panel",
+    "run": 2,
+    "match": {
+      "seconds": 7.3,
+      "verified": true,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "labels": [
+        true,
+        true
+      ],
+      "suggestions": [
+        [
+          "Framed preserved moss panel with company logo cut-out",
+          "close",
+          "materials_or_variant: mixed moss vs preserved moss"
+        ],
+        [
+          "Custom moss wall, preserved reindeer moss, made to measure",
+          "alternative",
+          "product_type: Moss Art Panel vs Custom moss wall; customization: standard vs made to measure; materials_or_variant: mixed moss vs preserved reindeer moss"
+        ]
+      ]
+    },
+    "suggest": {
+      "seconds": 0.1,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        "Framed preserved moss panel with company logo cut-out",
+        "Custom moss wall, preserved reindeer moss, made to measure"
+      ]
+    }
+  },
+  {
+    "id": "qt4120-moss-panel",
+    "run": 3,
+    "match": {
+      "seconds": 7.4,
+      "verified": true,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "labels": [
+        true,
+        true
+      ],
+      "suggestions": [
+        [
+          "Framed preserved moss panel with company logo cut-out",
+          "close",
+          "materials_or_variant: mixed moss vs preserved moss"
+        ],
+        [
+          "Custom moss wall, preserved reindeer moss, made to measure",
+          "alternative",
+          "product_type: Moss Art Panel vs Custom moss wall; customization: standard vs made to measure; materials_or_variant: mixed moss vs preserved reindeer moss"
+        ]
+      ]
+    },
+    "suggest": {
+      "seconds": 0.1,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        "Framed preserved moss panel with company logo cut-out",
+        "Custom moss wall, preserved reindeer moss, made to measure"
+      ]
+    }
+  },
+  {
+    "id": "verdeform-moss-module",
+    "run": 1,
+    "match": {
+      "seconds": 5.7,
+      "verified": true,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "labels": [
+        true
+      ],
+      "suggestions": [
+        [
+          "Custom moss wall, preserved reindeer moss, made to measure",
+          "alternative",
+          "materials_or_variant: forest & ball moss vs preserved reindeer moss"
+        ]
+      ]
+    },
+    "suggest": {
+      "seconds": 0.1,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        "Custom moss wall, preserved reindeer moss, made to measure"
+      ]
+    }
+  },
+  {
+    "id": "verdeform-moss-module",
+    "run": 2,
+    "match": {
+      "seconds": 5.6,
+      "verified": true,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "labels": [
+        true
+      ],
+      "suggestions": [
+        [
+          "Custom moss wall, preserved reindeer moss, made to measure",
+          "alternative",
+          "materials_or_variant: forest & ball moss vs preserved reindeer moss"
+        ]
+      ]
+    },
+    "suggest": {
+      "seconds": 0.0,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        "Custom moss wall, preserved reindeer moss, made to measure"
+      ]
+    }
+  },
+  {
+    "id": "verdeform-moss-module",
+    "run": 3,
+    "match": {
+      "seconds": 5.5,
+      "verified": true,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "labels": [
+        true
+      ],
+      "suggestions": [
+        [
+          "Custom moss wall, preserved reindeer moss, made to measure",
+          "alternative",
+          "materials_or_variant: forest & ball moss vs preserved reindeer moss"
+        ]
+      ]
+    },
+    "suggest": {
+      "seconds": 0.1,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        "Custom moss wall, preserved reindeer moss, made to measure"
+      ]
+    }
+  },
+  {
+    "id": "hollis-moss-panel",
+    "run": 1,
+    "match": {
+      "seconds": 6.4,
+      "verified": true,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "labels": [
+        true,
+        true
+      ],
+      "suggestions": [
+        [
+          "Custom moss wall, preserved reindeer moss, made to measure",
+          "alternative",
+          "customization: custom vs standard; materials_or_variant: reindeer moss vs unspecified moss"
+        ],
+        [
+          "Framed preserved moss panel with company logo cut-out",
+          "alternative",
+          "customization: custom vs standard"
+        ]
+      ]
+    },
+    "suggest": {
+      "seconds": 0.1,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        "Framed preserved moss panel with company logo cut-out"
+      ]
+    }
+  },
+  {
+    "id": "hollis-moss-panel",
+    "run": 2,
+    "match": {
+      "seconds": 7.0,
+      "verified": true,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "labels": [
+        true,
+        true
+      ],
+      "suggestions": [
+        [
+          "Custom moss wall, preserved reindeer moss, made to measure",
+          "alternative",
+          "Same product and key specs."
+        ],
+        [
+          "Framed preserved moss panel with company logo cut-out",
+          "alternative",
+          "materials_or_variant: preserved moss vs unspecified moss type"
+        ]
+      ]
+    },
+    "suggest": {
+      "seconds": 0.1,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        "Framed preserved moss panel with company logo cut-out"
+      ]
+    }
+  },
+  {
+    "id": "hollis-moss-panel",
+    "run": 3,
+    "match": {
+      "seconds": 5.8,
+      "verified": true,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "labels": [
+        true,
+        true
+      ],
+      "suggestions": [
+        [
+          "Custom moss wall, preserved reindeer moss, made to measure",
+          "alternative",
+          "customization: custom vs standard; materials_or_variant: reindeer moss vs unspecified moss"
+        ],
+        [
+          "Framed preserved moss panel with company logo cut-out",
+          "alternative",
+          "customization: custom vs standard"
+        ]
+      ]
+    },
+    "suggest": {
+      "seconds": 0.1,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        "Framed preserved moss panel with company logo cut-out"
+      ]
+    }
+  },
+  {
+    "id": "macbook",
+    "run": 1,
+    "match": {
+      "seconds": 6.5,
+      "verified": true,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "labels": [
+        true,
+        true,
+        true
+      ],
+      "suggestions": [
+        [
+          "Business laptop 14\" i5 / 16 GB / 512 GB SSD",
+          "alternative",
+          "platform: macOS vs Windows; size: 13\" vs 14\""
+        ],
+        [
+          "Business laptop 14\" i7 / 32 GB / 1 TB SSD",
+          "alternative",
+          "platform: macOS vs Windows; size: 13\" vs 14\"; key_specs: 32 GB vs 16 GB RAM; key_specs: 1 TB vs 512 GB SSD"
+        ],
+        [
+          "Business laptop 13\" ultralight / 16 GB / 1 TB",
+          "alternative",
+          "platform: macOS vs Windows; key_specs: 1 TB vs 512 GB SSD"
+        ]
+      ]
+    },
+    "suggest": {
+      "seconds": 0.0,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        "Business laptop 13\" ultralight / 16 GB / 1 TB",
+        "Business laptop 14\" i5 / 16 GB / 512 GB SSD",
+        "Business laptop 14\" i7 / 32 GB / 1 TB SSD"
+      ]
+    }
+  },
+  {
+    "id": "macbook",
+    "run": 2,
+    "match": {
+      "seconds": 7.3,
+      "verified": true,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "labels": [
+        true,
+        true,
+        true
+      ],
+      "suggestions": [
+        [
+          "Business laptop 14\" i5 / 16 GB / 512 GB SSD",
+          "alternative",
+          "platform: macOS vs Windows; size: 13\" vs 14\""
+        ],
+        [
+          "Business laptop 14\" i7 / 32 GB / 1 TB SSD",
+          "alternative",
+          "platform: macOS vs Windows; key_specs: 32 GB vs 16 GB unified memory; key_specs: 1 TB vs 512 GB SSD; size: 13\" vs 14\""
+        ],
+        [
+          "Business laptop 13\" ultralight / 16 GB / 1 TB",
+          "alternative",
+          "platform: macOS vs Windows; size: 13\" vs 13\"; key_specs: 1 TB vs 512 GB SSD"
+        ]
+      ]
+    },
+    "suggest": {
+      "seconds": 0.1,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        "Business laptop 13\" ultralight / 16 GB / 1 TB",
+        "Business laptop 14\" i5 / 16 GB / 512 GB SSD",
+        "Business laptop 14\" i7 / 32 GB / 1 TB SSD"
+      ]
+    }
+  },
+  {
+    "id": "macbook",
+    "run": 3,
+    "match": {
+      "seconds": 6.8,
+      "verified": true,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "labels": [
+        true,
+        true,
+        true
+      ],
+      "suggestions": [
+        [
+          "Business laptop 14\" i5 / 16 GB / 512 GB SSD",
+          "alternative",
+          "platform: macOS vs Windows; size: 13\" vs 14\""
+        ],
+        [
+          "Business laptop 14\" i7 / 32 GB / 1 TB SSD",
+          "alternative",
+          "platform: macOS vs Windows; size: 13\" vs 14\"; key_specs: 32 GB vs 16 GB RAM"
+        ],
+        [
+          "Business laptop 13\" ultralight / 16 GB / 1 TB",
+          "alternative",
+          "platform: macOS vs Windows; key_specs: 1 TB vs 512 GB SSD"
+        ]
+      ]
+    },
+    "suggest": {
+      "seconds": 0.0,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        "Business laptop 13\" ultralight / 16 GB / 1 TB",
+        "Business laptop 14\" i5 / 16 GB / 512 GB SSD",
+        "Business laptop 14\" i7 / 32 GB / 1 TB SSD"
+      ]
+    }
+  },
+  {
+    "id": "hartwell-grinder",
+    "run": 1,
+    "match": {
+      "seconds": 5.5,
+      "verified": true,
+      "scores": {
+        "hit": null,
+        "top1": null,
+        "clean": true
+      },
+      "labels": [],
+      "suggestions": []
+    },
+    "suggest": {
+      "seconds": 0.1,
+      "scores": {
+        "hit": null,
+        "top1": null,
+        "clean": true
+      },
+      "suggestions": []
+    }
+  },
+  {
+    "id": "hartwell-grinder",
+    "run": 2,
+    "match": {
+      "seconds": 5.7,
+      "verified": true,
+      "scores": {
+        "hit": null,
+        "top1": null,
+        "clean": true
+      },
+      "labels": [],
+      "suggestions": []
+    },
+    "suggest": {
+      "seconds": 0.1,
+      "scores": {
+        "hit": null,
+        "top1": null,
+        "clean": true
+      },
+      "suggestions": []
+    }
+  },
+  {
+    "id": "hartwell-grinder",
+    "run": 3,
+    "match": {
+      "seconds": 5.5,
+      "verified": true,
+      "scores": {
+        "hit": null,
+        "top1": null,
+        "clean": true
+      },
+      "labels": [],
+      "suggestions": []
+    },
+    "suggest": {
+      "seconds": 0.1,
+      "scores": {
+        "hit": null,
+        "top1": null,
+        "clean": true
+      },
+      "suggestions": []
+    }
+  },
+  {
+    "id": "hartwell-install",
+    "run": 1,
+    "match": {
+      "seconds": 7.2,
+      "verified": true,
+      "scores": {
+        "hit": null,
+        "top1": null,
+        "clean": true
+      },
+      "labels": [],
+      "suggestions": []
+    },
+    "suggest": {
+      "seconds": 0.1,
+      "scores": {
+        "hit": null,
+        "top1": null,
+        "clean": true
+      },
+      "suggestions": []
+    }
+  },
+  {
+    "id": "hartwell-install",
+    "run": 2,
+    "match": {
+      "seconds": 4.5,
+      "verified": true,
+      "scores": {
+        "hit": null,
+        "top1": null,
+        "clean": true
+      },
+      "labels": [],
+      "suggestions": []
+    },
+    "suggest": {
+      "seconds": 0.1,
+      "scores": {
+        "hit": null,
+        "top1": null,
+        "clean": true
+      },
+      "suggestions": []
+    }
+  },
+  {
+    "id": "hartwell-install",
+    "run": 3,
+    "match": {
+      "seconds": 5.6,
+      "verified": true,
+      "scores": {
+        "hit": null,
+        "top1": null,
+        "clean": true
+      },
+      "labels": [],
+      "suggestions": []
+    },
+    "suggest": {
+      "seconds": 0.1,
+      "scores": {
+        "hit": null,
+        "top1": null,
+        "clean": true
+      },
+      "suggestions": []
+    }
+  },
+  {
+    "id": "typed-dock",
+    "run": 1,
+    "match": {
+      "seconds": 6.3,
+      "verified": true,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "labels": [
+        true,
+        true,
+        true
+      ],
+      "suggestions": [
+        [
+          "Docking station USB-C, dual 4K",
+          "equivalent",
+          "Same product and key specs."
+        ],
+        [
+          "Docking station USB-C, 90 W PD",
+          "close",
+          "key_specs: 90 W PD vs dual monitor"
+        ],
+        [
+          "Docking station Thunderbolt 4",
+          "alternative",
+          "platform: USB-C vs Thunderbolt 4"
+        ]
+      ]
+    },
+    "suggest": {
+      "seconds": 0.1,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        "Docking station USB-C, dual 4K",
+        "Docking station USB-C, 90 W PD",
+        "Docking station Thunderbolt 4",
+        "24-inch monitor 4K USB-C"
+      ]
+    }
+  },
+  {
+    "id": "typed-dock",
+    "run": 2,
+    "match": {
+      "seconds": 9.6,
+      "verified": true,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "labels": [
+        true,
+        true,
+        true
+      ],
+      "suggestions": [
+        [
+          "Docking station USB-C, dual 4K",
+          "equivalent",
+          "Same product and key specs."
+        ],
+        [
+          "Docking station USB-C, 90 W PD",
+          "close",
+          "key_specs: 90 W PD vs dual monitor"
+        ],
+        [
+          "Docking station Thunderbolt 4",
+          "alternative",
+          "platform: USB-C vs Thunderbolt 4"
+        ]
+      ]
+    },
+    "suggest": {
+      "seconds": 0.1,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        "Docking station USB-C, dual 4K",
+        "Docking station USB-C, 90 W PD",
+        "Docking station Thunderbolt 4",
+        "24-inch monitor 4K USB-C"
+      ]
+    }
+  },
+  {
+    "id": "typed-dock",
+    "run": 3,
+    "match": {
+      "seconds": 7.6,
+      "verified": true,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "labels": [
+        true,
+        true,
+        true
+      ],
+      "suggestions": [
+        [
+          "Docking station USB-C, dual 4K",
+          "equivalent",
+          "Same product and key specs."
+        ],
+        [
+          "Docking station USB-C, 90 W PD",
+          "close",
+          "key_specs: 90 W PD vs dual monitor"
+        ],
+        [
+          "Docking station Thunderbolt 4",
+          "alternative",
+          "platform: USB-C vs Thunderbolt 4"
+        ]
+      ]
+    },
+    "suggest": {
+      "seconds": 0.0,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        "Docking station USB-C, dual 4K",
+        "Docking station USB-C, 90 W PD",
+        "Docking station Thunderbolt 4",
+        "24-inch monitor 4K USB-C"
+      ]
+    }
+  },
+  {
+    "id": "typed-toner",
+    "run": 1,
+    "match": {
+      "seconds": 7.0,
+      "verified": true,
+      "scores": {
+        "hit": true,
+        "top1": false,
+        "clean": null
+      },
+      "labels": [
+        false,
+        true,
+        false,
+        false
+      ],
+      "suggestions": [
+        [
+          "Toner cartridge yellow",
+          "equivalent",
+          "Same product and key specs."
+        ],
+        [
+          "Toner cartridge cyan",
+          "equivalent",
+          "Same product and key specs."
+        ],
+        [
+          "Toner cartridge magenta",
+          "equivalent",
+          "Same product and key specs."
+        ],
+        [
+          "Toner cartridge black, high-yield",
+          "equivalent",
+          "Same product and key specs."
+        ]
+      ]
+    },
+    "suggest": {
+      "seconds": 0.0,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        "Toner cartridge cyan",
+        "Toner cartridge magenta",
+        "Toner cartridge yellow",
+        "Toner cartridge black, high-yield"
+      ]
+    }
+  },
+  {
+    "id": "typed-toner",
+    "run": 2,
+    "match": {
+      "seconds": 6.5,
+      "verified": true,
+      "scores": {
+        "hit": true,
+        "top1": false,
+        "clean": null
+      },
+      "labels": [
+        false,
+        true,
+        false,
+        false
+      ],
+      "suggestions": [
+        [
+          "Toner cartridge yellow",
+          "equivalent",
+          "Same product and key specs."
+        ],
+        [
+          "Toner cartridge cyan",
+          "equivalent",
+          "Same product and key specs."
+        ],
+        [
+          "Toner cartridge magenta",
+          "equivalent",
+          "Same product and key specs."
+        ],
+        [
+          "Toner cartridge black, high-yield",
+          "equivalent",
+          "Same product and key specs."
+        ]
+      ]
+    },
+    "suggest": {
+      "seconds": 0.0,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        "Toner cartridge cyan",
+        "Toner cartridge magenta",
+        "Toner cartridge yellow",
+        "Toner cartridge black, high-yield"
+      ]
+    }
+  },
+  {
+    "id": "typed-toner",
+    "run": 3,
+    "match": {
+      "seconds": 6.2,
+      "verified": true,
+      "scores": {
+        "hit": true,
+        "top1": false,
+        "clean": null
+      },
+      "labels": [
+        false,
+        true,
+        false,
+        false
+      ],
+      "suggestions": [
+        [
+          "Toner cartridge yellow",
+          "equivalent",
+          "Same product and key specs."
+        ],
+        [
+          "Toner cartridge cyan",
+          "equivalent",
+          "Same product and key specs."
+        ],
+        [
+          "Toner cartridge magenta",
+          "equivalent",
+          "Same product and key specs."
+        ],
+        [
+          "Toner cartridge black, high-yield",
+          "equivalent",
+          "Same product and key specs."
+        ]
+      ]
+    },
+    "suggest": {
+      "seconds": 0.1,
+      "scores": {
+        "hit": true,
+        "top1": true,
+        "clean": null
+      },
+      "suggestions": [
+        "Toner cartridge cyan",
+        "Toner cartridge magenta",
+        "Toner cartridge yellow",
+        "Toner cartridge black, high-yield"
+      ]
+    }
+  },
+  {
+    "id": "typed-zip-ties",
+    "run": 1,
+    "match": {
+      "seconds": 6.8,
+      "verified": true,
+      "scores": {
+        "hit": null,
+        "top1": null,
+        "clean": true
+      },
+      "labels": [],
+      "suggestions": []
+    },
+    "suggest": {
+      "seconds": 0.1,
+      "scores": {
+        "hit": null,
+        "top1": null,
+        "clean": true
+      },
+      "suggestions": []
+    }
+  },
+  {
+    "id": "typed-zip-ties",
+    "run": 2,
+    "match": {
+      "seconds": 6.9,
+      "verified": true,
+      "scores": {
+        "hit": null,
+        "top1": null,
+        "clean": true
+      },
+      "labels": [],
+      "suggestions": []
+    },
+    "suggest": {
+      "seconds": 0.1,
+      "scores": {
+        "hit": null,
+        "top1": null,
+        "clean": true
+      },
+      "suggestions": []
+    }
+  },
+  {
+    "id": "typed-zip-ties",
+    "run": 3,
+    "match": {
+      "seconds": 7.1,
+      "verified": true,
+      "scores": {
+        "hit": null,
+        "top1": null,
+        "clean": true
+      },
+      "labels": [],
+      "suggestions": []
+    },
+    "suggest": {
+      "seconds": 0.1,
+      "scores": {
+        "hit": null,
+        "top1": null,
+        "clean": true
+      },
+      "suggestions": []
+    }
+  }
+]

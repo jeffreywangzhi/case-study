@@ -18,6 +18,8 @@ class OrderLineIn(BaseModel):
     amount: float
     unit: str
     total_price: float = Field(alias="totalPrice")
+    # Set when the line uses a catalog agreement (must be an article of the caller's org).
+    article_id: uuid.UUID | None = Field(default=None, alias="articleId")
 
 
 class RequestCreate(BaseModel):
@@ -27,8 +29,14 @@ class RequestCreate(BaseModel):
     vat_id: str | None = Field(default=None, alias="vatId")
     commodity_group_id: int = Field(alias="commodityGroupId")
     total_cost: float = Field(alias="totalCost")
+    shipping_amount: float | None = Field(default=None, alias="shippingAmount")
+    fees_amount: float | None = Field(default=None, alias="feesAmount")
+    tax_amount: float | None = Field(default=None, alias="taxAmount")
     department: str | None = None
     order_lines: list[OrderLineIn] = Field(alias="orderLines", min_length=1)
+    # The form resets shipping/fees/tax when a catalog agreement switches the vendor; until
+    # someone enters them the total is understated, so it can't be auto-approved.
+    charges_incomplete: bool = Field(default=False, alias="chargesIncomplete")
 
 
 class RequestUpdate(BaseModel):
@@ -38,8 +46,12 @@ class RequestUpdate(BaseModel):
     vat_id: str | None = Field(default=None, alias="vatId")
     commodity_group_id: int = Field(alias="commodityGroupId")
     total_cost: float = Field(alias="totalCost")
+    shipping_amount: float | None = Field(default=None, alias="shippingAmount")
+    fees_amount: float | None = Field(default=None, alias="feesAmount")
+    tax_amount: float | None = Field(default=None, alias="taxAmount")
     department: str | None = None
     order_lines: list[OrderLineIn] = Field(alias="orderLines")
+    charges_incomplete: bool = Field(default=False, alias="chargesIncomplete")
 
 
 class StatusUpdate(BaseModel):
@@ -73,6 +85,8 @@ class OrderLineOut(BaseModel):
     unit: str
     total_price: float
     line_order: int
+    article_id: uuid.UUID | None = None
+    catalog_unit_price: float | None = None
     created_at: datetime
 
 
@@ -103,9 +117,13 @@ class RequestOut(BaseModel):
     department: str | None
     status: RequestStatus
     approval_status: ApprovalStatus
+    approval_method: Literal["manual", "auto"] | None = None
     approved_by: uuid.UUID | None
     approved_at: datetime | None
     total_cost: float | None
+    shipping_amount: float | None = None
+    fees_amount: float | None = None
+    tax_amount: float | None = None
     created_at: datetime
     updated_at: datetime
     order_lines: list[OrderLineOut]
