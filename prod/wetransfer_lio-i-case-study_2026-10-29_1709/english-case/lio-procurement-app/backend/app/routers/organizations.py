@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 from app.core.deps import get_current_membership, get_current_user, require_org_admin
 from app.db.session import get_db
 from app.models import (
+    CommodityGroup,
     Organization,
     OrganizationInvite,
     OrganizationMember,
@@ -99,6 +100,15 @@ def update_settings(
     merged = OrganizationSettings(
         **{**(org.settings or {}), **payload.model_dump(exclude_unset=True)}
     )
+    unknown = {r.commodity_group_id for r in merged.commodity_rules} - set(
+        db.scalars(select(CommodityGroup.id).where(
+            CommodityGroup.id.in_({r.commodity_group_id for r in merged.commodity_rules})))
+    )
+    if unknown:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=f"Unknown commodity group in rules: {', '.join(map(str, sorted(unknown)))}",
+        )
     org.settings = merged.model_dump()
     db.commit()
     return merged

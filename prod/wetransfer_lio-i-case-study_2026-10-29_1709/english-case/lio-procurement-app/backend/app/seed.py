@@ -150,6 +150,41 @@ ACME_BUYER_IDENTITIES = [
 ]
 
 
+# "Office Supplies" isn't in the generated taxonomy (ids 1-2000) but Acme books small software
+# subscriptions there; added as its own group (an assumption to confirm with the customer).
+EXTRA_COMMODITY_GROUPS = [(2001, "Office & Administration", "Office Supplies")]
+
+# Acme's booking rules (Task 3). Keywords are deliberately precise: every hit is a guaranteed
+# override. "Small" = request total up to $1,000 (an assumption to confirm with the customer).
+ACME_COMMODITY_RULES = [
+    {"name": "Cable ties", "commodity_group_id": 11,
+     "keywords": ["cable tie", "zip tie", "tie wrap", "wire tie", "nylon tie"]},
+    {"name": "Printer toner", "commodity_group_id": 29, "keywords": ["toner"]},
+    {"name": "Small software subscriptions", "commodity_group_id": 2001, "max_total": 1000,
+     "keywords": ["software subscription", "saas", "software license", "software licence",
+                  "app subscription", "cloud subscription"]},
+]
+
+
+def seed_extra_commodity_groups(db: Session) -> int:
+    existing = set(db.scalars(select(CommodityGroup.id)))
+    new = [CommodityGroup(id=i, category=c, name=n)
+           for i, c, n in EXTRA_COMMODITY_GROUPS if i not in existing]
+    db.add_all(new)
+    return len(new)
+
+
+def seed_commodity_rules(db: Session, organization_id: uuid.UUID) -> int:
+    """Give the dev org its booking rules unless the setting already exists."""
+    org = db.get(Organization, organization_id)
+    settings = dict(org.settings or {})
+    if "commodity_rules" in settings:
+        return 0
+    settings["commodity_rules"] = ACME_COMMODITY_RULES
+    org.settings = settings  # reassign so the JSON column is marked dirty
+    return 1
+
+
 def seed_buyer_identities(db: Session, organization_id: uuid.UUID) -> int:
     """Give the dev org its buyer identities unless the setting already exists."""
     org = db.get(Organization, organization_id)
@@ -221,6 +256,8 @@ def seed(db: Session) -> dict[str, int]:
         # Articles reference suppliers by name, so this must run after suppliers.
         "articles": seed_articles(db, dev_org_id) if dev_org_id else 0,
         "buyer_identities": seed_buyer_identities(db, dev_org_id) if dev_org_id else 0,
+        "extra_commodity_groups": seed_extra_commodity_groups(db),
+        "commodity_rules": seed_commodity_rules(db, dev_org_id) if dev_org_id else 0,
         "auto_approval_threshold": (
             seed_auto_approval_threshold(db, dev_org_id) if dev_org_id else 0
         ),

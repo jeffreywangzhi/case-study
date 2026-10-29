@@ -121,6 +121,8 @@ export interface ExtractedVendorData {
   totalCost: number;
   commodityGroupId: number | null;
   commodityGroupName: string | null;
+  /** Set when an organization booking rule chose the group (overrides the classifier). */
+  commodityRule?: string | null;
 }
 
 export interface ExtractionWarning {
@@ -259,7 +261,7 @@ export interface RequestActivity {
   actor_id: string | null;
   action:
     | 'created' | 'updated' | 'status_changed' | 'approved' | 'rejected' | 'document_attached'
-    | 'catalog_applied'
+    | 'catalog_applied' | 'commodity_rule_applied'
     | 'auto_approved' | 'approval_required' | 'approval_reset';
   summary: string;
   detail: Record<string, unknown> | null;

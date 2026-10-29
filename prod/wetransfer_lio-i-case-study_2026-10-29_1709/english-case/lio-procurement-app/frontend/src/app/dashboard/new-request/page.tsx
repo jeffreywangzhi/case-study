@@ -66,6 +66,8 @@ export default function NewRequestPage() {
   // Set when an agreement switched the vendor and the quote's shipping/fees/tax were reset.
   const [chargesNotice, setChargesNotice] = useState('');
   const [autoApprovalThreshold, setAutoApprovalThreshold] = useState<number | null>(null);
+  // Set when one of the organization's booking rules chose the commodity group.
+  const [commodityRule, setCommodityRule] = useState('');
 
   // Lines on a catalog agreement must all come from one supplier: a request has one vendor.
   const catalogSuppliers = Array.from(
@@ -143,6 +145,7 @@ export default function NewRequestPage() {
       if (extracted.commodityGroupId) {
         setCommodityGroupId(extracted.commodityGroupId);
       }
+      setCommodityRule(extracted.commodityRule || '');
 
       // Show warnings for missing fields
       if (extractionResult.missingFields && extractionResult.missingFields.length > 0) {
@@ -558,6 +561,12 @@ export default function NewRequestPage() {
                 </option>
               ))}
             </select>
+            {commodityRule && (
+              <p className="mt-1 text-xs text-green-700">
+                ✓ Set by your organization&apos;s booking rules: {commodityRule}. Saving a request
+                always applies these rules.
+              </p>
+            )}
           </div>
         </div>
 

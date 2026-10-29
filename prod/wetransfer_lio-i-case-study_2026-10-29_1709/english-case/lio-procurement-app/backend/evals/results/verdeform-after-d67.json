@@ -1,0 +1,249 @@
+{
+  "meta": {
+    "tag": "verdeform-after-d67",
+    "pipeline": "pdf",
+    "model": "gpt-4o-mini",
+    "runs_per_quote": 3,
+    "started_at": "2026-10-29T22:19:11+00:00",
+    "git_commit": "0cb76f3",
+    "git_dirty": true,
+    "labels_sha256": "f29590c94bec",
+    "summary": {
+      "overall_pct": {
+        "ok": 100,
+        "vendor": 0,
+        "vat_id": 0,
+        "grand_total": 100,
+        "lines": 100,
+        "commodity": 100,
+        "department": 100,
+        "line_detail": 100,
+        "charges": 100,
+        "tax": 100,
+        "reconciles": 100,
+        "flagged": 0
+      },
+      "per_quote": {
+        "QT-OF2312380-Cust-57692.pdf": {
+          "runs": 3,
+          "ok": "3/3",
+          "vendor": "0/3",
+          "vat_id": "0/3",
+          "grand_total": "3/3",
+          "lines": "3/3",
+          "commodity": "3/3",
+          "department": "3/3",
+          "line_detail": "3/3",
+          "charges": "3/3",
+          "tax": "3/3",
+          "reconciles": "3/3",
+          "flagged": "0/3"
+        }
+      },
+      "latency_s": {
+        "p50": 14.3,
+        "max": 14.4
+      }
+    }
+  },
+  "results": [
+    {
+      "file": "QT-OF2312380-Cust-57692.pdf",
+      "run": 1,
+      "seconds": 14.2,
+      "scores": {
+        "ok": true,
+        "vendor": false,
+        "vat_id": false,
+        "grand_total": true,
+        "lines": true,
+        "commodity": true,
+        "department": true,
+        "line_detail": true,
+        "charges": true,
+        "tax": true,
+        "reconciles": true,
+        "flagged": false
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Custom Moss Products",
+          "vendorName": "verdeform",
+          "vatId": "",
+          "department": "",
+          "orderLines": [
+            {
+              "positionDescription": "verdeform CUSTOM - sq ft Module - forest & ball moss variant (w x h) 63 x 31.5 in",
+              "unitPrice": 52.0,
+              "amount": 13.78,
+              "unit": "sq ft",
+              "totalPrice": 716.56,
+              "lineType": "item"
+            },
+            {
+              "positionDescription": "verdeform CUSTOM - edge greening forest moss per lin ft (perim.) 63 x 31.5 in",
+              "unitPrice": 7.65,
+              "amount": 15.75,
+              "unit": "lin ft",
+              "totalPrice": 120.49,
+              "lineType": "item"
+            },
+            {
+              "positionDescription": "Logo acrylic white 3/16 in \"ask Lio\" length 31.5 in with standoffs",
+              "unitPrice": 350.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 350.0,
+              "lineType": "item"
+            }
+          ],
+          "excludedLines": [],
+          "shippingAmount": 113.85,
+          "feesAmount": 0.0,
+          "taxAmount": 112.2,
+          "totalCost": 1413.1,
+          "commodityGroupId": 15,
+          "commodityGroupName": "Office Equipment",
+          "commodityRule": null
+        },
+        "error": null,
+        "missingFields": null,
+        "warnings": [],
+        "status": "verified"
+      }
+    },
+    {
+      "file": "QT-OF2312380-Cust-57692.pdf",
+      "run": 2,
+      "seconds": 14.3,
+      "scores": {
+        "ok": true,
+        "vendor": false,
+        "vat_id": false,
+        "grand_total": true,
+        "lines": true,
+        "commodity": true,
+        "department": true,
+        "line_detail": true,
+        "charges": true,
+        "tax": true,
+        "reconciles": true,
+        "flagged": false
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Custom Moss Products",
+          "vendorName": "verdeform",
+          "vatId": "",
+          "department": "",
+          "orderLines": [
+            {
+              "positionDescription": "verdeform CUSTOM - sq ft Module - forest & ball moss variant (w x h) 63 x 31.5 in",
+              "unitPrice": 52.0,
+              "amount": 13.78,
+              "unit": "sq ft",
+              "totalPrice": 716.56,
+              "lineType": "item"
+            },
+            {
+              "positionDescription": "verdeform CUSTOM - edge greening forest moss per lin ft (perim.) 63 x 31.5 in",
+              "unitPrice": 7.65,
+              "amount": 15.75,
+              "unit": "lin ft",
+              "totalPrice": 120.49,
+              "lineType": "item"
+            },
+            {
+              "positionDescription": "Logo acrylic white 3/16 in \"ask Lio\" length 31.5 in with standoffs",
+              "unitPrice": 350.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 350.0,
+              "lineType": "item"
+            }
+          ],
+          "excludedLines": [],
+          "shippingAmount": 113.85,
+          "feesAmount": 0.0,
+          "taxAmount": 112.2,
+          "totalCost": 1413.1,
+          "commodityGroupId": 15,
+          "commodityGroupName": "Office Equipment",
+          "commodityRule": null
+        },
+        "error": null,
+        "missingFields": null,
+        "warnings": [],
+        "status": "verified"
+      }
+    },
+    {
+      "file": "QT-OF2312380-Cust-57692.pdf",
+      "run": 3,
+      "seconds": 14.4,
+      "scores": {
+        "ok": true,
+        "vendor": false,
+        "vat_id": false,
+        "grand_total": true,
+        "lines": true,
+        "commodity": true,
+        "department": true,
+        "line_detail": true,
+        "charges": true,
+        "tax": true,
+        "reconciles": true,
+        "flagged": false
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "title": "Custom Moss Products",
+          "vendorName": "verdeform",
+          "vatId": "",
+          "department": "",
+          "orderLines": [
+            {
+              "positionDescription": "verdeform CUSTOM - sq ft Module - forest & ball moss variant (w x h) 63 x 31.5 in",
+              "unitPrice": 52.0,
+              "amount": 13.78,
+              "unit": "sq ft",
+              "totalPrice": 716.56,
+              "lineType": "item"
+            },
+            {
+              "positionDescription": "verdeform CUSTOM - edge greening forest moss per lin ft (perim.) 63 x 31.5 in",
+              "unitPrice": 7.65,
+              "amount": 15.75,
+              "unit": "lin ft",
+              "totalPrice": 120.49,
+              "lineType": "item"
+            },
+            {
+              "positionDescription": "Logo acrylic white 3/16 in \"ask Lio\" length 31.5 in with standoffs",
+              "unitPrice": 350.0,
+              "amount": 1.0,
+              "unit": "ea.",
+              "totalPrice": 350.0,
+              "lineType": "item"
+            }
+          ],
+          "excludedLines": [],
+          "shippingAmount": 113.85,
+          "feesAmount": 0.0,
+          "taxAmount": 112.2,
+          "totalCost": 1413.1,
+          "commodityGroupId": 15,
+          "commodityGroupName": "Office Equipment",
+          "commodityRule": null
+        },
+        "error": null,
+        "missingFields": null,
+        "warnings": [],
+        "status": "verified"
+      }
+    }
+  ]
+}

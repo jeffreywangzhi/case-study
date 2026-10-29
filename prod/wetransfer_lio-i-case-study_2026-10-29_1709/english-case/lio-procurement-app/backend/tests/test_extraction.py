@@ -341,6 +341,17 @@ def test_tax_id_normalization_and_missing_tax_id():
     assert data.vat_id == "" and warnings == []
 
 
+def test_missing_tax_id_is_only_flagged_when_the_organization_requires_it():
+    from app.schemas.extraction import ExtractedVendorData
+    from app.services.extraction import _missing_fields
+
+    data = ExtractedVendorData(title="Grinding machine", vendor_name="Hartwell", vat_id="",
+                               order_lines=[{"positionDescription": "x"}], total_cost=100,
+                               commodity_group_id=45)
+    assert _missing_fields(data) == []
+    assert _missing_fields(data, ["vat_id"]) == ["Tax ID"]
+
+
 def test_company_name_matching():
     assert same_company("Lio Technologies, Inc.", "LIO TECHNOLOGIES INC")
     assert same_company("Acme Corp", "ACME Corp")

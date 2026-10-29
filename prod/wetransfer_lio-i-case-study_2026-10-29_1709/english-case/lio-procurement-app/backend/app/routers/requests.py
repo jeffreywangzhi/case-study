@@ -19,6 +19,7 @@ from app.models import (
     RequestDocument,
 )
 from app.services import approval_policy
+from app.services.commodity_rules import match_rule, rules_of
 from app.services.quote_checks import same_company
 from app.schemas.requests import (
     ApprovalDecision,
@@ -177,6 +178,27 @@ def _build_order_lines(
     ]
 
 
+def _commodity_group_by_rule(
+    db: Session, organization_id: uuid.UUID, payload: RequestCreate | RequestUpdate
+) -> tuple[int, str | None]:
+    """The commodity group to store: the organization's booking rule wins (Task 3).
+
+    Returns the group id and, when a rule changed the requested group, the activity summary.
+    """
+    org = db.get(Organization, organization_id)
+    match = match_rule(
+        rules_of(org.settings if org else None),
+        [payload.title, *(line.position_description for line in payload.order_lines)],
+        payload.total_cost,
+    )
+    if match is None or match.rule.commodity_group_id == payload.commodity_group_id:
+        return payload.commodity_group_id, None
+    target = db.get(CommodityGroup, match.rule.commodity_group_id)
+    if target is None:  # a rule pointing at a removed group never blocks a request
+        return payload.commodity_group_id, None
+    return target.id, f"Commodity group set to {target.name} by {match.summary}"
+
+
 def _log_catalog_use(db: Session, request: ProcurementRequest, actor_id: uuid.UUID) -> None:
     """Record which lines use negotiated catalog agreements (makes agreement use measurable)."""
     used = [line for line in request.order_lines if line.article_id]
@@ -318,6 +340,8 @@ def create_request(
 ) -> RequestOut:
     _validate_commodity_group(db, payload.commodity_group_id)
     _enforce_required_fields(db, membership.organization_id, payload)
+    commodity_group_id, rule_summary = _commodity_group_by_rule(
+        db, membership.organization_id, payload)
 
     # Vendor fields are already cleaned up during extraction, so we can persist
     # them directly here.
@@ -327,7 +351,7 @@ def create_request(
         title=payload.title,
         vendor_name=payload.vendor_name,
         vat_id=payload.vat_id,
-        commodity_group_id=payload.commodity_group_id,
+        commodity_group_id=commodity_group_id,
         total_cost=payload.total_cost,
         shipping_amount=payload.shipping_amount,
         fees_amount=payload.fees_amount,
@@ -342,6 +366,9 @@ def create_request(
     db.flush()
     _log_activity(db, request.id, membership.user_id, "created", "Request created")
     _log_catalog_use(db, request, membership.user_id)
+    if rule_summary:
+        _log_activity(db, request.id, membership.user_id, "commodity_rule_applied", rule_summary,
+                      {"requested": payload.commodity_group_id, "applied": commodity_group_id})
     _apply_approval_policy(db, request, membership.user_id, payload.charges_incomplete)
     db.commit()
 
@@ -359,6 +386,9 @@ def update_request(
     request = _get_org_request(db, request_id, membership.organization_id)
     _validate_commodity_group(db, payload.commodity_group_id)
     _enforce_required_fields(db, membership.organization_id, payload)
+    commodity_group_id, rule_summary = _commodity_group_by_rule(
+        db, membership.organization_id, payload)
+    payload = payload.model_copy(update={"commodity_group_id": commodity_group_id})
 
     changed = _changed_fields(request, payload)
     before = _BeforeUpdate(request.approval_status, request.approval_method,
@@ -390,6 +420,9 @@ def update_request(
             f"Updated {', '.join(labels)}",
             {"changed_fields": changed},
         )
+    if rule_summary:
+        _log_activity(db, request.id, membership.user_id, "commodity_rule_applied", rule_summary,
+                      {"applied": commodity_group_id})
     _apply_approval_policy(db, request, membership.user_id, payload.charges_incomplete, before)
     db.commit()
 

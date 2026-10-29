@@ -11,6 +11,7 @@ from app.schemas.extraction import ExtractionRequest, ExtractionResponse
 from app.schemas.organizations import OrganizationSettings
 from app.services.extraction import extract_vendor_data, extract_vendor_data_from_pdf
 from app.services.pdf import is_pdf
+from app.services.commodity_rules import rules_of
 from app.services.quote_checks import BuyerContext
 
 logger = logging.getLogger(__name__)
@@ -71,6 +72,9 @@ async def extract_pdf(
             db,
             buyer=_buyer_context(organization),
             requester_department=profile.department if profile else None,
+            commodity_rules=rules_of(organization.settings) if organization else [],
+            required_fields=(OrganizationSettings(**(organization.settings or {})).required_fields
+                             if organization else []),
         )
     except Exception:  # noqa: BLE001 — unreadable/corrupt PDF (model errors are in the envelope)
         logger.exception("Failed to read uploaded PDF %s", file.filename)

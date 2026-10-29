@@ -14,6 +14,8 @@ from app.schemas.extraction import (
     QuoteExtraction,
 )
 from app.services.pdf import extract_layout_text, render_pages_as_data_urls
+from app.schemas.organizations import CommodityRule
+from app.services.commodity_rules import match_rule
 from app.services.quote_checks import RETRYABLE_CODES, BuyerContext, build_extraction
 
 logger = logging.getLogger(__name__)
@@ -67,7 +69,7 @@ def _buyer_block(buyer: BuyerContext) -> str:
 
 
 def _user_content(
-    layout_text: str, commodity_groups_list: str, images: list[str], buyer: BuyerContext
+    layout_text: str, commodity_groups_list: str, images: list[str], buyer: BuyerContext,
 ) -> list[dict]:
     text = (
         "Extract this vendor quote.\n\n"
@@ -109,13 +111,18 @@ def _call_model(messages: list[dict]) -> QuoteExtraction:
     return message.parsed
 
 
-def _missing_fields(data: ExtractedVendorData) -> list[str]:
+def _missing_fields(data: ExtractedVendorData, required_fields=()) -> list[str]:
+    """Fields the form needs that extraction couldn't fill.
+
+    Tax ID is optional (many quotes print none, e.g. Hartwell), so it's only listed when the
+    organization made it required in its settings.
+    """
     missing = []
     if not data.title:
         missing.append("Title/Short Description")
     if not data.vendor_name:
         missing.append("Vendor Name")
-    if not data.vat_id:
+    if not data.vat_id and "vat_id" in required_fields:
         missing.append("Tax ID")
     if not data.order_lines:
         missing.append("Order Lines")
@@ -133,6 +140,8 @@ def extract_vendor_data(
     images: list[str] | None = None,
     buyer: BuyerContext | None = None,
     requester_department: str | None = None,
+    commodity_rules: list[CommodityRule] = (),
+    required_fields: list[str] = (),
 ) -> ExtractionResponse:
     """Extract and check vendor data from a quote's layout text and (optionally) page images.
 
@@ -200,6 +209,16 @@ def extract_vendor_data(
         logger.exception("Error extracting vendor data")
         return ExtractionResponse(success=False, error=str(exc))
 
+    # The organization's booking rules win over the classifier (Task 3). Applied in code only:
+    # listing them in the extraction prompt cost verdeform its footer (legal name 2/4 -> 0/4,
+    # tax ID 1/4 -> 0/4), the same attention effect as the department field (D43).
+    rule = match_rule(list(commodity_rules),
+                      [data.title, *(line.position_description for line in data.order_lines)],
+                      data.total_cost)
+    if rule and rule.rule.commodity_group_id in groups_by_id:
+        data.commodity_group_id = rule.rule.commodity_group_id
+        data.commodity_rule = rule.summary
+
     # Validate that the returned commodity group id actually exists.
     group = groups_by_id.get(data.commodity_group_id) if data.commodity_group_id else None
     if data.commodity_group_id is not None and group is None:
@@ -210,7 +229,7 @@ def extract_vendor_data(
     return ExtractionResponse(
         success=True,
         data=data,
-        missing_fields=_missing_fields(data) or None,
+        missing_fields=_missing_fields(data, required_fields) or None,
         warnings=warnings,
         status="needs_review" if warnings else "verified",
     )
@@ -222,6 +241,8 @@ def extract_vendor_data_from_pdf(
     *,
     buyer: BuyerContext | None = None,
     requester_department: str | None = None,
+    commodity_rules: list[CommodityRule] = (),
+    required_fields: list[str] = (),
 ) -> ExtractionResponse:
     """Full pipeline from the uploaded file: layout text + page images -> checked extraction."""
     layout_text = extract_layout_text(pdf_bytes)
@@ -232,4 +253,6 @@ def extract_vendor_data_from_pdf(
         images=images,
         buyer=buyer,
         requester_department=requester_department,
+        commodity_rules=commodity_rules,
+        required_fields=required_fields,
     )

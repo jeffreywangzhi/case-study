@@ -732,7 +732,7 @@ def test_org_settings_required_fields():
     # Default settings: nothing extra required.
     r = client.get("/organizations/me/settings", headers=_auth(token))
     assert r.status_code == 200
-    assert r.json() == {"required_fields": [], "buyer_identities": [],
+    assert r.json() == {"required_fields": [], "buyer_identities": [], "commodity_rules": [],
                         "auto_approval_threshold": None}
 
     base_payload = {

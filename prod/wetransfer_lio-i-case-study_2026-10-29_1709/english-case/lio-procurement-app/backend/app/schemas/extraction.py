@@ -135,6 +135,8 @@ class ExtractedVendorData(BaseModel):
     total_cost: float = Field(default=0, alias="totalCost")
     commodity_group_id: int | None = Field(default=None, alias="commodityGroupId")
     commodity_group_name: str | None = Field(default=None, alias="commodityGroupName")
+    # Set when an organization booking rule chose the group (overrides the classifier).
+    commodity_rule: str | None = Field(default=None, alias="commodityRule")
 
 
 class ExtractionWarning(BaseModel):

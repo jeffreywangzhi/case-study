@@ -382,6 +382,30 @@ What this showed:
 
 ---
 
+## Booking rules (Task 3)
+
+No sample quote contains cable ties, toner or a software subscription, so the rules are proven
+by tests (`tests/test_commodity_rules.py`) and a live API check rather than the quote eval.
+
+Live (`POST /requests` as Acme's requester, the group the requester picked vs what was stored):
+
+| Request line | Total | Picked | Stored | Rule |
+|---|---|---|---|---|
+| Cable ties 8 in, nylon, pack of 100 | $125 | 49 Consumables | **11 Electrical Engineering** | Cable ties |
+| HP 26A black toner | $189 | 204 Toner Cartridges | **29 Hardware** | Printer toner |
+| Notion SaaS subscription, 12 months | $480 | 31 Software | **2001 Office Supplies** | Small software subscriptions |
+| Notion SaaS subscription, 12 months | $4,800 | 31 Software | 31 Software | none (over $1,000) |
+
+Each override is logged as a `commodity_rule_applied` activity with the requested and applied
+group. Another organization (Walmart) with no rules is unaffected.
+
+Known limitations: rules match keywords (precise on purpose, since every hit is a guaranteed
+override; synonyms outside the list rely on the classifier hint); one commodity group per
+request, first matching rule wins; "Office Supplies" (new group 2001) and "small" = up to $1,000
+are assumptions to confirm with the customer; no admin UI for rules yet.
+
+---
+
 ## Auto-approval below $2,000 (bonus)
 
 Rule: a request whose total cost (gross: lines + shipping + fees + tax) is strictly below the
@@ -404,6 +428,35 @@ Known limitations: the gross basis is an assumption to confirm with the customer
 the split check also flags legitimate repeat purchases from the same vendor within 7 days;
 requests carry no currency, so the limit assumes USD; buyers aren't notified when a request lands
 in their queue for a safeguard reason.
+
+---
+
+## Final regression: all five quotes after Tasks 2 and 3 (3 runs)
+
+File: [`results/final-pdf-gpt-4o-mini.json`](results/final-pdf-gpt-4o-mini.json). Same model
+input as after D43; since then only post-processing changed (booking rules applied in code;
+Tax ID listed as missing only when the organization requires it).
+
+| Quote | ok | vendor | vat_id | grand_total | lines | commodity | department | line_detail | charges | tax | reconciles | flagged |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| QT-4120-Cust-14918 (Greenmantle) | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 |
+| QT-OF2312380-Cust-57692 (verdeform) | 3/3 | 1/3 | 1/3 | 3/3 | 3/3 | 2/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 0/3 |
+| QuoteA0492_23 (Hollis) | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 2/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 |
+| Quote_1 MacBook Air (Apple) | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 |
+| Hartwell grinding machine | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 0/3 | 3/3 | 3/3 | 3/3 | 3/3 | 3/3 | 1/3 |
+| **All runs** | **100%** | **87%** | **87%** | **100%** | **100%** | **67%** | **100%** | **100%** | **100%** | **100%** | **100%** | **67%** |
+
+Latency p50 7.1 s, max 14.1 s; 2 retries in 15 runs. No booking rule fired on any quote
+(correct: none contains cable ties, toner or a software subscription).
+
+- **Four of five quotes are right on every extraction field.** The MacBook's charges are back
+  to 3/3.
+- **verdeform** is right 1 run in 3 (legal name and EIN), otherwise the brand "verdeform" with
+  no tax ID. It varies with the model over time (8/10 in one 10-run check, 0/3 in another) on an
+  identical prompt; the focused issuer call (DECISIONS D35 option A) is the known fix.
+- **`flagged` dropped to 67%** because Tax ID is no longer listed as missing: verdeform's missed
+  EIN and Hartwell's wrong commodity group (15 Office Equipment instead of 45) are now silent.
+  That's the honest number; before, an unrelated "Tax ID missing" note was counted as a warning.
 
 ## Model comparison
 
