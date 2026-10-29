@@ -4,6 +4,11 @@ ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PIP_NO_CACHE_DIR=1
 
+# The OpenSSL bundled with recent `cryptography` wheels SIGILLs on Apple M4
+# hosts under Docker's Linux VM when it probes ARM CPU features. Disable the
+# probe (ignored on x86; negligible cost at our crypto volume).
+ENV OPENSSL_armcap=0
+
 WORKDIR /app
 
 # Install dependencies first for better layer caching
