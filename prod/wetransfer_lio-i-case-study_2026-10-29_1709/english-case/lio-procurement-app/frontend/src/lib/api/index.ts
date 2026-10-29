@@ -60,6 +60,8 @@ export interface OrderLineInput {
   amount: number;
   unit: string;
   totalPrice: number;
+  /** Set when the line uses a negotiated catalog agreement. */
+  articleId?: string | null;
 }
 
 export interface CreateRequestInput {
@@ -163,6 +165,47 @@ export interface ArticlePage {
   offset: number;
 }
 
+/** One supplier's negotiated price for a catalog item (decimals arrive as strings). */
+export interface CatalogAgreement {
+  article_id: string;
+  article_number: string;
+  supplier_id: string;
+  supplier_name: string;
+  supplier_vat_id: string | null;
+  unit_price: string;
+  unit: string;
+  currency: string;
+  /** Meaning not confirmed yet (minimum order? pack size?); shown as information. */
+  quantity: string;
+  /** Prices are compared only when the units match. */
+  same_unit: boolean;
+  /** Quoted minus negotiated; negative means the quote is cheaper. */
+  saving_per_unit: string | null;
+  saving_total: string | null;
+}
+
+export interface CatalogSuggestion {
+  item: string;
+  quality: 'equivalent' | 'similar';
+  reason: string;
+  /** Every supplier's agreement for the item, cheapest first. */
+  agreements: CatalogAgreement[];
+}
+
+export interface CatalogMatchLine {
+  description: string;
+  unit?: string;
+  unit_price?: number | null;
+  quantity?: number;
+}
+
+export interface CatalogMatchResponse {
+  lines: { index: number; suggestions: CatalogSuggestion[] }[];
+  known_supplier: { id: string; name: string; vat_id: string | null } | null;
+  /** False when the AI check was unavailable and suggestions are keyword matches only. */
+  verified: boolean;
+}
+
 // ============================================================================
 // Auth
 // ============================================================================
@@ -199,7 +242,9 @@ export interface RequestActivity {
   id: string;
   request_id: string;
   actor_id: string | null;
-  action: 'created' | 'updated' | 'status_changed' | 'approved' | 'rejected' | 'document_attached';
+  action:
+    | 'created' | 'updated' | 'status_changed' | 'approved' | 'rejected' | 'document_attached'
+    | 'catalog_applied';
   summary: string;
   detail: Record<string, unknown> | null;
   created_at: string;
@@ -343,6 +388,23 @@ export const articles = {
 
   count(): Promise<{ count: number }> {
     return apiFetch('/articles/count');
+  },
+
+  /** Typeahead: catalog items with negotiated prices that clearly match what's typed. */
+  suggest(q: string, limit = 5): Promise<CatalogSuggestion[]> {
+    const qs = new URLSearchParams({ q, limit: String(limit) });
+    return apiFetch(`/articles/suggest?${qs.toString()}`);
+  },
+
+  /** AI-checked catalog agreements per request line, plus whether the vendor is known. */
+  match(params: {
+    lines: CatalogMatchLine[];
+    vendorName?: string;
+    vatId?: string;
+  }): Promise<CatalogMatchResponse> {
+    return apiFetch('/articles/match', {
+      body: { lines: params.lines, vendor_name: params.vendorName, vat_id: params.vatId },
+    });
   },
 };
 

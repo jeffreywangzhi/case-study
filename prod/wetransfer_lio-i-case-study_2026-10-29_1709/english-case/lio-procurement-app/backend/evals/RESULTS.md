@@ -295,6 +295,59 @@ Known limitations:
 - **Not modeled:** fee names (stored as a single fees amount), estimated tax/shipping, quote
   validity dates.
 
+---
+
+## Catalog suggestions (Task 2)
+
+Benchmark: [`matching_labels.json`](matching_labels.json), written before the matcher: nine
+request lines against Acme's catalog (1,920 articles, 393 distinct items): the three moss-wall
+quotes, the MacBook, Hartwell's grinding machine and installation, and typed "usb-c docking
+station", "cyan toner" and "zip ties". Four must get *no* suggestion; a wrong suggestion is
+worse than none.
+
+| Metric | Passes when |
+|---|---|
+| hit | an expected catalog item is among the suggestions |
+| top1 | the first suggestion is an expected item |
+| clean | a "nothing fits" case gets no suggestion |
+
+Reproduce: `python3 backend/evals/run_match_eval.py --runs 3`
+
+| Iteration | Path | hit | top1 | clean | latency |
+|---|---|---|---|---|---|
+| First run (2 runs) | model-checked | 12/12 | 12/12 | 4/6 (zip ties → steel bolts, PET strapping) | p50 1.4 s |
+| | typeahead | 12/12 | 12/12 | 2/6 | 0.1 s |
+| Calibrated typeahead thresholds | typeahead | 18/18 | 18/18 | **9/9** | 0.1 s |
+| | model-checked | 18/18 | 18/18 | 6/9 (zip ties → 8 "similar" items, every reason a rejection) | |
+| Judge gets a `not_a_match` verdict ([`results/match-gpt-4o-mini.json`](results/match-gpt-4o-mini.json), 3 runs) | model-checked | **18/18** | **18/18** | **9/9** | p50 2.4 s, max 3.1 s |
+| | typeahead | 18/18 | 18/18 | 9/9 | 0.1 s |
+
+What the iterations showed:
+- The typeahead has no model check, so it needs a threshold: correct items scored 0.51–0.75
+  cosine, the best candidate for "nothing fits" cases 0.41–0.48; the cut is 0.50, plus a keyword
+  rule that needs two shared words ("Delivery and installation" shares one with "Last-mile
+  delivery"). A thin margin on a small sample.
+- With only "equivalent | similar" to choose from, the model labelled its rejections "similar"
+  ("Different product type (bolt vs zip ties) and purpose"). Giving it a "not_a_match" verdict
+  fixed it.
+
+End to end through the API (upload → match → use agreement → create request):
+- verdeform: 13.78 sq ft of custom moss at $52.00 → Harborview Facility's negotiated $44.59/sq ft,
+  saving $102.11; the edge-greening line matches too but is per linear foot, so no saving is
+  computed; the acrylic logo gets no suggestion.
+- MacBook Air at $1,409.06 → Granite Solutions' "Business laptop 14″ i5 / 16 GB / 512 GB" at
+  $974 (similar: a different platform, for a person to decide), saving $435.06.
+- The created requests use the supplier as vendor and store the article link and the negotiated
+  price at the time.
+
+Known limitations: nine cases on one synthetic catalog; the catalog's `quantity` column is shown
+but not enforced (its meaning is unconfirmed); the typeahead threshold will need recalibrating on
+a real catalog.
+
+Using an agreement that switches the vendor resets shipping, fees and tax to $0 with a note:
+the catalog has no shipping, fee or tax data, and the original quote's charges belong to another
+vendor. Until someone enters them, the total understates the real cost.
+
 ## Model comparison
 
 *Pending. Same pipeline and labels, `OPENAI_MODEL` varied. Default stays `gpt-4o-mini` unless a

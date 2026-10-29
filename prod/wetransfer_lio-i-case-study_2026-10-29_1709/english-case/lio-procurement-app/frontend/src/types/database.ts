@@ -79,6 +79,9 @@ export type OrderLine = {
   unit: string;
   total_price: number;
   line_order: number;
+  /** The catalog agreement this line uses, and its negotiated price at the time. */
+  article_id: string | null;
+  catalog_unit_price: number | null;
   created_at: string;
 };
 

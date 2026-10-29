@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session, selectinload
 from app.core.deps import get_current_membership, require_buyer_or_admin
 from app.db.session import get_db
 from app.models import (
+    Article,
     CommodityGroup,
     OrderLine,
     Organization,
@@ -18,6 +19,7 @@ from app.models import (
 )
 from app.schemas.requests import (
     ApprovalDecision,
+    OrderLineIn,
     RequestActivityOut,
     RequestCreate,
     RequestOut,
@@ -122,9 +124,65 @@ def _order_lines_signature(lines) -> list[tuple]:
             float(line.amount),
             line.unit,
             float(line.total_price),
+            line.article_id,
         )
         for line in lines
     ]
+
+
+def _build_order_lines(
+    db: Session,
+    organization_id: uuid.UUID,
+    lines: list[OrderLineIn],
+    previous: list[OrderLine] = (),
+) -> list[OrderLine]:
+    """Order lines from the payload, with catalog links checked against the caller's org.
+
+    The negotiated price snapshot comes from the article (never the client); a line
+    that keeps the same article keeps its original snapshot.
+    """
+    article_ids = {line.article_id for line in lines if line.article_id}
+    articles = {
+        a.id: a
+        for a in db.scalars(
+            select(Article).where(
+                Article.id.in_(article_ids), Article.organization_id == organization_id
+            )
+        )
+    } if article_ids else {}
+    if unknown := article_ids - set(articles):
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=f"Unknown catalog article: {', '.join(sorted(map(str, unknown)))}",
+        )
+    snapshots = {old.article_id: old.catalog_unit_price for old in previous if old.article_id}
+    return [
+        OrderLine(
+            position_description=line.position_description,
+            unit_price=line.unit_price,
+            amount=line.amount,
+            unit=line.unit,
+            total_price=line.total_price,
+            line_order=index + 1,
+            article_id=line.article_id,
+            catalog_unit_price=(
+                snapshots.get(line.article_id, articles[line.article_id].unit_price)
+                if line.article_id else None
+            ),
+        )
+        for index, line in enumerate(lines)
+    ]
+
+
+def _log_catalog_use(db: Session, request: ProcurementRequest, actor_id: uuid.UUID) -> None:
+    """Record which lines use negotiated catalog agreements (makes agreement use measurable)."""
+    used = [line for line in request.order_lines if line.article_id]
+    if used:
+        _log_activity(
+            db, request.id, actor_id, "catalog_applied",
+            f"{len(used)} of {len(request.order_lines)} lines use catalog agreements",
+            {"article_ids": [str(line.article_id) for line in used]},
+        )
 
 
 def _changed_fields(request: ProcurementRequest, payload: RequestUpdate) -> list[str]:
@@ -208,20 +266,11 @@ def create_request(
         created_by=membership.user_id,
         status="open",
     )
-    request.order_lines = [
-        OrderLine(
-            position_description=line.position_description,
-            unit_price=line.unit_price,
-            amount=line.amount,
-            unit=line.unit,
-            total_price=line.total_price,
-            line_order=index + 1,
-        )
-        for index, line in enumerate(payload.order_lines)
-    ]
+    request.order_lines = _build_order_lines(db, membership.organization_id, payload.order_lines)
     db.add(request)
     db.flush()
     _log_activity(db, request.id, membership.user_id, "created", "Request created")
+    _log_catalog_use(db, request, membership.user_id)
     db.commit()
 
     request = _get_org_request(db, request.id, membership.organization_id)
@@ -253,17 +302,9 @@ def update_request(
     request.department = payload.department
 
     # Replace order lines (same semantics as the original delete-and-insert).
-    request.order_lines = [
-        OrderLine(
-            position_description=line.position_description,
-            unit_price=line.unit_price,
-            amount=line.amount,
-            unit=line.unit,
-            total_price=line.total_price,
-            line_order=index + 1,
-        )
-        for index, line in enumerate(payload.order_lines)
-    ]
+    request.order_lines = _build_order_lines(
+        db, membership.organization_id, payload.order_lines, previous=request.order_lines
+    )
 
     if changed:
         labels = [_FIELD_LABELS.get(f, f) for f in changed]

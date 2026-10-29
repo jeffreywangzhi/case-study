@@ -160,6 +160,7 @@ export default function RequestDetailPage() {
           amount: l.amount,
           unit: l.unit,
           totalPrice: l.total_price,
+          articleId: l.article_id, // keep the catalog link on edit
         })),
       });
       setEditing(false);
@@ -282,6 +283,12 @@ export default function RequestDetailPage() {
                     <p className="text-sm text-ink/55 mt-0.5">
                       {line.amount} {line.unit} × {usd(line.unit_price)}
                     </p>
+                    {line.article_id && (
+                      <span className="mt-1 inline-flex px-2 py-0.5 text-xs font-medium rounded-full bg-green-50 text-green-800">
+                        Negotiated catalog price
+                        {line.catalog_unit_price !== null && ` · ${usd(line.catalog_unit_price)}`}
+                      </span>
+                    )}
                   </div>
                   <p className="text-sm font-semibold text-ink">{usd(line.total_price)}</p>
                 </div>

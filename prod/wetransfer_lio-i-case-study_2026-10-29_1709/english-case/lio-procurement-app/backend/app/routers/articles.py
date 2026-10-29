@@ -5,9 +5,45 @@ from sqlalchemy.orm import Session, joinedload
 from app.core.deps import get_current_membership
 from app.db.session import get_db
 from app.models import Article, OrganizationMember
-from app.schemas.articles import ArticleOut, ArticlePage
+from app.schemas.articles import (
+    ArticleOut,
+    ArticlePage,
+    CatalogMatchRequest,
+    CatalogMatchResponse,
+    CatalogSuggestion,
+)
+from app.services import catalog_matching
 
 router = APIRouter(prefix="/articles", tags=["articles"])
+
+
+@router.get("/suggest", response_model=list[CatalogSuggestion])
+def suggest_articles(
+    q: str = Query(min_length=2, max_length=200, description="What the requester is typing"),
+    limit: int = Query(default=5, ge=1, le=10),
+    membership: OrganizationMember = Depends(get_current_membership),
+    db: Session = Depends(get_db),
+) -> list[CatalogSuggestion]:
+    """Typeahead: catalog items with negotiated prices that clearly match ``q``.
+
+    Fast path (keyword + embedding retrieval, no model check), for the manual form.
+    """
+    return catalog_matching.suggest(db, membership.organization_id, q, limit)
+
+
+@router.post("/match", response_model=CatalogMatchResponse)
+def match_articles(
+    payload: CatalogMatchRequest,
+    membership: OrganizationMember = Depends(get_current_membership),
+    db: Session = Depends(get_db),
+) -> CatalogMatchResponse:
+    """Catalog agreements for each request line, checked by the model, with savings vs the
+    quoted prices. Also reports whether the quote's vendor is in the supplier master.
+    """
+    return catalog_matching.match_lines(
+        db, membership.organization_id, payload.lines,
+        vendor_name=payload.vendor_name, vat_id=payload.vat_id,
+    )
 
 
 @router.get("", response_model=ArticlePage)
